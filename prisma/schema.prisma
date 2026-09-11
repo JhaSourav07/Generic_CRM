@@ -1,0 +1,20 @@
+// Vynexa CRM Prisma Schema
+// Relational Source of Truth for PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Initial placeholder model to verify connection and migration workflow
+model SystemHealth {
+  id        String   @id @default(uuid())
+  status    String   @default("ok")
+  checkedAt DateTime @default(now())
+
+  @@map("system_health")
+}
