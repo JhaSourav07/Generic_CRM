@@ -1,23 +1,42 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Lock, Mail } from 'lucide-react';
+import { ArrowRight, Lock, Mail, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/toast';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const { toast } = useToast();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/app/dashboard';
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
-    // Visual shell flow — navigate to app shell
-    setTimeout(() => {
+
+    try {
+      await login({ email, password });
+      toast({
+        type: 'success',
+        title: 'Authentication Successful',
+        message: 'Signed in to your workspace successfully.'
+      });
+      navigate(from, { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials or account disabled.');
+    } finally {
       setIsLoading(false);
-      navigate('/app/dashboard');
-    }, 600);
+    }
   };
 
   return (
@@ -43,6 +62,13 @@ export const LoginPage: React.FC = () => {
 
         {/* Login Form Box */}
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-6 shadow-elevated">
+          {error && (
+            <div className="mb-4 p-3 rounded-md border border-red-500/30 bg-red-500/10 text-red-400 text-xs flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Work Email"

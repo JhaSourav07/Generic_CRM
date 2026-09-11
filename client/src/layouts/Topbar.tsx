@@ -4,6 +4,7 @@ import { Search, Bell, Menu, Command, Building } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown';
 import { useToast } from '@/components/ui/toast';
+import { useAuth } from '@/context/AuthContext';
 
 export interface TopbarProps {
   onMenuToggle?: () => void;
@@ -12,15 +13,30 @@ export interface TopbarProps {
 export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, logout } = useAuth();
 
-  const handleSignOut = () => {
-    toast({
-      type: 'info',
-      title: 'Signed Out',
-      message: 'You have successfully signed out of your workspace.'
-    });
-    navigate('/login');
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      toast({
+        type: 'info',
+        title: 'Signed Out',
+        message: 'You have successfully signed out of your workspace.'
+      });
+      navigate('/login', { replace: true });
+    } catch (_err) {
+      toast({
+        type: 'error',
+        title: 'Sign Out Error',
+        message: 'An error occurred while signing out.'
+      });
+    }
   };
+
+  const displayName = user?.name || 'User';
+  const displayEmail = user?.email || '';
+  const orgName = user?.organization?.name || 'Workspace';
+  const roleName = user?.role?.name || 'MEMBER';
 
   return (
     <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-vynexa-border bg-vynexa-surface/90 px-4 backdrop-blur-sm">
@@ -36,8 +52,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
         <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded border border-vynexa-border bg-vynexa-surface-secondary text-xs font-medium text-vynexa-text-secondary select-none">
           <Building className="h-3.5 w-3.5 text-vynexa-text-muted" />
-          <span className="font-mono text-vynexa-text-primary text-[11px]">Acme Corp</span>
-          <span className="text-[10px] text-vynexa-text-muted font-mono bg-vynexa-surface px-1 py-0.5 rounded">PRO</span>
+          <span className="font-mono text-vynexa-text-primary text-[11px] truncate max-w-[140px]">{orgName}</span>
+          <span className="text-[10px] text-vynexa-text-muted font-mono bg-vynexa-surface px-1 py-0.5 rounded tracking-wider">{roleName}</span>
         </div>
       </div>
 
@@ -72,15 +88,15 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         <Dropdown
           trigger={
             <div className="flex items-center gap-2 cursor-pointer p-0.5 rounded-full hover:ring-1 hover:ring-vynexa-border transition-all">
-              <Avatar name="Alex Vance" size="sm" />
+              <Avatar name={displayName} size="sm" />
             </div>
           }
         >
           <div className="px-3 py-2 border-b border-vynexa-border">
-            <p className="text-xs font-semibold text-vynexa-text-primary">Alex Vance</p>
-            <p className="text-[11px] text-vynexa-text-muted truncate">alex.vance@acme.com</p>
+            <p className="text-xs font-semibold text-vynexa-text-primary">{displayName}</p>
+            <p className="text-[11px] text-vynexa-text-muted truncate">{displayEmail}</p>
           </div>
-          <DropdownItem onClick={() => navigate('/app/settings')}>Profile & Settings</DropdownItem>
+          <DropdownItem onClick={() => navigate('/app/settings')}>Profile &amp; Settings</DropdownItem>
           <DropdownItem onClick={() => navigate('/app/settings')}>Organization Config</DropdownItem>
           <DropdownSeparator />
           <DropdownItem danger onClick={handleSignOut}>Sign Out</DropdownItem>

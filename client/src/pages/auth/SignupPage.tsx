@@ -2,25 +2,58 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowRight, Lock, Mail, User, Building } from 'lucide-react';
+import { ArrowRight, Lock, Mail, User, Building, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/toast';
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
+  const { toast } = useToast();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [organization, setOrganization] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
     setIsLoading(true);
-    // Visual shell flow — navigate to app shell
-    setTimeout(() => {
+
+    try {
+      await signup({
+        organizationName: organization,
+        name,
+        email,
+        password,
+        confirmPassword
+      });
+      toast({
+        type: 'success',
+        title: 'Workspace Initialized',
+        message: 'Your organization and admin account were created successfully.'
+      });
+      navigate('/app/dashboard', { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Failed to create organization account. Please try again.');
+    } finally {
       setIsLoading(false);
-      navigate('/app/dashboard');
-    }, 600);
+    }
   };
 
   return (
@@ -46,6 +79,13 @@ export const SignupPage: React.FC = () => {
 
         {/* Signup Form Box */}
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-6 shadow-elevated">
+          {error && (
+            <div className="mb-4 p-3 rounded-md border border-red-500/30 bg-red-500/10 text-red-400 text-xs flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Full Name"
