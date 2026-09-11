@@ -8,9 +8,10 @@ This document provides a comprehensive technical overview of everything implemen
 
 Vynexa CRM is a commercial-grade, multi-tenant enterprise SaaS Customer Relationship Management system built with Linear-/Stripe-caliber refinement. 
 
-### Current Progress (Phase 1 & Phase 2 Complete)
+### Current Progress (Phase 1, Phase 2 & Phase 3 Complete)
 - **Technical Architecture**: Full client/server setup using React 18, Vite, TypeScript, Express, Node.js, PostgreSQL, and Prisma ORM.
 - **Database Architecture (Phase 2)**: Complete PostgreSQL schema with 24 relational models, 10 enums, composite indexes, multi-tenant boundaries (`organizationId`), and a reproducible seeding script ([prisma/seed.ts](file:///run/media/sourav/New%20Volume/Projects/Generic_CRM/prisma/seed.ts)).
+- **Public Landing Page (Phase 3)**: Complete 11-component market-ready landing page (`/`) featuring hero positioning, interactive CRM product viewport preview with Indian currency formatting (`₹`), 6-capability grid, 7-stage customer lifecycle sequence, pipeline showcase, daily agenda workspace, business intelligence KPI rows, enterprise security highlight, final CTA, and footer.
 - **Design System**: Vynexa Charcoal Dark Theme (`#0D0D0D` base), typography-driven layout using `Manrope` for UI prose and `IBM Plex Mono` for tabular/numerical data.
 - **20 UI Primitives**: Standardized atomic UI components matching the charcoal visual language.
 - **Application Shell**: High-density collapsible sidebar with 8 navigation domains, topbar command search, organization context, and account menu.
@@ -320,7 +321,81 @@ Phase 2 establishes the production-grade PostgreSQL database foundation and Pris
 
 ---
 
-## 6. HOW TO EXTEND OR EDIT THIS CODEBASE
+---
+
+## 6. PHASE 3 — PUBLIC LANDING PAGE ARCHITECTURE
+
+Phase 3 implements the market-ready public landing page at route `/`. Built with an 11-component modular architecture, it showcases the product capabilities, pipeline metrics, and enterprise security of Vynexa CRM without relying on generic AI marketing clichés.
+
+### 6.1 Positioning & Visual Polish
+- **Core Message**: *"One system for the entire customer lifecycle."*
+- **Design Language**: Dark charcoal palette (`#0D0D0D` base), typography-driven visual hierarchy using `Manrope` for UI prose and `IBM Plex Mono` for tabular/numerical data.
+- **Anti-AI-Slop Compliance**: Zero neon gradients, zero glowing borders, zero cartoon illustrations, zero fake testimonials, zero fake partner logos, and zero fake customer counts.
+
+### 6.2 Modular Component Breakdown (`client/src/components/landing/`)
+
+1. **`Navbar.tsx`**:
+   - Features sticky wordmark `VYNEXA CRM` in IBM Plex Mono.
+   - Desktop navigation links (`Product`, `Solutions`, `Workflow`, `Insights`).
+   - Primary action buttons: `Log in` (`/login`) and `Get started` (`/signup`).
+   - Includes a responsive mobile menu drawer toggled via `Menu` / `X` icon.
+
+2. **`Hero.tsx`**:
+   - Eyebrow badge: `VYNEXA CRM — UNIFIED PLATFORM`.
+   - Headline: *"One system for the entire customer lifecycle."*
+   - Subheadline: *"Manage leads, relationships, sales, activities, support, and operations from one connected CRM."*
+   - Primary CTA: `Get started` (`/signup`), Secondary CTA: `Sign in` (`/login`).
+   - Architecture assurance bar highlighting multi-tenant isolation, data density, commercial lifecycle tracking, and server-side RBAC.
+
+3. **`ProductPreview.tsx`**:
+   - Realistic Vynexa CRM application viewport simulation with topbar, organization badge (`Acme Corp PRO`), and active deal pipeline cards.
+   - Includes realistic Indian currency formatting: `Northstar Systems` (`₹4.8L` - Negotiation), `Acme Industries` (`₹2.4L` - Proposal), `Vertex Labs` (`₹1.2L` - Qualified).
+   - Displays win probability percentages and close dates.
+
+4. **`CRMCapabilities.tsx`**:
+   - Editorial 6-grid capability layout explaining:
+     - **LEADS**: Lead management & atomic account/contact conversion.
+     - **CUSTOMERS**: Accounts & contact relationship history.
+     - **SALES**: Pipelines, quotes, and order generation.
+     - **ACTIVITIES**: Log calls, meetings, notes, emails, and tasks.
+     - **SUPPORT**: Customer case ticketing & SLA resolution.
+     - **INSIGHTS**: Pipeline performance analytics & revenue forecasts.
+
+5. **`CustomerLifecycle.tsx`**:
+   - Connected 7-stage customer journey timeline using subtle structural borders and numbered cards:
+     `01 Lead` → `02 Qualification` → `03 Opportunity` → `04 Quote` → `05 Order` → `06 Support` → `07 Retention`.
+
+6. **`PipelineShowcase.tsx`**:
+   - Detailed sales pipeline stage totals:
+     - `Qualified`: 12 deals (`₹8.4L`)
+     - `Proposal`: 8 deals (`₹12.6L`)
+     - `Negotiation`: 5 deals (`₹9.8L`)
+     - `Won`: 7 deals (`₹15.2L`)
+   - Highlights historical pricing protection on line items and server-side quote approval guards.
+
+7. **`TeamWorkspace.tsx`**:
+   - Operational activity agenda view showing a daily team schedule:
+     - `09:30`: Call — Acme Industries
+     - `11:00`: Follow-up — Northstar Systems
+     - `13:30`: Meeting — Vertex Labs
+     - `15:00`: Send proposal — Orion Technologies
+
+8. **`InsightsShowcase.tsx`**:
+   - Analytics viewport featuring compact KPI metrics (`₹46.0L` Pipeline Value, `25` Open Opportunities, `68.4%` Commercial Win Rate, `142` Tasks Completed).
+   - Features a clean SVG monthly funnel conversion chart.
+
+9. **`SecuritySection.tsx`**:
+   - Enterprise security overview detailing row-level PostgreSQL isolation, 7 system RBAC roles, immutable audit logs, and abstracted document storage metadata.
+
+10. **`FinalCTA.tsx`**:
+    - Restrained closing CTA section: *"Bring your customer operations into one connected system."* with `Get started` and `Sign in` action buttons.
+
+11. **`Footer.tsx`**:
+    - Clean 4-column footer containing Product, Solutions, Account links, and copyright `© 2026 Vynexa Inc. All rights reserved.`
+
+---
+
+## 7. HOW TO EXTEND OR EDIT THIS CODEBASE
 
 When modifying or adding new functionality to Vynexa CRM, strictly follow these rules:
 
@@ -330,4 +405,5 @@ When modifying or adding new functionality to Vynexa CRM, strictly follow these 
 4. **Follow Server API Response Envelope**: Wrap all new backend controller responses in `{ success: true, data: ..., error: null }`.
 5. **Enforce Server-Side Security**: Always derive `organizationId` and user permissions from the validated server session; never trust client-supplied organization IDs.
 6. **Verify Build**: Always run `npm run typecheck` and `npm run build` after making code updates.
+
 

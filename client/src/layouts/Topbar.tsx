@@ -1,13 +1,27 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Bell, Menu, Command, Building } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown';
+import { useToast } from '@/components/ui/toast';
 
 export interface TopbarProps {
   onMenuToggle?: () => void;
 }
 
 export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = () => {
+    toast({
+      type: 'info',
+      title: 'Signed Out',
+      message: 'You have successfully signed out of your workspace.'
+    });
+    navigate('/login');
+  };
+
   return (
     <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-vynexa-border bg-vynexa-surface/90 px-4 backdrop-blur-sm">
       {/* Left Region: Mobile Menu & Organization Context */}
@@ -66,10 +80,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             <p className="text-xs font-semibold text-vynexa-text-primary">Alex Vance</p>
             <p className="text-[11px] text-vynexa-text-muted truncate">alex.vance@acme.com</p>
           </div>
-          <DropdownItem onClick={() => {}}>Profile & Settings</DropdownItem>
-          <DropdownItem onClick={() => {}}>Organization Config</DropdownItem>
+          <DropdownItem onClick={() => navigate('/app/settings')}>Profile & Settings</DropdownItem>
+          <DropdownItem onClick={() => navigate('/app/settings')}>Organization Config</DropdownItem>
           <DropdownSeparator />
-          <DropdownItem danger onClick={() => {}}>Sign Out</DropdownItem>
+          <DropdownItem danger onClick={handleSignOut}>Sign Out</DropdownItem>
         </Dropdown>
       </div>
     </header>
