@@ -4,6 +4,9 @@
   "private": true,
   "description": "Vynexa CRM — Commercial Enterprise SaaS Customer Relationship Management System",
   "scripts": {
+    "predev": "npm run db:start",
+    "db:start": "docker start vynexa-postgres 2>/dev/null || docker compose up -d",
+    "db:stop": "docker stop vynexa-postgres",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
@@ -27,6 +30,8 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3"
   }
 }

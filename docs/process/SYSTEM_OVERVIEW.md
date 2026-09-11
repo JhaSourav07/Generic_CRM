@@ -28,6 +28,7 @@ Generic_CRM/
 ├── AGENTS.md                  # Project constitution (authoritative development rules)
 ├── .env                       # Active runtime environment secrets & configuration
 ├── .env.example               # Template environment configuration
+├── docker-compose.yml         # PostgreSQL Docker container configuration
 ├── package.json               # Root workspace scripts (concurrent dev, builds, typechecks)
 ├── README.md                  # Quickstart guide
 ├── docs/                      # Technical documentation

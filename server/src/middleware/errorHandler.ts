@@ -16,14 +16,18 @@ export const errorHandler = (
   const message = err.message || 'An unexpected error occurred on the server.';
 
   // Log error details server-side
-  console.error(`[ERROR] ${errorCode} (${statusCode}): ${err.message}`, err.stack);
+  if (statusCode >= 500) {
+    console.error(`[SERVER_ERROR] ${errorCode} (${statusCode}): ${message}`, err.stack);
+  } else {
+    console.warn(`[CLIENT_INFO] ${errorCode} (${statusCode}): ${message}`);
+  }
 
   res.status(statusCode).json({
     success: false,
     data: null,
     error: {
       code: errorCode,
-      message: process.env.NODE_ENV === 'production' && statusCode === 500 
+      message: process.env.NODE_ENV === 'production' && statusCode >= 500 
         ? 'Internal server error' 
         : message
     }

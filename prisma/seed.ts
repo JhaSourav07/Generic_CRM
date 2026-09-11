@@ -3,9 +3,10 @@ import crypto from 'node:crypto';
 
 const prisma = new PrismaClient();
 
+import bcrypt from 'bcryptjs';
+
 function hashPassword(password: string): string {
-  // Safe sha256 hashing helper for development seed data
-  return crypto.createHash('sha256').update(password).digest('hex');
+  return bcrypt.hashSync(password, 10);
 }
 
 async function main() {
@@ -114,7 +115,7 @@ async function main() {
         email: 'admin@vynexa.com'
       }
     },
-    update: {},
+    update: { passwordHash },
     create: {
       organizationId: org.id,
       roleId: superAdminRoleId,
@@ -133,7 +134,7 @@ async function main() {
         email: 'sales.manager@acme.com'
       }
     },
-    update: {},
+    update: { passwordHash },
     create: {
       organizationId: org.id,
       roleId: salesManagerRoleId,
@@ -152,7 +153,7 @@ async function main() {
         email: 'sales.rep@acme.com'
       }
     },
-    update: {},
+    update: { passwordHash },
     create: {
       organizationId: org.id,
       roleId: salesRepRoleId,
