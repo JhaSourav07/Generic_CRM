@@ -12,11 +12,19 @@
     "build:server": "npm --prefix server run build",
     "typecheck": "npm --prefix client run typecheck && npm --prefix server run typecheck",
     "lint": "npm --prefix client run lint && npm --prefix server run lint",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "prisma:db-push": "npx prisma db push",
+    "prisma:seed": "npx prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
+    "@types/node": "^22.20.2",
     "concurrently": "^8.2.2",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "tsx": "^4.19.0",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0"
