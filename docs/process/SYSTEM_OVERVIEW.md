@@ -31,6 +31,7 @@ Generic_CRM/
 ├── docker-compose.yml         # PostgreSQL Docker container configuration
 ├── package.json               # Root workspace scripts (concurrent dev, builds, typechecks)
 ├── README.md                  # Quickstart guide
+├── TESTING.md                 # Automated backend testing & 100% coverage guide
 ├── docs/                      # Technical documentation
 │   └── process/
 │       └── SYSTEM_OVERVIEW.md # THIS FILE (Detailed technical reference)

@@ -106,23 +106,6 @@ export class AuthService {
         }
       });
 
-      // 2. Check duplicate email within organization
-      const existingUser = await tx.user.findUnique({
-        where: {
-          organizationId_email: {
-            organizationId: org.id,
-            email: normalizedEmail
-          }
-        }
-      });
-
-      if (existingUser) {
-        const error: AppError = new Error('An account with this email already exists in this organization');
-        error.statusCode = 409;
-        error.code = 'CONFLICT';
-        throw error;
-      }
-
       // 3. Find or create Organization Admin Role
       const roleName = isPlatformAdmin ? 'SUPER_ADMIN' : 'SALES_MANAGER';
       let role = await tx.role.findFirst({

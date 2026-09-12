@@ -6,7 +6,7 @@ import { z } from 'zod';
 dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-const envSchema = z.object({
+export const envSchema = z.object({
   PORT: z.string().default('5000').transform((val) => parseInt(val, 10)),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   CLIENT_URL: z.string().default('http://localhost:5173'),
@@ -17,12 +17,16 @@ const envSchema = z.object({
   ADMIN_SECRET_KEY: z.string().default('vynexa-super-admin-bypass-key')
 });
 
-const parseResult = envSchema.safeParse(process.env);
+export function parseEnv(environmentData: Record<string, any> = process.env) {
+  const parseResult = envSchema.safeParse(environmentData);
 
-if (!parseResult.success) {
-  console.error('❌ Invalid environment variable configuration:');
-  console.error(parseResult.error.flatten().fieldErrors);
-  process.exit(1);
+  if (!parseResult.success) {
+    console.error('❌ Invalid environment variable configuration:');
+    console.error(parseResult.error.flatten().fieldErrors);
+    process.exit(1);
+  }
+
+  return parseResult.data;
 }
 
-export const env = parseResult.data;
+export const env = parseEnv(process.env);

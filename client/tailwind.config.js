@@ -32,7 +32,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Manrope', 'system-ui', 'sans-serif'],
+        sans: ['Asap', 'system-ui', 'sans-serif'],
         mono: ['IBM Plex Mono', 'monospace']
       },
       borderRadius: {
