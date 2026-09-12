@@ -4,6 +4,7 @@ import { env } from './config/env.js';
 import cookieParser from 'cookie-parser';
 import healthRouter from './routes/health.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
+import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api', healthRouter);
 app.use('/api/auth', authRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

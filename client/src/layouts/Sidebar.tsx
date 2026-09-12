@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/components/ui/toast';
 import {
   LayoutDashboard,
   UserCheck,
@@ -32,6 +33,7 @@ interface NavItemConfig {
   label: string;
   path: string;
   icon: React.ComponentType<{ className?: string }>;
+  isImplemented?: boolean;
 }
 
 interface NavSectionConfig {
@@ -43,62 +45,62 @@ const navSections: NavSectionConfig[] = [
   {
     title: 'OVERVIEW',
     items: [
-      { label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard }
+      { label: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard, isImplemented: true }
     ]
   },
   {
     title: 'CRM',
     items: [
-      { label: 'Leads', path: '/app/leads', icon: UserCheck },
-      { label: 'Customers', path: '/app/customers', icon: Building2 },
-      { label: 'Contacts', path: '/app/contacts', icon: Contact },
-      { label: 'Organizations', path: '/app/organizations', icon: Users }
+      { label: 'Leads', path: '/app/leads', icon: UserCheck, isImplemented: true },
+      { label: 'Customers', path: '/app/customers', icon: Building2, isImplemented: true },
+      { label: 'Contacts', path: '/app/contacts', icon: Contact, isImplemented: true },
+      { label: 'Organizations', path: '/app/organizations', icon: Users, isImplemented: false }
     ]
   },
   {
     title: 'SALES',
     items: [
-      { label: 'Pipeline', path: '/app/pipeline', icon: Kanban },
-      { label: 'Opportunities', path: '/app/opportunities', icon: TrendingUp },
-      { label: 'Quotes', path: '/app/quotes', icon: FileText },
-      { label: 'Orders', path: '/app/orders', icon: ShoppingBag },
-      { label: 'Products', path: '/app/products', icon: Package }
+      { label: 'Pipeline', path: '/app/pipeline', icon: Kanban, isImplemented: true },
+      { label: 'Opportunities', path: '/app/opportunities', icon: TrendingUp, isImplemented: false },
+      { label: 'Quotes', path: '/app/quotes', icon: FileText, isImplemented: false },
+      { label: 'Orders', path: '/app/orders', icon: ShoppingBag, isImplemented: false },
+      { label: 'Products', path: '/app/products', icon: Package, isImplemented: false }
     ]
   },
   {
     title: 'WORKSPACE',
     items: [
-      { label: 'Tasks', path: '/app/tasks', icon: CheckSquare },
-      { label: 'Activities', path: '/app/activities', icon: Calendar },
-      { label: 'Follow-ups', path: '/app/follow-ups', icon: Clock },
-      { label: 'Documents', path: '/app/documents', icon: FileCode }
+      { label: 'Tasks', path: '/app/tasks', icon: CheckSquare, isImplemented: false },
+      { label: 'Activities', path: '/app/activities', icon: Calendar, isImplemented: false },
+      { label: 'Follow-ups', path: '/app/follow-ups', icon: Clock, isImplemented: false },
+      { label: 'Documents', path: '/app/documents', icon: FileCode, isImplemented: false }
     ]
   },
   {
     title: 'SUPPORT',
     items: [
-      { label: 'Support Cases', path: '/app/support', icon: LifeBuoy }
+      { label: 'Support Cases', path: '/app/support', icon: LifeBuoy, isImplemented: false }
     ]
   },
   {
     title: 'MARKETING',
     items: [
-      { label: 'Campaigns', path: '/app/campaigns', icon: Megaphone }
+      { label: 'Campaigns', path: '/app/campaigns', icon: Megaphone, isImplemented: false }
     ]
   },
   {
     title: 'INSIGHTS',
     items: [
-      { label: 'Reports', path: '/app/reports', icon: BarChart3 }
+      { label: 'Reports', path: '/app/reports', icon: BarChart3, isImplemented: false }
     ]
   },
   {
     title: 'ADMINISTRATION',
     items: [
-      { label: 'Users', path: '/app/users', icon: UserCog },
-      { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck },
-      { label: 'Settings', path: '/app/settings', icon: Settings },
-      { label: 'Audit Logs', path: '/app/audit-logs', icon: History }
+      { label: 'Users', path: '/app/users', icon: UserCog, isImplemented: false },
+      { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck, isImplemented: false },
+      { label: 'Settings', path: '/app/settings', icon: Settings, isImplemented: false },
+      { label: 'Audit Logs', path: '/app/audit-logs', icon: History, isImplemented: false }
     ]
   }
 ];
@@ -110,11 +112,28 @@ export interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleNavClick = (e: React.MouseEvent, item: NavItemConfig) => {
+    if (onMobileClose) onMobileClose();
+
+    if (!item.isImplemented) {
+      e.preventDefault();
+      toast({
+        type: 'info',
+        title: `${item.label} Module`,
+        message: 'This module full lifecycle feature will be unlocked in upcoming prompt updates.'
+      });
+    } else {
+      navigate(item.path);
+    }
+  };
 
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-40 flex flex-col border-r border-vynexa-border bg-vynexa-surface transition-all duration-200 ease-in-out md:static',
+        'fixed inset-y-0 left-0 z-40 flex flex-col border-r border-vynexa-border bg-vynexa-surface transition-all duration-200 ease-in-out md:static select-none',
         isCollapsed ? 'w-16' : 'w-60',
         isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
       )}
@@ -122,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       {/* Brand Header */}
       <div className="flex h-14 items-center justify-between px-4 border-b border-vynexa-border shrink-0">
         <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="h-7 w-7 rounded-md bg-vynexa-text-primary text-vynexa-bg flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-subtle">
+          <div className="h-7 w-7 rounded-md bg-vynexa-text-primary text-vynexa-bg flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-subtle font-mono">
             V
           </div>
           {!isCollapsed && (
@@ -131,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                 VYNEXA
               </span>
               <span className="text-[10px] text-vynexa-text-muted font-medium tracking-widest font-mono">
-                SaaS CRM
+                CRM Platform
               </span>
             </div>
           )}
@@ -151,7 +170,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
         {navSections.map((section) => (
           <div key={section.title} className="space-y-1">
             {!isCollapsed && (
-              <h4 className="px-2 text-[10px] font-mono font-semibold tracking-wider text-vynexa-text-muted select-none">
+              <h4 className="px-2 text-[10px] font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">
                 {section.title}
               </h4>
             )}
@@ -162,11 +181,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    onClick={onMobileClose}
+                    onClick={(e) => handleNavClick(e, item)}
                     className={({ isActive }) =>
                       cn(
-                        'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors select-none group',
-                        isActive
+                        'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group relative',
+                        isActive && item.isImplemented
                           ? 'bg-vynexa-surface-secondary text-vynexa-text-primary font-semibold border border-vynexa-border/60 shadow-subtle'
                           : 'text-vynexa-text-secondary hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary/60'
                       )
@@ -174,7 +193,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                     title={isCollapsed ? item.label : undefined}
                   >
                     <IconComponent className="h-4 w-4 shrink-0 text-vynexa-text-muted group-hover:text-vynexa-text-primary transition-colors" />
-                    {!isCollapsed && <span>{item.label}</span>}
+                    {!isCollapsed && (
+                      <div className="flex items-center justify-between w-full">
+                        <span>{item.label}</span>
+                        {!item.isImplemented && (
+                          <span className="text-[9px] font-mono text-vynexa-text-muted px-1.5 py-0.2 rounded border border-vynexa-border/30 bg-vynexa-surface/40">
+                            Soon
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </NavLink>
                 );
               })}
@@ -187,7 +215,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       {!isCollapsed && (
         <div className="p-3 border-t border-vynexa-border shrink-0 bg-vynexa-surface-secondary/40">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-vynexa-text-muted" />
+            <Sparkles className="h-4 w-4 text-vynexa-text-muted shrink-0" />
             <div className="flex flex-col overflow-hidden">
               <span className="text-[11px] font-medium text-vynexa-text-primary truncate">Enterprise SaaS</span>
               <span className="text-[10px] font-mono text-vynexa-text-muted truncate">v1.0.0 — Multi-tenant</span>
