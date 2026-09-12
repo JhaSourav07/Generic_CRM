@@ -23,7 +23,7 @@ export const rolesService = {
 
   async updateRole(id: string, payload: UpdateRolePayload): Promise<RoleItem> {
     return request<RoleItem>(`/roles/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       data: payload
     });
   },

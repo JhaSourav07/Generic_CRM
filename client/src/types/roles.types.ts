@@ -10,8 +10,11 @@ export interface RoleItem {
   organizationId?: string | null;
   name: string;
   description?: string | null;
-  createdAt: string;
-  updatedAt: string;
+  isSystemRole?: boolean;
+  userCount?: number;
+  permissionCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
   permissions?: PermissionItem[];
   _count?: {
     users: number;

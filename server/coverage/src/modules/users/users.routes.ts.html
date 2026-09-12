@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/config/env.ts</title>
+    <title>Code coverage report for src/modules/users/users.routes.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/config</a> env.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/modules/users</a> users.routes.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>21/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/3</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>21/23</span>
             </div>
         
             
@@ -99,66 +99,66 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import dotenv from 'dotenv';
-import path from 'path';
-import { z } from 'zod';
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
+import { usersController } from './users.controller.js';
+import { requireAuth, requirePermission } from '../../middleware/auth.middleware.js';
 &nbsp;
-// Load .env from root project directory if available
-dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+export const usersRoutes = Router();
 &nbsp;
-export const envSchema = z.object({
-  PORT: z.string().default('5000').transform((val) =&gt; parseInt(val, 10)),
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  CLIENT_URL: z.string().default('http://localhost:5173'),
-  DATABASE_URL: z.string().optional().default('postgresql://postgres:postgres@localhost:5432/vynexa_crm?schema=public'),
-  AUTH_SECRET: z.string().default('vynexa-crm-super-secret-key-change-in-production'),
-  ADMIN_EMAIL: z.string().email().default('admin@vynexa.com'),
-  ADMIN_PASSWORD: z.string().min(8).default('super-secret-admin-password-change-in-production'),
-  ADMIN_SECRET_KEY: z.string().default('vynexa-super-admin-bypass-key')
+// Apply requireAuth to all user routes
+usersRoutes.use(requireAuth);
+&nbsp;
+usersRoutes.get('/', requirePermission('users', 'VIEW'), (req, res, next) =&gt; {
+  usersController.getUsers(req, res, next);
 });
 &nbsp;
-export function parseEnv(environmentData: Record&lt;string, any&gt; = process.env) {
-  const parseResult = envSchema.safeParse(environmentData);
+usersRoutes.get('/:id', requirePermission('users', 'VIEW'), (req, res, next) =&gt; {
+  usersController.getUserById(req, res, next);
+});
 &nbsp;
-  if (!parseResult.success) {
-    console.error('❌ Invalid environment variable configuration:');
-    console.error(parseResult.error.flatten().fieldErrors);
-    process.exit(1);
-  }
+usersRoutes.post('/', requirePermission('users', 'CREATE'), (req, res, next) =&gt; {
+  usersController.createUser(req, res, next);
+});
 &nbsp;
-  return parseResult.data;
-}
+usersRoutes.patch('/:id', requirePermission('users', 'UPDATE'), (req, res, next) =&gt; {
+<span class="cstat-no" title="statement not covered" >  usersController.updateUser(req, res, next);</span>
+<span class="cstat-no" title="statement not covered" >});</span>
 &nbsp;
-export const env = parseEnv(process.env);
+usersRoutes.put('/:id', requirePermission('users', 'UPDATE'), (req, res, next) =&gt; {
+  usersController.updateUser(req, res, next);
+});
+&nbsp;
+usersRoutes.patch('/:id/status', requirePermission('users', 'UPDATE'), (req, res, next) =&gt; {
+  usersController.toggleUserStatus(req, res, next);
+});
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -168,14 +168,14 @@ export const env = parseEnv(process.env);
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2026-09-12T06:58:17.261Z
             </div>
-        <script src="../../prettify.js"></script>
+        <script src="../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
     </body>
 </html>
     

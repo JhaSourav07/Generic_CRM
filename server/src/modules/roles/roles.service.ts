@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, Permission } from '@prisma/client';
 import { CreateRoleInput, UpdateRoleInput } from './roles.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
@@ -19,7 +19,6 @@ const getRoleWithDetailsQuery = () =>
   });
 
 export type RoleWithDetails = NonNullable<Awaited<ReturnType<typeof getRoleWithDetailsQuery>>>;
-
 
 export interface RoleListItem {
   id: string;
@@ -62,7 +61,7 @@ export class RolesService {
    * List all system & organization custom roles with assigned user counts
    */
   public async getRoles(organizationId: string): Promise<RoleListItem[]> {
-    const roles = await prisma.role.findMany({
+    const roles: RoleWithDetails[] = await prisma.role.findMany({
       where: {
         OR: [
           { organizationId },
@@ -340,24 +339,18 @@ export class RolesService {
   }
 
   /**
-   * Get all system permissions grouped by resource
+   * Get all system permissions
    */
-  public async getPermissions(): Promise<GroupedPermission[]> {
+  public async getPermissions(): Promise<PermissionDetail[]> {
     const permissions = await prisma.permission.findMany({
       orderBy: [{ resource: 'asc' }, { action: 'asc' }]
     });
 
-    const resourcesMap = new Map<string, Array<{ id: string; action: string; description?: string | null }>>();
-
-    for (const p of permissions) {
-      const list = resourcesMap.get(p.resource) || [];
-      list.push({ id: p.id, action: p.action, description: p.description });
-      resourcesMap.set(p.resource, list);
-    }
-
-    return Array.from(resourcesMap.entries()).map(([resource, actions]): GroupedPermission => ({
-      resource,
-      actions
+    return permissions.map((p: Permission): PermissionDetail => ({
+      id: p.id,
+      resource: p.resource,
+      action: p.action,
+      description: p.description
     }));
   }
 }

@@ -1,9 +1,19 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { GetUsersQuery, CreateUserInput, UpdateUserInput } from './users.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
 const prisma = new PrismaClient();
+
+const getUserWithRelationsQuery = () =>
+  prisma.user.findFirst({
+    include: {
+      organization: true,
+      role: true
+    }
+  });
+
+export type UserWithRelations = NonNullable<Awaited<ReturnType<typeof getUserWithRelationsQuery>>>;
 
 export interface SafeUserDetail {
   id: string;
@@ -15,6 +25,7 @@ export interface SafeUserDetail {
   createdAt: string;
   updatedAt: string;
   organizationId: string;
+  roleId: string;
   organization: {
     id: string;
     name: string;
@@ -31,7 +42,7 @@ export class UsersService {
   /**
    * Format raw Prisma user into safe response envelope (strips passwordHash)
    */
-  public sanitizeUser(user: any): SafeUserDetail {
+  public sanitizeUser(user: UserWithRelations): SafeUserDetail {
     return {
       id: user.id,
       name: user.name,
@@ -42,6 +53,7 @@ export class UsersService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
       organizationId: user.organizationId,
+      roleId: user.roleId || user.role?.id,
       organization: {
         id: user.organization.id,
         name: user.organization.name,
@@ -63,7 +75,7 @@ export class UsersService {
     const limit = query.limit || 10;
     const skip = (page - 1) * limit;
 
-    const whereClause: any = {
+    const whereClause: Prisma.UserWhereInput = {
       organizationId
     };
 
@@ -83,7 +95,7 @@ export class UsersService {
       whereClause.isActive = query.isActive;
     }
 
-    const [total, users] = await Promise.all([
+    const [total, users]: [number, UserWithRelations[]] = await Promise.all([
       prisma.user.count({ where: whereClause }),
       prisma.user.findMany({
         where: whereClause,
@@ -97,7 +109,7 @@ export class UsersService {
       })
     ]);
 
-    const sanitizedUsers = users.map((u) => this.sanitizeUser(u));
+    const sanitizedUsers: SafeUserDetail[] = users.map((u: UserWithRelations): SafeUserDetail => this.sanitizeUser(u));
 
     return {
       users: sanitizedUsers,
@@ -222,7 +234,7 @@ export class UsersService {
       throw error;
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.UserUncheckedUpdateInput = {};
 
     if (input.name) {
       updateData.name = input.name.trim();

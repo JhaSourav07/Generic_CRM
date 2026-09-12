@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/modules/dashboard/dashboard.routes.ts</title>
+    <title>Code coverage report for src/modules/organization/organization.validation.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/modules/dashboard</a> dashboard.routes.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/modules/organization</a> organization.validation.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -78,33 +78,33 @@
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
 <a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
-import { dashboardController } from './dashboard.controller.js';
-import { requireAuth } from '../../middleware/auth.middleware.js';
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from 'zod';
 &nbsp;
-export const dashboardRoutes = Router();
-&nbsp;
-/**
- * @route GET /api/dashboard/overview
- * @desc Get aggregated CRM dashboard metrics, pipeline distribution, activities, and tasks for active tenant
- * @access Protected (RequireAuth)
- */
-dashboardRoutes.get('/overview', requireAuth, (req, res, next) =&gt; {
-  dashboardController.getOverview(req, res, next);
+export const updateOrganizationSchema = z.object({
+  name: z.string().trim().min(2, 'Organization name must be at least 2 characters').optional(),
+  slug: z.string().trim().min(2).toLowerCase().regex(/^[a-z0-9-]+$/, 'Slug can only contain lowercase letters, numbers, and hyphens').optional(),
+  email: z.string().trim().email('Invalid email address').optional().nullable(),
+  phone: z.string().trim().optional().nullable(),
+  website: z.string().trim().optional().nullable(),
+  logo: z.string().trim().optional().nullable(),
+  timezone: z.string().trim().optional(),
+  currency: z.string().trim().min(3).max(3).toUpperCase().optional()
 });
+&nbsp;
+export type UpdateOrganizationInput = z.infer&lt;typeof updateOrganizationSchema&gt;;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

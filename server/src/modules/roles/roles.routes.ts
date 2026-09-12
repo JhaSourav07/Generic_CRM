@@ -24,6 +24,10 @@ rolesRoutes.patch('/:id', requirePermission('roles', 'UPDATE'), (req, res, next)
   rolesController.updateRole(req, res, next);
 });
 
+rolesRoutes.put('/:id', requirePermission('roles', 'UPDATE'), (req, res, next) => {
+  rolesController.updateRole(req, res, next);
+});
+
 rolesRoutes.delete('/:id', requirePermission('roles', 'DELETE'), (req, res, next) => {
   rolesController.deleteRole(req, res, next);
 });

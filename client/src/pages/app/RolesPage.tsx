@@ -82,13 +82,25 @@ export const RolesPage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleOpenEditModal = (role: RoleItem) => {
+  const handleOpenEditModal = async (role: RoleItem) => {
     setEditingRole(role);
     setRoleName(role.name);
     setRoleDesc(role.description || '');
-    setSelectedPermissionIds((role.permissions || []).map((p) => p.id));
     setFormError(null);
-    setIsModalOpen(true);
+
+    if (role.permissions && role.permissions.length > 0) {
+      setSelectedPermissionIds(role.permissions.map((p) => p.id));
+      setIsModalOpen(true);
+    } else {
+      try {
+        const fullRole = await rolesService.getRoleById(role.id);
+        setSelectedPermissionIds((fullRole.permissions || []).map((p) => p.id));
+      } catch (_err) {
+        setSelectedPermissionIds([]);
+      } finally {
+        setIsModalOpen(true);
+      }
+    }
   };
 
   const togglePermission = (permId: string) => {
@@ -200,9 +212,9 @@ export const RolesPage: React.FC = () => {
           ))
         ) : (
           roles.map((r) => {
-            const isSystemRole = !r.organizationId;
-            const permCount = r.permissions?.length || 0;
-            const userCount = r._count?.users ?? 0;
+            const isSystemRole = r.isSystemRole ?? (!r.organizationId);
+            const permCount = r.permissionCount ?? (r.permissions?.length || 0);
+            const userCount = r.userCount ?? (r._count?.users ?? 0);
 
             return (
               <Card

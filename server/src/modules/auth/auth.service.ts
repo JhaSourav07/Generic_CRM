@@ -17,6 +17,16 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+const getAuthUserWithRelationsQuery = () =>
+  prisma.user.findFirst({
+    include: {
+      organization: true,
+      role: true
+    }
+  });
+
+export type AuthUserWithRelations = NonNullable<Awaited<ReturnType<typeof getAuthUserWithRelationsQuery>>>;
+
 export class AuthService {
   /**
    * Hash plaintext password securely using bcryptjs with cost factor 10
@@ -56,7 +66,7 @@ export class AuthService {
   /**
    * Format raw Prisma user into safe user response envelope
    */
-  public sanitizeUser(user: any): SafeUser {
+  public sanitizeUser(user: AuthUserWithRelations): SafeUser {
     return {
       id: user.id,
       name: user.name,

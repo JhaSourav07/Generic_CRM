@@ -114,7 +114,7 @@ export const UsersPage: React.FC = () => {
       name: user.name,
       email: user.email,
       password: '',
-      roleId: user.roleId
+      roleId: user.roleId || user.role?.id || ''
     });
     setFormError(null);
     setIsModalOpen(true);

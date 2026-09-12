@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/modules/dashboard/dashboard.routes.ts</title>
+    <title>Code coverage report for src/modules/organization/organization.routes.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/modules/dashboard</a> dashboard.routes.ts</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/modules/organization</a> organization.routes.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
@@ -77,33 +77,36 @@
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
-import { dashboardController } from './dashboard.controller.js';
-import { requireAuth } from '../../middleware/auth.middleware.js';
+import { organizationController } from './organization.controller.js';
+import { requireAuth, requirePermission } from '../../middleware/auth.middleware.js';
 &nbsp;
-export const dashboardRoutes = Router();
+export const organizationRoutes = Router();
 &nbsp;
-/**
- * @route GET /api/dashboard/overview
- * @desc Get aggregated CRM dashboard metrics, pipeline distribution, activities, and tasks for active tenant
- * @access Protected (RequireAuth)
- */
-dashboardRoutes.get('/overview', requireAuth, (req, res, next) =&gt; {
-  dashboardController.getOverview(req, res, next);
+organizationRoutes.use(requireAuth);
+&nbsp;
+organizationRoutes.get(['/', '/current'], requirePermission('settings', 'VIEW'), (req, res, next) =&gt; {
+  organizationController.getOrganization(req, res, next);
+});
+&nbsp;
+organizationRoutes.patch(['/', '/current'], requirePermission('settings', 'UPDATE'), (req, res, next) =&gt; {
+  organizationController.updateOrganization(req, res, next);
 });
 &nbsp;</pre></td></tr></table></pre>
 

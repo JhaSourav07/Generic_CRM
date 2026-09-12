@@ -8,7 +8,7 @@ import {
 import { ApiResponse } from '../types/index.js';
 
 export const usersService = {
-  async getUsers(params: UserListParams = {}): Promise<{ users: UserItem[]; meta: any }> {
+  async getUsers(params: UserListParams = {}): Promise<{ users: UserItem[]; meta: NonNullable<ApiResponse['meta']> }> {
     const queryParams = new URLSearchParams();
     if (params.page) queryParams.set('page', params.page.toString());
     if (params.limit) queryParams.set('limit', params.limit.toString());
@@ -19,7 +19,7 @@ export const usersService = {
     const queryString = queryParams.toString();
     const endpoint = `/users${queryString ? `?${queryString}` : ''}`;
 
-    const rawResponse = await fetch(`${(import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api'}${endpoint}`, {
+    const rawResponse = await fetch(`${import.meta.env?.VITE_API_URL || 'http://localhost:5000/api'}${endpoint}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -31,7 +31,7 @@ export const usersService = {
 
     return {
       users: resData.data || [],
-      meta: resData.meta || { page: 1, limit: 10, total: 0 }
+      meta: resData.meta || { page: 1, limit: 10, total: 0, totalPages: 0 }
     };
   },
 
@@ -48,7 +48,7 @@ export const usersService = {
 
   async updateUser(id: string, payload: UpdateUserPayload): Promise<UserItem> {
     return request<UserItem>(`/users/${id}`, {
-      method: 'PUT',
+      method: 'PATCH',
       data: payload
     });
   },

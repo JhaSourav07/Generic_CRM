@@ -23,6 +23,10 @@ usersRoutes.patch('/:id', requirePermission('users', 'UPDATE'), (req, res, next)
   usersController.updateUser(req, res, next);
 });
 
+usersRoutes.put('/:id', requirePermission('users', 'UPDATE'), (req, res, next) => {
+  usersController.updateUser(req, res, next);
+});
+
 usersRoutes.patch('/:id/status', requirePermission('users', 'UPDATE'), (req, res, next) => {
   usersController.toggleUserStatus(req, res, next);
 });
