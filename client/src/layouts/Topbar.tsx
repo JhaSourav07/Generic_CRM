@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Bell, Menu, Command, Building, Check, Sparkles } from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
@@ -18,6 +18,18 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState([
     { id: '1', title: 'System Initialization', message: 'Authenticated workspace shell loaded successfully.', isRead: false, time: 'Just now' },

@@ -8,12 +8,13 @@ This document provides a comprehensive technical overview of everything implemen
 
 Vynexa CRM is a commercial-grade, multi-tenant enterprise SaaS Customer Relationship Management system built with Linear-/Stripe-caliber refinement. 
 
-### Current Progress (Phase 1, Phase 2, Phase 3 & Phase 4 Complete)
+### Current Progress (Phases 1–5 Complete)
 - **Technical Architecture**: Full client/server setup using React 18, Vite, TypeScript, Express, Node.js, PostgreSQL, and Prisma ORM.
 - **Database Architecture (Phase 2)**: Complete PostgreSQL schema with 24 relational models, 10 enums, composite indexes, multi-tenant boundaries (`organizationId`), and a reproducible seeding script ([prisma/seed.ts](file:///run/media/sourav/New%20Volume/Projects/Generic_CRM/prisma/seed.ts)).
 - **Public Landing Page (Phase 3)**: Complete 11-component market-ready landing page (`/`) featuring hero positioning, interactive CRM product viewport preview with Indian currency formatting (`₹`), 6-capability grid, 7-stage customer lifecycle sequence, pipeline showcase, daily agenda workspace, business intelligence KPI rows, enterprise security highlight, final CTA, and footer.
 - **Production-Ready Authentication (Phase 4)**: Real PostgreSQL database-backed authentication system featuring transactional Organization + Admin user signup, bcrypt password hashing, signed JWT session management via HttpOnly cookies (`vynexa_token`), Express `requireAuth` and `requireRole` middleware, client `AuthContext` provider with session restoration, `ProtectedRoute` client route guard, connected login/signup forms, and topbar account context & functional logout.
-- **Design System**: Vynexa Charcoal Dark Theme (`#0D0D0D` base), typography-driven layout using `Manrope` for UI prose and `IBM Plex Mono` for tabular/numerical data.
+- **Authenticated CRM Application Shell & Real Dashboard (Phase 5)**: Complete production-grade workspace experience connected to real PostgreSQL data via `GET /api/dashboard/overview`. Includes database-level aggregation metrics (`totalLeads`, `activeOpportunities`, `pipelineValue`, `openTasks`, `wonOpportunities`, `overdueTasks`), stage-by-stage pipeline distribution, recent activity logs, task overview, user-scoped notifications, Topbar global search command palette (`Cmd+K`), notifications popover, high-density Sidebar navigation across 8 domains, compact enterprise KPI grid, loading skeletons, empty states, error retry handling, and 100% tenant boundary isolation tests.
+- **Design System**: Vynexa Charcoal Dark Theme (`#0D0D0D` base), typography-driven layout using `Asap` for UI prose and `IBM Plex Mono` for tabular/numerical data.
 - **20 UI Primitives**: Standardized atomic UI components matching the charcoal visual language.
 - **Application Shell**: High-density collapsible sidebar with 8 navigation domains, topbar command search, organization context, and account menu.
 - **Public & Protected Pages**: Public Landing Page (`/`), Authentication portals (`/login`, `/signup`), and Protected Application Viewports (`/app/dashboard`, `/app/leads`, `/app/customers`, `/app/contacts`, `/app/pipeline`).
@@ -49,19 +50,23 @@ Generic_CRM/
 │       │   ├── auth.middleware.ts # requireAuth & requireRole security middleware
 │       │   └── errorHandler.ts # Centralized Express error handler (AGENTS.md envelope)
 │       ├── modules/
-│       │   └── auth/          # Authentication module (service, controller, routes, validation, types)
-│       │       ├── auth.controller.ts
-│       │       ├── auth.routes.ts
-│       │       ├── auth.service.ts
-│       │       ├── auth.types.ts
-│       │       └── auth.validation.ts
+│       │   ├── auth/          # Authentication module (service, controller, routes, validation, types)
+│       │   │   ├── auth.controller.ts
+│       │   │   ├── auth.routes.ts
+│       │   │   ├── auth.service.ts
+│       │   │   ├── auth.types.ts
+│       │   │   └── auth.validation.ts
+│       │   └── dashboard/     # Real Backend Dashboard module (service, controller, routes)
+│       │       ├── dashboard.controller.ts
+│       │       ├── dashboard.routes.ts
+│       │       └── dashboard.service.ts
 │       ├── routes/
 │       │   └── health.routes.ts # Health check endpoint (/api/health)
 │       └── utils/
 │           └── rbac.ts        # Role-Based Access Control & Super Admin privilege checks
 └── client/                    # React 18 + Vite + TypeScript Frontend
     ├── package.json
-    ├── index.html             # Manrope & IBM Plex Mono font imports
+    ├── index.html             # Asap & IBM Plex Mono font imports
     ├── vite.config.ts         # Vite bundler configuration & API proxy
     ├── tailwind.config.js     # Vynexa Charcoal design system color tokens
     ├── postcss.config.js
@@ -71,6 +76,7 @@ Generic_CRM/
         ├── App.tsx            # Global provider wrapper (QueryClient, ToastProvider, AuthProvider, Router)
         ├── components/
         │   ├── auth/          # ProtectedRoute.tsx (Session guard for /app/*)
+        │   ├── search/        # GlobalSearchModal.tsx (Cmd+K command palette)
         │   └── ui/            # 20 Reusable atomic UI primitives
         ├── context/
         │   └── AuthContext.tsx # Centralized authentication context provider & useAuth hook
@@ -78,18 +84,20 @@ Generic_CRM/
         ├── pages/
         │   ├── public/        # LandingPage.tsx
         │   ├── auth/          # LoginPage.tsx, SignupPage.tsx
-        │   └── app/           # DashboardPage, LeadsPage, CustomersPage, ContactsPage, PipelinePage
+        │   └── app/           # Real Connected DashboardPage, LeadsPage, CustomersPage, ContactsPage, PipelinePage
         ├── routes/
         │   └── index.tsx      # React Router definition with ProtectedRoute & PublicOnlyRoute guards
         ├── services/
         │   ├── api.ts         # Centralized Fetch wrapper with credentials: 'include'
-        │   └── auth.service.ts # Frontend authentication API service
+        │   ├── auth.service.ts # Frontend authentication API service
+        │   └── dashboard.service.ts # Frontend dashboard API service
         ├── lib/
         │   ├── utils.ts       # Tailwind class merger helper (`cn`)
         │   └── queryClient.ts # TanStack Query client configuration
         ├── types/
         │   ├── index.ts       # Global TypeScript interfaces & API response envelope
-        │   └── auth.types.ts  # Frontend authentication types & payloads
+        │   ├── auth.types.ts  # Frontend authentication types & payloads
+        │   └── dashboard.types.ts # Frontend dashboard data interfaces
         └── styles/
             └── index.css      # CSS reset, dark scrollbars, focus indicators
 ```
@@ -389,7 +397,61 @@ When a new organization registers via `/api/auth/signup`, the operation executes
 
 ---
 
-## 8. HOW TO EXTEND OR EDIT THIS CODEBASE
+## 8. PHASE 5 — AUTHENTICATED CRM SHELL & REAL DASHBOARD ARCHITECTURE
+
+Phase 5 establishes the production-quality authenticated application workspace and real-time CRM dashboard engine connected directly to PostgreSQL data.
+
+### 8.1 Real Backend Dashboard API (`GET /api/dashboard/overview`)
+- **Endpoint**: `GET /api/dashboard/overview`
+- **Protection**: Protected by `requireAuth` middleware. Unauthenticated calls return 401 `UNAUTHORIZED`.
+- **Parallel Query Execution**: `DashboardService.getDashboardOverview` executes database read queries in parallel via `Promise.all`:
+  - `totalLeads`: Count of active leads (`deletedAt: null`).
+  - `activeOpportunities`: Count of `OPEN` opportunities (`deletedAt: null`).
+  - `pipelineValue`: Sum of values of `OPEN` opportunities (`_sum.value`).
+  - `openTasks`: Count of tasks with status `TODO` or `IN_PROGRESS`.
+  - `wonOpportunities`: Count of `WON` opportunities.
+  - `overdueTasks`: Count of tasks where `dueDate < NOW()`.
+  - `pipeline`: Stage distribution array with stage order, name, deal counts, total monetary values, and percentage progress calculations.
+  - `recentActivities`: Top 5 customer interactions with relational entity context (`createdBy`, `lead`, `account`, `contact`, `opportunity`).
+  - `tasks`: Top 5 tasks assigned to or created by the user, ordered by `dueDate ASC`.
+  - `notifications`: User-scoped notification items and `unreadCount`.
+
+### 8.2 Strict Multi-Tenancy Isolation
+- **Tenant Context**: Inferred strictly from `req.user.organizationId` set by `requireAuth` from the validated server session cookie.
+- **Param Tampering Protection**: Client query parameters (e.g. `?organizationId=xxx`) or request body overrides are ignored by the backend controller.
+- **User Scoping**: User-specific records (notifications, assigned tasks) enforce `WHERE organizationId = req.user.organizationId AND userId = req.user.userId`.
+
+### 8.3 Application Shell & Topbar Features (`client/src/layouts/`)
+- **Topbar (`Topbar.tsx`)**:
+  - Displays breadcrumb navigation path.
+  - Displays organization badge (`user.organization.name` & `user.role.name`).
+  - Command Search Trigger (`Cmd+K` / `Ctrl+K`) opening `GlobalSearchModal`.
+  - Interactive Notifications Dropdown showing live unread badge, popover notification stream, and "mark all read" action.
+  - User Account Dropdown with Profile, Organization Preferences, and `Sign Out`.
+- **Sidebar (`Sidebar.tsx`)**:
+  - High-density navigation layout across 8 domains (`OVERVIEW`, `CRM`, `SALES`, `WORKSPACE`, `SUPPORT`, `MARKETING`, `INSIGHTS`, `ADMINISTRATION`).
+  - Collapsible state toggle, active route highlights, mobile drawer.
+  - Handles unbuilt future endpoints with subtle "Coming soon" toast notifications without breaking application routing.
+
+### 8.4 Command Palette (`GlobalSearchModal.tsx`)
+- Keyboard-accessible modal interface (`Cmd+K` / `Ctrl+K`) supporting instant search across navigation routes, CRM modules, and quick actions.
+
+### 8.5 Real Dashboard UI & 7-State Spectrum (`DashboardPage.tsx`)
+- Connected to backend `dashboardService.getOverview()`.
+- **Compact Enterprise KPI Grid**: 6 metric cards formatted with organization currency (`$`, `₹`).
+- **Pipeline Visualizer**: Progress bars for each pipeline stage.
+- **Tasks & Follow-ups Table**: Priority indicators (`LOW`, `MEDIUM`, `HIGH`, `URGENT`), status badges, due date, and overdue alerts.
+- **Activities Feed**: Interaction log with type icons (`CALL`, `MEETING`, `EMAIL`, `NOTE`).
+- **Full State Coverage**: Accounts for Loading Skeletons, Empty States ("You're all caught up"), and Error Connection State with a **Retry Connection** button.
+
+### 8.6 Automated Backend Test Verification (`server/tests/`)
+- **Unit Service Tests**: `server/tests/service/dashboard.service.test.ts`
+- **API Integration Tests**: `server/tests/api/dashboard.api.test.ts`
+- **15 Test Files / 76 Tests Total** passing 100% cleanly, verifying multi-tenant isolation, user scoping, aggregation math, and parameter tampering resistance.
+
+---
+
+## 9. HOW TO EXTEND OR EDIT THIS CODEBASE
 
 When modifying or adding new functionality to Vynexa CRM, strictly follow these rules:
 

@@ -54,7 +54,7 @@ const navSections: NavSectionConfig[] = [
       { label: 'Leads', path: '/app/leads', icon: UserCheck, isImplemented: true },
       { label: 'Customers', path: '/app/customers', icon: Building2, isImplemented: true },
       { label: 'Contacts', path: '/app/contacts', icon: Contact, isImplemented: true },
-      { label: 'Organizations', path: '/app/organizations', icon: Users, isImplemented: false }
+      { label: 'Organizations', path: '/app/organizations', icon: Users, isImplemented: true }
     ]
   },
   {
@@ -97,9 +97,9 @@ const navSections: NavSectionConfig[] = [
   {
     title: 'ADMINISTRATION',
     items: [
-      { label: 'Users', path: '/app/users', icon: UserCog, isImplemented: false },
-      { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck, isImplemented: false },
-      { label: 'Settings', path: '/app/settings', icon: Settings, isImplemented: false },
+      { label: 'Users', path: '/app/users', icon: UserCog, isImplemented: true },
+      { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck, isImplemented: true },
+      { label: 'Settings', path: '/app/settings', icon: Settings, isImplemented: true },
       { label: 'Audit Logs', path: '/app/audit-logs', icon: History, isImplemented: false }
     ]
   }

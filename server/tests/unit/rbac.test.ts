@@ -46,25 +46,25 @@ describe('RBAC Utility Module (unit)', () => {
   });
 
   describe('hasPermission()', () => {
-    it('should return true for Super Admin for any required permission', () => {
+    it('should return true for Super Admin for any required permission', async () => {
       const context = {
         userId: 'u1',
         email: env.ADMIN_EMAIL,
         role: SUPER_ADMIN_ROLE,
         organizationId: 'org1'
       };
-      expect(hasPermission(context, 'opportunities:delete')).toBe(true);
-      expect(hasPermission(context, 'settings:update')).toBe(true);
+      expect(await hasPermission(context, 'opportunities', 'DELETE')).toBe(true);
+      expect(await hasPermission(context, 'settings', 'UPDATE')).toBe(true);
     });
 
-    it('should return false for non-super admin roles (fallback phase logic)', () => {
+    it('should return false for non-super admin roles without permissions', async () => {
       const context = {
         userId: 'u2',
         email: 'manager@acme.com',
         role: 'SALES_MANAGER',
         organizationId: 'org1'
       };
-      expect(hasPermission(context, 'opportunities:delete')).toBe(false);
+      expect(await hasPermission(context, 'opportunities', 'DELETE')).toBe(false);
     });
   });
 });

@@ -5,6 +5,9 @@ import cookieParser from 'cookie-parser';
 import healthRouter from './routes/health.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
+import { usersRoutes } from './modules/users/users.routes.js';
+import { rolesRoutes, permissionsRoutes } from './modules/roles/roles.routes.js';
+import { organizationRoutes } from './modules/organization/organization.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -22,6 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', healthRouter);
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/roles', rolesRoutes);
+app.use('/api/permissions', permissionsRoutes);
+app.use('/api/organization', organizationRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

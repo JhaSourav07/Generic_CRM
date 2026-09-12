@@ -1,4 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import { env } from '../config/env.js';
+
+const prisma = new PrismaClient();
 
 export const SUPER_ADMIN_ROLE = 'SUPER_ADMIN';
 
@@ -10,8 +13,8 @@ export interface AuthContext {
 }
 
 /**
-  Checks if the given authentication context belongs to a Super Admin user
-  or matches the configured privileged admin credentials.
+ * Checks if the given authentication context belongs to a Super Admin user
+ * or matches the configured privileged admin credentials.
  */
 export function isSuperAdmin(context: AuthContext): boolean {
   if (context.role === SUPER_ADMIN_ROLE) {
@@ -24,18 +27,52 @@ export function isSuperAdmin(context: AuthContext): boolean {
 }
 
 /**
-  Validates if a user context has permission for an action.
-  Super Admin always returns `true` (unlimited system access across all resources/tenants).
+ * Validates if a user context has permission for a specific resource & action.
+ * Super Admin returns `true` (unlimited system access).
  */
-export function hasPermission(
+export async function hasPermission(
   context: AuthContext,
-  _requiredPermission: string
-): boolean {
-  // Super Admin bypass — unlimited system access
+  resource: string,
+  action: string
+): Promise<boolean> {
+  // 1. Super Admin bypass — unlimited platform access
   if (isSuperAdmin(context)) {
     return true;
   }
 
-  // Standard RBAC logic will be evaluated here in Phase 6
-  return false;
+  // 2. Query user role permissions from PostgreSQL database
+  const user = await prisma.user.findUnique({
+    where: { id: context.userId },
+    include: {
+      role: {
+        include: {
+          rolePermissions: {
+            include: {
+              permission: true
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if (!user || !user.isActive || !user.role) {
+    return false;
+  }
+
+  if (user.role.name === SUPER_ADMIN_ROLE) {
+    return true;
+  }
+
+  // 3. Match against role permissions
+  const targetResource = resource.toLowerCase();
+  const targetAction = action.toUpperCase();
+
+  const match = user.role.rolePermissions.some(
+    (rp: { permission: { resource: string; action: string } }) =>
+      rp.permission.resource.toLowerCase() === targetResource &&
+      rp.permission.action.toUpperCase() === targetAction
+  );
+
+  return match;
 }

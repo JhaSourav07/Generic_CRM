@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Command, LayoutDashboard, UserCheck, Building2, Contact, Kanban, CheckSquare, Calendar, LifeBuoy, Megaphone, BarChart3, Settings, ShieldCheck, X } from 'lucide-react';
+import { Search, Command, LayoutDashboard, UserCheck, Building2, Contact, Kanban, CheckSquare, Calendar, LifeBuoy, Megaphone, BarChart3, Settings, ShieldCheck, UserCog, X } from 'lucide-react';
 
 export interface GlobalSearchModalProps {
   isOpen: boolean;
@@ -27,6 +27,7 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: 'support', category: 'Support', label: 'Support Cases & Tickethub', description: 'Customer tickets, SLAs, and resolution tracking', path: '/app/support', icon: LifeBuoy },
   { id: 'campaigns', category: 'Marketing', label: 'Marketing Campaigns', description: 'Lead generation and campaign ROI tracking', path: '/app/campaigns', icon: Megaphone },
   { id: 'reports', category: 'Insights', label: 'Reports & Analytics', description: 'Conversion funnels and custom performance charts', path: '/app/reports', icon: BarChart3 },
+  { id: 'users', category: 'Admin', label: 'Users & Team Members', description: 'Team member management, roles, and status', path: '/app/users', icon: UserCog },
   { id: 'settings', category: 'Admin', label: 'Organization Settings', description: 'Organization metadata, security, and integrations', path: '/app/settings', icon: Settings },
   { id: 'roles', category: 'Admin', label: 'Roles & RBAC Permissions', description: 'Fine-grained Role-Based Access Control setup', path: '/app/roles', icon: ShieldCheck }
 ];
@@ -48,9 +49,8 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        if (isOpen) onClose();
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);

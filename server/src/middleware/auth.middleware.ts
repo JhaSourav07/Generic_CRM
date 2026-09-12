@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../modules/auth/auth.service.js';
 import { AppError } from './errorHandler.js';
+import { hasPermission, isSuperAdmin } from '../utils/rbac.js';
 
 /**
  * Middleware to enforce authentication on protected endpoints.
@@ -43,7 +44,7 @@ export const requireAuth = (req: Request, _res: Response, next: NextFunction): v
 };
 
 /**
- * Middleware to enforce role-based access control.
+ * Middleware to enforce role-based access control by role names.
  * SUPER_ADMIN role bypasses role-specific restrictions.
  */
 export const requireRole = (...allowedRoles: string[]) => {
@@ -55,10 +56,10 @@ export const requireRole = (...allowedRoles: string[]) => {
       return next(error);
     }
 
-    const { roleName } = req.user;
+    const { roleName, email } = req.user;
 
     // Super admin bypasses role checks
-    if (roleName === 'SUPER_ADMIN' || allowedRoles.includes(roleName)) {
+    if (isSuperAdmin({ userId: req.user.userId, email, role: roleName, organizationId: req.user.organizationId }) || allowedRoles.includes(roleName)) {
       return next();
     }
 
@@ -66,5 +67,41 @@ export const requireRole = (...allowedRoles: string[]) => {
     error.statusCode = 403;
     error.code = 'FORBIDDEN';
     next(error);
+  };
+};
+
+/**
+ * Middleware to enforce granular resource & action permissions.
+ * Example: `requirePermission('users', 'CREATE')` or `requirePermission('leads', 'VIEW')`
+ */
+export const requirePermission = (resource: string, action: string) => {
+  return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
+    try {
+      if (!req.user) {
+        const error: AppError = new Error('Authentication required');
+        error.statusCode = 401;
+        error.code = 'UNAUTHORIZED';
+        return next(error);
+      }
+
+      const context = {
+        userId: req.user.userId,
+        email: req.user.email,
+        role: req.user.roleName,
+        organizationId: req.user.organizationId
+      };
+
+      const allowed = await hasPermission(context, resource, action);
+      if (allowed) {
+        return next();
+      }
+
+      const error: AppError = new Error(`You do not have permission to perform ${action} on ${resource}`);
+      error.statusCode = 403;
+      error.code = 'FORBIDDEN';
+      next(error);
+    } catch (err) {
+      next(err);
+    }
   };
 };

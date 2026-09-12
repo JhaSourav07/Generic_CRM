@@ -5,6 +5,7 @@ export interface ApiResponse<T = any> {
     page: number;
     limit: number;
     total: number;
+    totalPages?: number;
   };
   error: {
     code: string;
@@ -32,3 +33,9 @@ export interface NavSection {
   title: string;
   items: NavItem[];
 }
+
+export * from './auth.types.ts';
+export * from './dashboard.types.ts';
+export * from './users.types.ts';
+export * from './roles.types.ts';
+export * from './organization.types.ts';

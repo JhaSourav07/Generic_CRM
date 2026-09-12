@@ -12,6 +12,9 @@ import { PipelinePage } from '@/pages/app/PipelinePage';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { UsersPage } from '@/pages/app/UsersPage';
+import { RolesPage } from '@/pages/app/RolesPage';
+import { OrganizationSettingsPage } from '@/pages/app/OrganizationSettingsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 
@@ -82,7 +85,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="pipeline" element={<PipelinePage />} />
 
           {/* Navigation placeholders matching AGENTS.md footprint */}
-          <Route path="organizations" element={<ModulePlaceholder title="Organizations" phase="Phase 6" />} />
+          <Route path="organizations" element={<OrganizationSettingsPage />} />
           <Route path="opportunities" element={<ModulePlaceholder title="Opportunities" phase="Phase 9" />} />
           <Route path="quotes" element={<ModulePlaceholder title="Quotes" phase="Phase 11" />} />
           <Route path="orders" element={<ModulePlaceholder title="Orders" phase="Phase 11" />} />
@@ -94,9 +97,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="support" element={<ModulePlaceholder title="Support Cases" phase="Phase 12" />} />
           <Route path="campaigns" element={<ModulePlaceholder title="Marketing Campaigns" phase="Phase 13" />} />
           <Route path="reports" element={<ModulePlaceholder title="Reports & Analytics" phase="Phase 13" />} />
-          <Route path="users" element={<ModulePlaceholder title="Users Management" phase="Phase 6" />} />
-          <Route path="roles" element={<ModulePlaceholder title="Roles & Permissions" phase="Phase 6" />} />
-          <Route path="settings" element={<ModulePlaceholder title="Organization Settings" phase="Phase 6" />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="roles" element={<RolesPage />} />
+          <Route path="settings" element={<OrganizationSettingsPage />} />
           <Route path="audit-logs" element={<ModulePlaceholder title="Audit Logs" phase="Phase 14" />} />
         </Route>
       </Route>
