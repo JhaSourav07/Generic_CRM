@@ -1,5 +1,6 @@
 import { prismaTest } from '../helpers/testDb.js';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 export interface CreateUserOptions {
   organizationId: string;
@@ -11,9 +12,9 @@ export interface CreateUserOptions {
 }
 
 export async function createTestUser(options: CreateUserOptions) {
-  const timestamp = Date.now() + Math.floor(Math.random() * 100000);
-  const name = options.name || `Test User ${timestamp}`;
-  const email = (options.email || `user.${timestamp}@test.com`).toLowerCase().trim();
+  const uid = crypto.randomUUID();
+  const name = options.name || `Test User ${uid}`;
+  const email = (options.email || `user.${uid}@test.com`).toLowerCase().trim();
   const password = options.password || 'TestPassword123!';
   const passwordHash = await bcrypt.hash(password, 10);
 

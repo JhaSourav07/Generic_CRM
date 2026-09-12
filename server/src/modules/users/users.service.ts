@@ -5,15 +5,12 @@ import { AppError } from '../../middleware/errorHandler.js';
 
 const prisma = new PrismaClient();
 
-const getUserWithRelationsQuery = () =>
-  prisma.user.findFirst({
-    include: {
-      organization: true,
-      role: true
-    }
-  });
-
-export type UserWithRelations = NonNullable<Awaited<ReturnType<typeof getUserWithRelationsQuery>>>;
+export type UserWithRelations = Prisma.UserGetPayload<{
+  include: {
+    organization: true;
+    role: true;
+  };
+}>;
 
 export interface SafeUserDetail {
   id: string;

@@ -14,9 +14,30 @@ export const prismaTest = new PrismaClient({
  * Cleanly resets all tables in the isolated test database.
  */
 export async function clearTestDb(): Promise<void> {
-  await prismaTest.$executeRawUnsafe(
-    'TRUNCATE TABLE audit_logs, notifications, documents, campaign_leads, campaigns, support_cases, order_items, orders, quote_items, quotes, products, tasks, activities, opportunities, pipeline_stages, pipelines, contacts, leads, accounts, users, role_permissions, permissions, roles, organizations RESTART IDENTITY CASCADE;'
-  );
+  await prismaTest.auditLog.deleteMany({});
+  await prismaTest.notification.deleteMany({});
+  await prismaTest.document.deleteMany({});
+  await prismaTest.campaignLead.deleteMany({});
+  await prismaTest.campaign.deleteMany({});
+  await prismaTest.supportCase.deleteMany({});
+  await prismaTest.orderItem.deleteMany({});
+  await prismaTest.order.deleteMany({});
+  await prismaTest.quoteItem.deleteMany({});
+  await prismaTest.quote.deleteMany({});
+  await prismaTest.product.deleteMany({});
+  await prismaTest.task.deleteMany({});
+  await prismaTest.activity.deleteMany({});
+  await prismaTest.opportunity.deleteMany({});
+  await prismaTest.pipelineStage.deleteMany({});
+  await prismaTest.pipeline.deleteMany({});
+  await prismaTest.contact.deleteMany({});
+  await prismaTest.lead.deleteMany({});
+  await prismaTest.account.deleteMany({});
+  await prismaTest.user.deleteMany({});
+  await prismaTest.rolePermission.deleteMany({});
+  await prismaTest.permission.deleteMany({});
+  await prismaTest.role.deleteMany({});
+  await prismaTest.organization.deleteMany({});
 }
 
 /**

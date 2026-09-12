@@ -95,5 +95,30 @@ describe('Organization API Routes (/api/organization)', () => {
       expect(res.body.success).toBe(false);
       expect(res.body.error.code).toBe('DUPLICATE_SLUG');
     });
+
+    it('should return 404 NOT_FOUND when requesting or updating non-existent organization', async () => {
+      const token = authService.generateToken({
+        userId: 'non-existent-user-id',
+        organizationId: '3c8e4202-6b94-4d87-8fb2-e3e7f415ef99',
+        roleId: 'role-id',
+        roleName: 'SUPER_ADMIN',
+        email: 'ghost@acme.com'
+      });
+
+      const resGet = await request(app)
+        .get('/api/organization/current')
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(resGet.status).toBe(404);
+      expect(resGet.body.success).toBe(false);
+
+      const resPatch = await request(app)
+        .patch('/api/organization/current')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ name: 'Ghost Org' });
+
+      expect(resPatch.status).toBe(404);
+      expect(resPatch.body.success).toBe(false);
+    });
   });
 });

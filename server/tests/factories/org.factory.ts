@@ -1,4 +1,5 @@
 import { prismaTest } from '../helpers/testDb.js';
+import crypto from 'crypto';
 
 export interface CreateOrgOptions {
   name?: string;
@@ -8,15 +9,15 @@ export interface CreateOrgOptions {
 }
 
 export async function createTestOrg(options: CreateOrgOptions = {}) {
-  const timestamp = Date.now() + Math.floor(Math.random() * 100000);
-  const name = options.name || `Test Organization ${timestamp}`;
-  const slug = options.slug || `test-org-${timestamp}`;
+  const uid = crypto.randomUUID();
+  const name = options.name || `Test Organization ${uid}`;
+  const slug = options.slug || `test-org-${uid}`;
 
   return prismaTest.organization.create({
     data: {
       name,
       slug,
-      email: options.email || `contact@${slug}.com`,
+      email: options.email || `contact-${uid}@test.com`,
       currency: options.currency || 'USD'
     }
   });

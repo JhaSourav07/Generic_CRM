@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { requireAuth, requireRole } from '../../src/middleware/auth.middleware.js';
+import { requireAuth, requireRole, requirePermission } from '../../src/middleware/auth.middleware.js';
+import * as rbacUtils from '../../src/utils/rbac.js';
 import { authService } from '../../src/modules/auth/auth.service.js';
 import { Request, Response, NextFunction } from 'express';
 
@@ -156,6 +157,43 @@ describe('auth.middleware (unit & integration)', () => {
       expect(err).toBeDefined();
       expect(err.statusCode).toBe(403);
       expect(err.code).toBe('FORBIDDEN');
+    });
+  });
+
+  describe('requirePermission middleware', () => {
+    it('should pass 401 UNAUTHORIZED error to next() if req.user is undefined', async () => {
+      const middleware = requirePermission('users', 'VIEW');
+      const req = {} as Request;
+      const res = {} as Response;
+      const next = vi.fn();
+
+      await middleware(req, res, next as NextFunction);
+
+      const err = next.mock.calls[0][0];
+      expect(err).toBeDefined();
+      expect(err.statusCode).toBe(401);
+      expect(err.code).toBe('UNAUTHORIZED');
+    });
+
+    it('should call next(err) if hasPermission throws an error', async () => {
+      const spy = vi.spyOn(rbacUtils, 'hasPermission').mockRejectedValueOnce(new Error('DB failure'));
+      const middleware = requirePermission('users', 'VIEW');
+      const req = {
+        user: {
+          userId: 'u-1',
+          organizationId: 'o-1',
+          roleId: 'r-1',
+          roleName: 'SALES_MANAGER',
+          email: 'user@test.com'
+        }
+      } as Request;
+      const res = {} as Response;
+      const next = vi.fn();
+
+      await middleware(req, res, next as NextFunction);
+
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+      spy.mockRestore();
     });
   });
 });

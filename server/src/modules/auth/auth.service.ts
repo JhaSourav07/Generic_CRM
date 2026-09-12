@@ -17,15 +17,12 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-const getAuthUserWithRelationsQuery = () =>
-  prisma.user.findFirst({
-    include: {
-      organization: true,
-      role: true
-    }
-  });
-
-export type AuthUserWithRelations = NonNullable<Awaited<ReturnType<typeof getAuthUserWithRelationsQuery>>>;
+export type AuthUserWithRelations = Prisma.UserGetPayload<{
+  include: {
+    organization: true;
+    role: true;
+  };
+}>;
 
 export class AuthService {
   /**

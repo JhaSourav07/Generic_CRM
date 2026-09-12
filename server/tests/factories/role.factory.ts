@@ -1,4 +1,5 @@
 import { prismaTest } from '../helpers/testDb.js';
+import crypto from 'crypto';
 
 export interface CreateRoleOptions {
   organizationId?: string | null;
@@ -7,8 +8,8 @@ export interface CreateRoleOptions {
 }
 
 export async function createTestRole(options: CreateRoleOptions = {}) {
-  const timestamp = Date.now() + Math.floor(Math.random() * 100000);
-  const name = options.name || `ROLE_${timestamp}`;
+  const uid = crypto.randomUUID();
+  const name = options.name || `ROLE_${uid}`;
 
   return prismaTest.role.create({
     data: {

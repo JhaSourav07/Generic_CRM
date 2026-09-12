@@ -223,5 +223,165 @@ describe('Users API Routes (/api/users)', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data.isActive).toBe(false);
     });
+
+    it('should return 404 when toggling status of non-existent user', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .patch('/api/users/3c8e4202-6b94-4d87-8fb2-e3e7f415ef99/status')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ isActive: false });
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('GET /api/users/:id, filters, and UPDATE operations', () => {
+    it('should filter users by roleId and isActive', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .get(`/api/users?roleId=${adminRole.id}&isActive=true`)
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.length).toBe(1);
+    });
+
+    it('should get user by ID and return 404 for non-existent user', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .get(`/api/users/${adminUser.id}`)
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.id).toBe(adminUser.id);
+
+      const res404 = await request(app)
+        .get('/api/users/3c8e4202-6b94-4d87-8fb2-e3e7f415ef99')
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(res404.status).toBe(404);
+    });
+
+    it('should reject creating user with invalid roleId', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .post('/api/users')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({
+          name: 'Invalid Role User',
+          email: 'invalidrole@acme.com',
+          password: 'Password123!',
+          roleId: '3c8e4202-6b94-4d87-8fb2-e3e7f415ef99'
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error.code).toBe('INVALID_ROLE');
+    });
+
+    it('should update user details (name & role) via PATCH and PUT endpoints', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const newRole = await createTestRole({ organizationId: org.id, name: 'SALES_MANAGER' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+      const targetUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id, email: 'target@acme.com' });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const resPatch = await request(app)
+        .patch(`/api/users/${targetUser.id}`)
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ name: 'Updated Target Name', roleId: newRole.id });
+
+      expect(resPatch.status).toBe(200);
+      expect(resPatch.body.data.name).toBe('Updated Target Name');
+      expect(resPatch.body.data.roleId).toBe(newRole.id);
+
+      const resPut = await request(app)
+        .put(`/api/users/${targetUser.id}`)
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ name: 'PUT Target Name' });
+
+      expect(resPut.status).toBe(200);
+      expect(resPut.body.data.name).toBe('PUT Target Name');
+    });
+
+    it('should return 404 when updating non-existent user or 400 for invalid role', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res404 = await request(app)
+        .patch('/api/users/3c8e4202-6b94-4d87-8fb2-e3e7f415ef99')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ name: 'Non Existent' });
+
+      expect(res404.status).toBe(404);
+
+      const res400 = await request(app)
+        .patch(`/api/users/${adminUser.id}`)
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ roleId: '3c8e4202-6b94-4d87-8fb2-e3e7f415ef99' });
+
+      expect(res400.status).toBe(400);
+      expect(res400.body.error.code).toBe('INVALID_ROLE');
+    });
   });
 });

@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/28</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.57% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/28</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -84,25 +84,7 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L22'></a><a href='#L22'>22</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -113,34 +95,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Router } from 'express';
 import { rolesController } from './roles.controller.js';
 import { requireAuth, requirePermission } from '../../middleware/auth.middleware.js';
@@ -151,35 +115,17 @@ export const permissionsRoutes = Router();
 // Roles routes protected by requireAuth
 rolesRoutes.use(requireAuth);
 &nbsp;
-rolesRoutes.get('/', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; {
-<span class="cstat-no" title="statement not covered" >  rolesController.getRoles(req, res, next);</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-&nbsp;
-rolesRoutes.get('/:id', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; {
-<span class="cstat-no" title="statement not covered" >  rolesController.getRoleById(req, res, next);</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-&nbsp;
-rolesRoutes.post('/', requirePermission('roles', 'CREATE'), (req, res, next) =&gt; {
-  rolesController.createRole(req, res, next);
-});
-&nbsp;
-rolesRoutes.patch('/:id', requirePermission('roles', 'UPDATE'), (req, res, next) =&gt; {
-<span class="cstat-no" title="statement not covered" >  rolesController.updateRole(req, res, next);</span>
-<span class="cstat-no" title="statement not covered" >});</span>
-&nbsp;
-rolesRoutes.put('/:id', requirePermission('roles', 'UPDATE'), (req, res, next) =&gt; {
-  rolesController.updateRole(req, res, next);
-});
-&nbsp;
-rolesRoutes.delete('/:id', requirePermission('roles', 'DELETE'), (req, res, next) =&gt; {
-  rolesController.deleteRole(req, res, next);
-});
+rolesRoutes.get('/', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; rolesController.getRoles(req, res, next));
+rolesRoutes.get('/:id', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; rolesController.getRoleById(req, res, next));
+rolesRoutes.post('/', requirePermission('roles', 'CREATE'), (req, res, next) =&gt; rolesController.createRole(req, res, next));
+rolesRoutes.patch('/:id', requirePermission('roles', 'UPDATE'), (req, res, next) =&gt; rolesController.updateRole(req, res, next));
+rolesRoutes.put('/:id', requirePermission('roles', 'UPDATE'), (req, res, next) =&gt; rolesController.updateRole(req, res, next));
+rolesRoutes.delete('/:id', requirePermission('roles', 'DELETE'), (req, res, next) =&gt; rolesController.deleteRole(req, res, next));
 &nbsp;
 // Permissions route
 permissionsRoutes.use(requireAuth);
-permissionsRoutes.get('/', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; {
-  rolesController.getPermissions(req, res, next);
-});
+permissionsRoutes.get('/', requirePermission('roles', 'VIEW'), (req, res, next) =&gt; rolesController.getPermissions(req, res, next));
+&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -187,7 +133,7 @@ permissionsRoutes.get('/', requirePermission('roles', 'VIEW'), (req, res, next) 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-12T06:58:17.261Z
+                at 2026-09-12T07:10:50.348Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

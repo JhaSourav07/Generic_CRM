@@ -4,21 +4,18 @@ import { AppError } from '../../middleware/errorHandler.js';
 
 const prisma = new PrismaClient();
 
-const getRoleWithDetailsQuery = () =>
-  prisma.role.findFirst({
-    include: {
-      _count: {
-        select: { users: true }
-      },
-      rolePermissions: {
-        include: {
-          permission: true
-        }
-      }
-    }
-  });
-
-export type RoleWithDetails = NonNullable<Awaited<ReturnType<typeof getRoleWithDetailsQuery>>>;
+export type RoleWithDetails = Prisma.RoleGetPayload<{
+  include: {
+    _count: {
+      select: { users: true };
+    };
+    rolePermissions: {
+      include: {
+        permission: true;
+      };
+    };
+  };
+}>;
 
 export interface RoleListItem {
   id: string;

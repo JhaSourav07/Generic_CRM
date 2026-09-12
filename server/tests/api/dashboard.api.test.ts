@@ -40,13 +40,100 @@ describe('Dashboard API Routes (/api/dashboard) (API integration)', () => {
         email: user.email
       });
 
-      // 3. Create Sample Lead, Opportunity & Task for Org A
-      await prismaTest.lead.create({
+      // 3. Create Sample Lead, Opportunity, Account, Contact, Activities & Tasks for Org A
+      const lead = await prismaTest.lead.create({
         data: {
           organizationId: org.id,
           firstName: 'Sarah',
           lastName: 'Jenkins',
           company: 'Apex Prospect'
+        }
+      });
+
+      const account = await prismaTest.account.create({
+        data: {
+          organizationId: org.id,
+          name: 'Apex Enterprise'
+        }
+      });
+
+      const contact = await prismaTest.contact.create({
+        data: {
+          organizationId: org.id,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@apex.com'
+        }
+      });
+
+      const pipeline = await prismaTest.pipeline.create({
+        data: {
+          organizationId: org.id,
+          name: 'Sales Pipeline'
+        }
+      });
+
+      const stage = await prismaTest.pipelineStage.create({
+        data: {
+          pipelineId: pipeline.id,
+          name: 'Discovery',
+          order: 1,
+          probability: 0.2
+        }
+      });
+
+      const opportunity = await prismaTest.opportunity.create({
+        data: {
+          organizationId: org.id,
+          pipelineId: pipeline.id,
+          stageId: stage.id,
+          name: 'Big Acme Deal',
+          value: 50000
+        }
+      });
+
+      // Create 4 activities (lead, account, contact, opportunity)
+      await prismaTest.activity.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          type: 'CALL',
+          subject: 'Call Lead',
+          activityDate: new Date(),
+          leadId: lead.id
+        }
+      });
+
+      await prismaTest.activity.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          type: 'MEETING',
+          subject: 'Account Meeting',
+          activityDate: new Date(),
+          accountId: account.id
+        }
+      });
+
+      await prismaTest.activity.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          type: 'EMAIL',
+          subject: 'Email Contact',
+          activityDate: new Date(),
+          contactId: contact.id
+        }
+      });
+
+      await prismaTest.activity.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          type: 'NOTE',
+          subject: 'Note Deal',
+          activityDate: new Date(),
+          opportunityId: opportunity.id
         }
       });
 
@@ -59,6 +146,7 @@ describe('Dashboard API Routes (/api/dashboard) (API integration)', () => {
       expect(response.body.data.organization.name).toBe('Apex Corp');
       expect(response.body.data.organization.currency).toBe('USD');
       expect(response.body.data.metrics.totalLeads).toBe(1);
+      expect(response.body.data.recentActivities.length).toBe(4);
       expect(response.body.data.metrics).toHaveProperty('activeOpportunities');
       expect(response.body.data.metrics).toHaveProperty('pipelineValue');
       expect(response.body.data.metrics).toHaveProperty('openTasks');

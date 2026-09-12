@@ -7,6 +7,8 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     setupFiles: ['./tests/setup/testEnv.ts'],
     fileParallelism: false,
+    maxWorkers: 10,
+    minWorkers: 4,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],

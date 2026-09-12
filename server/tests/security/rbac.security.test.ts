@@ -162,5 +162,27 @@ describe('RBAC & Multi-Tenant Security Audits', () => {
       expect(res.body.success).toBe(true);
       expect(res.body.data.name).toBe('Authorized Created User');
     });
+
+    it('should return true in hasPermission when database role is SUPER_ADMIN even if context role differs', async () => {
+      const org = await createTestOrg();
+      const superAdminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const user = await createTestUser({ organizationId: org.id, roleId: superAdminRole.id, email: 'dbadmin@acme.com' });
+
+      // Token claims role is RESTRICTED, but DB user is SUPER_ADMIN
+      const token = authService.generateToken({
+        userId: user.id,
+        organizationId: org.id,
+        roleId: superAdminRole.id,
+        roleName: 'RESTRICTED_ROLE',
+        email: 'dbadmin@acme.com'
+      });
+
+      const res = await request(app)
+        .get('/api/users')
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+    });
   });
 });

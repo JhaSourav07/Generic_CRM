@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.29% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>158/181</span>
+                <span class='fraction'>181/181</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.29% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/17</span>
+                <span class='fraction'>12/24</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.29% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>158/181</span>
+                <span class='fraction'>181/181</span>
             </div>
         
             
@@ -559,46 +559,46 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -872,31 +872,31 @@ export class DashboardService {
 &nbsp;
     // Format Recent Activities Feed
     const recentActivities: RecentActivityItem[] = recentActivitiesRaw.map((act) =&gt; {
-<span class="cstat-no" title="statement not covered" >      let relatedTo: RecentActivityItem['relatedTo'] = null;</span>
+      let relatedTo: RecentActivityItem['relatedTo'] = null;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      if (act.lead) {</span>
-<span class="cstat-no" title="statement not covered" >        relatedTo = {</span>
-<span class="cstat-no" title="statement not covered" >          type: 'LEAD',</span>
-<span class="cstat-no" title="statement not covered" >          id: act.lead.id,</span>
-<span class="cstat-no" title="statement not covered" >          name: act.lead.company || `${act.lead.firstName} ${act.lead.lastName}`</span>
-<span class="cstat-no" title="statement not covered" >        };</span>
-<span class="cstat-no" title="statement not covered" >      } else if (act.account) {</span>
-<span class="cstat-no" title="statement not covered" >        relatedTo = { type: 'ACCOUNT', id: act.account.id, name: act.account.name };</span>
-<span class="cstat-no" title="statement not covered" >      } else if (act.contact) {</span>
-<span class="cstat-no" title="statement not covered" >        relatedTo = { type: 'CONTACT', id: act.contact.id, name: `${act.contact.firstName} ${act.contact.lastName}` };</span>
-<span class="cstat-no" title="statement not covered" >      } else if (act.opportunity) {</span>
-<span class="cstat-no" title="statement not covered" >        relatedTo = { type: 'OPPORTUNITY', id: act.opportunity.id, name: act.opportunity.name };</span>
-<span class="cstat-no" title="statement not covered" >      }</span>
+      if (act.lead) {
+        relatedTo = {
+          type: 'LEAD',
+          id: act.lead.id,
+          name: act.lead.<span class="branch-0 cbranch-no" title="branch not covered" >company || `${act.lead.firstName} ${act.lead.lastName}`</span>
+        };
+      } else if (act.account) {
+        relatedTo = { type: 'ACCOUNT', id: act.account.id, name: act.account.name };
+      } else if (act.contact) {
+        relatedTo = { type: 'CONTACT', id: act.contact.id, name: `${act.contact.firstName} ${act.contact.lastName}` };
+      } else if (act.opportunity) {
+        relatedTo = { type: 'OPPORTUNITY', id: act.opportunity.id, name: act.opportunity.name };
+      }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      return {</span>
-<span class="cstat-no" title="statement not covered" >        id: act.id,</span>
-<span class="cstat-no" title="statement not covered" >        type: act.type,</span>
-<span class="cstat-no" title="statement not covered" >        subject: act.subject,</span>
-<span class="cstat-no" title="statement not covered" >        description: act.description,</span>
-<span class="cstat-no" title="statement not covered" >        activityDate: act.activityDate.toISOString(),</span>
-<span class="cstat-no" title="statement not covered" >        createdBy: act.createdBy,</span>
-<span class="cstat-no" title="statement not covered" >        relatedTo</span>
-<span class="cstat-no" title="statement not covered" >      };</span>
+      return {
+        id: act.id,
+        type: act.type,
+        subject: act.subject,
+        description: act.description,
+        activityDate: act.activityDate.toISOString(),
+        createdBy: act.createdBy,
+        relatedTo
+      };
     });
 &nbsp;
     // Format Tasks
@@ -964,7 +964,7 @@ export const dashboardService = new DashboardService();
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-12T06:58:17.261Z
+                at 2026-09-12T07:10:50.348Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
