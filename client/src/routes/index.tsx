@@ -12,6 +12,8 @@ import { CustomerDetailPage } from '@/pages/app/CustomerDetailPage';
 import { ContactsPage } from '@/pages/app/ContactsPage';
 import { ContactDetailPage } from '@/pages/app/ContactDetailPage';
 import { PipelinePage } from '@/pages/app/PipelinePage';
+import { OpportunitiesPage } from '@/pages/app/OpportunitiesPage';
+import { OpportunityDetailPage } from '@/pages/app/OpportunityDetailPage';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -92,7 +94,8 @@ export const AppRoutes: React.FC = () => {
 
           {/* Navigation placeholders matching AGENTS.md footprint */}
           <Route path="organizations" element={<OrganizationSettingsPage />} />
-          <Route path="opportunities" element={<ModulePlaceholder title="Opportunities" phase="Phase 9" />} />
+          <Route path="opportunities" element={<OpportunitiesPage />} />
+          <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
           <Route path="quotes" element={<ModulePlaceholder title="Quotes" phase="Phase 11" />} />
           <Route path="orders" element={<ModulePlaceholder title="Orders" phase="Phase 11" />} />
           <Route path="products" element={<ModulePlaceholder title="Products Catalog" phase="Phase 11" />} />

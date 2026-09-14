@@ -21,6 +21,7 @@ export interface Contact {
   createdAt: string;
   updatedAt: string;
   account?: ContactAccount | null;
+  opportunities?: any[];
   convertedFromLeads?: any[];
 }
 

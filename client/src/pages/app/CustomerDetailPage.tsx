@@ -17,6 +17,7 @@ import { Contact } from '@/types/contacts.types';
 import { EditCustomerModal } from '@/components/customers/EditCustomerModal';
 import { CreateContactModal } from '@/components/contacts/CreateContactModal';
 import { EditContactModal } from '@/components/contacts/EditContactModal';
+import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportunityModal';
 
 import {
   Building2,
@@ -33,7 +34,8 @@ import {
   ArrowLeft,
   Calendar,
   CheckCircle2,
-  UserCheck
+  UserCheck,
+  TrendingUp
 } from 'lucide-react';
 
 export const CustomerDetailPage: React.FC = () => {
@@ -54,6 +56,7 @@ export const CustomerDetailPage: React.FC = () => {
   const [selectedContactForEdit, setSelectedContactForEdit] = useState<Contact | null>(null);
   const [selectedContactForDelete, setSelectedContactForDelete] = useState<Contact | null>(null);
   const [deletingContact, setDeletingContact] = useState(false);
+  const [isCreateOpportunityOpen, setIsCreateOpportunityOpen] = useState(false);
 
   const fetchCustomerDetails = useCallback(async () => {
     if (!id) return;
@@ -396,6 +399,96 @@ export const CustomerDetailPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Account Opportunities Table Card */}
+          <Card className="bg-vynexa-surface border-vynexa-border overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-vynexa-border pb-4">
+              <div>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-vynexa-text-secondary" />
+                  Deals & Opportunities ({customer.opportunities?.length || 0})
+                </CardTitle>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Plus className="h-3.5 w-3.5" />}
+                onClick={() => setIsCreateOpportunityOpen(true)}
+              >
+                New Opportunity
+              </Button>
+            </CardHeader>
+            <CardContent className="p-0">
+              {!customer.opportunities || customer.opportunities.length === 0 ? (
+                <div className="p-8 text-center">
+                  <Briefcase className="h-8 w-8 text-vynexa-text-muted mx-auto mb-2" />
+                  <p className="text-sm font-medium text-vynexa-text-primary">No Opportunities Recorded</p>
+                  <p className="text-xs text-vynexa-text-secondary mt-1">
+                    Track potential deals, estimated revenue, and pipeline stage movement for this account.
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>OPPORTUNITY</TableHead>
+                      <TableHead>STAGE</TableHead>
+                      <TableHead>VALUE</TableHead>
+                      <TableHead>STATUS</TableHead>
+                      <TableHead>CLOSE DATE</TableHead>
+                      <TableHead className="text-right">ACTION</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {customer.opportunities.map((opp: any) => (
+                      <TableRow key={opp.id} className="hover:bg-vynexa-elevated/40 transition-colors">
+                        <TableCell className="font-medium text-vynexa-text-primary">
+                          <button
+                            onClick={() => navigate(`/app/opportunities/${opp.id}`)}
+                            className="font-semibold text-vynexa-text-primary hover:text-white transition-colors text-left"
+                          >
+                            {opp.name}
+                          </button>
+                        </TableCell>
+                        <TableCell className="text-xs text-vynexa-text-secondary">
+                          <span className="inline-flex items-center gap-1.5">
+                            <span
+                              className="h-2 w-2 rounded-full"
+                              style={{ backgroundColor: opp.stage?.color || '#3B82F6' }}
+                            />
+                            {opp.stage?.name || 'Unassigned'}
+                          </span>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs font-semibold text-vynexa-text-primary">
+                          {formatCurrency(opp.value)}
+                        </TableCell>
+                        <TableCell>
+                          {opp.status === 'WON' && <Badge variant="emerald">Won</Badge>}
+                          {opp.status === 'LOST' && <Badge variant="red">Lost</Badge>}
+                          {opp.status === 'OPEN' && <Badge variant="blue">Open</Badge>}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-vynexa-text-muted">
+                          {opp.expectedCloseDate
+                            ? new Date(opp.expectedCloseDate).toLocaleDateString()
+                            : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 text-xs"
+                            onClick={() => navigate(`/app/opportunities/${opp.id}`)}
+                          >
+                            View
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column: Metadata & Converted Context */}
@@ -478,6 +571,16 @@ export const CustomerDetailPage: React.FC = () => {
         onClose={() => setSelectedContactForEdit(null)}
         onSuccess={() => fetchCustomerDetails()}
       />
+
+      {/* Create Opportunity Modal */}
+      {customer && (
+        <CreateOpportunityModal
+          isOpen={isCreateOpportunityOpen}
+          initialAccountId={customer.id}
+          onClose={() => setIsCreateOpportunityOpen(false)}
+          onSuccess={() => fetchCustomerDetails()}
+        />
+      )}
 
       {/* Delete Customer Confirmation Modal */}
       <Dialog

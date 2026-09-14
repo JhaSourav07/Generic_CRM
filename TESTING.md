@@ -157,14 +157,19 @@ cd server && npm run test:watch
 4. **API Integration Tests (`tests/api/`)**:
    - `health.api.test.ts`: Verifies `GET /api/health` 200 OK status, JSON headers, and 404 unmapped route error envelopes.
    - `auth.api.test.ts`: Verifies `POST /api/auth/signup`, `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` with HttpOnly cookie handling via Supertest.
+   - `opportunities.api.test.ts`: Comprehensive CRUD, listing with filters/search/sorting, stage transitions, assignment, Mark Won, Mark Lost, audit logging, and relationship validation.
+   - `pipelines.api.test.ts`: Pipeline creation with default stages, update, safe delete protection, stage creation, stage update, stage reordering in two-phase transactions, and safe stage deletion.
+   - `pipelineBoard.api.test.ts`: High-performance single-query Kanban board aggregate endpoint verifying `openCount`, `openValue`, `weightedValue`, `wonValue`, and `lostValue`.
 
 5. **Database & Transaction Tests (`tests/database/`)**:
    - `transaction.test.ts`: Verifies 100% transactional rollback atomicity. Simulates mid-transaction failure and asserts **zero orphaned records** remain in PostgreSQL.
    - `constraints.test.ts`: Verifies unique constraints on Organization slug, User `(organizationId, email)`, and multi-tenant email separation.
+   - `opportunities.transaction.test.ts`: Verifies atomic concurrency locks on `winOpportunity` and `loseOpportunity`, ensuring simultaneous state transitions cannot double-close or conflict.
 
 6. **Security & Multi-Tenancy Tests (`tests/security/`)**:
    - `multiTenancy.security.test.ts`: Verifies strict row-level multi-tenant isolation between Organization A and Organization B. Rejects parameter tampering and IDOR cross-tenant access attempts.
    - `auth.security.test.ts`: Verifies generic 401 error messages on login failure to prevent email enumeration, verifies zero password hash leakage, and tests SQL/Script injection payload sanitization.
+   - `opportunities.security.test.ts`: Verifies RBAC permission barriers (`opportunities:VIEW`, `CREATE`, `UPDATE`, `DELETE`, `ASSIGN`), cross-tenant foreign key injection rejection (tampered accountId, contactId, pipelineId, stageId, ownerId), and mass-assignment immunity.
 
 ---
 

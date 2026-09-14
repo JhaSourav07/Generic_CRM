@@ -165,30 +165,37 @@ async function main() {
   });
   console.log(`✅ Seeded Users: ${superAdminUser.email}, ${salesManagerUser.email}, ${salesRepUser.email}`);
 
-  // 6. Seed Default Sales Pipeline & Stages
-  const pipeline = await prisma.pipeline.create({
-    data: {
-      organizationId: org.id,
-      name: 'Standard Sales Pipeline',
-      description: 'Default commercial deal pipeline',
-      isDefault: true,
-      stages: {
-        create: [
-          { name: 'Qualification', order: 1, probability: 0.2 },
-          { name: 'Value Proposal', order: 2, probability: 0.4 },
-          { name: 'Negotiation', order: 3, probability: 0.7 },
-          { name: 'Closed Won', order: 4, probability: 1.0 },
-          { name: 'Closed Lost', order: 5, probability: 0.0 }
-        ]
-      }
-    }
+  // 6. Seed Default Sales Pipeline & Stages (Idempotent)
+  let pipeline = await prisma.pipeline.findFirst({
+    where: { organizationId: org.id, isDefault: true },
+    include: { stages: { orderBy: { order: 'asc' } } }
   });
 
-  const pipelineStages = await prisma.pipelineStage.findMany({
-    where: { pipelineId: pipeline.id },
-    orderBy: { order: 'asc' }
-  });
-  console.log(`✅ Seeded Default Pipeline with ${pipelineStages.length} Stages`);
+  if (!pipeline) {
+    pipeline = await prisma.pipeline.create({
+      data: {
+        organizationId: org.id,
+        name: 'Standard Sales Pipeline',
+        description: 'Default commercial deal pipeline',
+        isDefault: true,
+        stages: {
+          create: [
+            { name: 'Qualification', order: 1, probability: 0.2 },
+            { name: 'Value Proposal', order: 2, probability: 0.4 },
+            { name: 'Negotiation', order: 3, probability: 0.7 },
+            { name: 'Closed Won', order: 4, probability: 1.0 },
+            { name: 'Closed Lost', order: 5, probability: 0.0 }
+          ]
+        }
+      },
+      include: { stages: { orderBy: { order: 'asc' } } }
+    });
+    console.log(`✅ Seeded Default Pipeline with ${pipeline.stages.length} Stages`);
+  } else {
+    console.log(`ℹ️ Pipeline already exists with ${pipeline.stages.length} Stages`);
+  }
+
+  const pipelineStages = pipeline.stages;
 
   // 7. Seed Products & Services Catalog
   const prod1 = await prisma.product.upsert({
@@ -232,67 +239,87 @@ async function main() {
   });
   console.log(`✅ Seeded Catalog Items: ${prod1.name}, ${prod2.name}`);
 
-  // 8. Seed Demo Lead, Account, Contact, and Opportunity
-  const lead = await prisma.lead.create({
-    data: {
-      organizationId: org.id,
-      ownerId: salesRepUser.id,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@starlight.com',
-      company: 'Starlight Solutions',
-      phone: '+1 (555) 987-6543',
-      source: 'Inbound Webform',
-      status: LeadStatus.QUALIFIED,
-      score: 85,
-      notes: 'High intent prospect interested in enterprise tier.'
-    }
+  // 8. Seed Demo Lead, Account, Contact, and Opportunity (Idempotent)
+  let lead = await prisma.lead.findFirst({
+    where: { organizationId: org.id, email: 'john.doe@starlight.com' }
   });
+  if (!lead) {
+    lead = await prisma.lead.create({
+      data: {
+        organizationId: org.id,
+        ownerId: salesRepUser.id,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@starlight.com',
+        company: 'Starlight Solutions',
+        phone: '+1 (555) 987-6543',
+        source: 'Inbound Webform',
+        status: LeadStatus.QUALIFIED,
+        score: 85,
+        notes: 'High intent prospect interested in enterprise tier.'
+      }
+    });
+  }
 
-  const account = await prisma.account.create({
-    data: {
-      organizationId: org.id,
-      ownerId: salesRepUser.id,
-      name: 'Starlight Solutions Inc.',
-      industry: 'Software & Technology',
-      website: 'https://starlight.example.com',
-      email: 'info@starlight.example.com',
-      status: 'ACTIVE'
-    }
+  let account = await prisma.account.findFirst({
+    where: { organizationId: org.id, name: 'Starlight Solutions Inc.' }
   });
+  if (!account) {
+    account = await prisma.account.create({
+      data: {
+        organizationId: org.id,
+        ownerId: salesRepUser.id,
+        name: 'Starlight Solutions Inc.',
+        industry: 'Software & Technology',
+        website: 'https://starlight.example.com',
+        email: 'info@starlight.example.com',
+        status: 'ACTIVE'
+      }
+    });
+  }
 
-  const contact = await prisma.contact.create({
-    data: {
-      organizationId: org.id,
-      accountId: account.id,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@starlight.com',
-      phone: '+1 (555) 987-6543',
-      jobTitle: 'VP of Engineering',
-      department: 'Technology',
-      isPrimary: true
-    }
+  let contact = await prisma.contact.findFirst({
+    where: { organizationId: org.id, email: 'john.doe@starlight.com' }
   });
+  if (!contact) {
+    contact = await prisma.contact.create({
+      data: {
+        organizationId: org.id,
+        accountId: account.id,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@starlight.com',
+        phone: '+1 (555) 987-6543',
+        jobTitle: 'VP of Engineering',
+        department: 'Technology',
+        isPrimary: true
+      }
+    });
+  }
 
-  const proposalStage = pipelineStages.find(s => s.name === 'Value Proposal') || pipelineStages[1];
+  const proposalStage = pipelineStages.find((s) => s.name === 'Value Proposal') || pipelineStages[1];
 
-  const opportunity = await prisma.opportunity.create({
-    data: {
-      organizationId: org.id,
-      accountId: account.id,
-      contactId: contact.id,
-      ownerId: salesRepUser.id,
-      pipelineId: pipeline.id,
-      stageId: proposalStage.id,
-      name: 'Starlight Enterprise SaaS Deal',
-      description: 'Annual enterprise agreement including professional onboarding',
-      value: 16500.00,
-      probability: 0.4,
-      status: OpportunityStatus.OPEN,
-      expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    }
+  let opportunity = await prisma.opportunity.findFirst({
+    where: { organizationId: org.id, name: 'Starlight Enterprise SaaS Deal' }
   });
+  if (!opportunity && proposalStage) {
+    opportunity = await prisma.opportunity.create({
+      data: {
+        organizationId: org.id,
+        accountId: account.id,
+        contactId: contact.id,
+        ownerId: salesRepUser.id,
+        pipelineId: pipeline.id,
+        stageId: proposalStage.id,
+        name: 'Starlight Enterprise SaaS Deal',
+        description: 'Annual enterprise agreement including professional onboarding',
+        value: 16500.00,
+        probability: 0.4,
+        status: OpportunityStatus.OPEN,
+        expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      }
+    });
+  }
 
   console.log(`✅ Seeded CRM Demo Records: Lead (${lead.id}), Account (${account.id}), Contact (${contact.id}), Opportunity (${opportunity.id})`);
   console.log('🎉 Seeding successfully completed!');

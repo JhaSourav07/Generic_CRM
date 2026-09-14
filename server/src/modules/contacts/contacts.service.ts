@@ -119,6 +119,13 @@ export class ContactsService {
             email: true,
             convertedAt: true
           }
+        },
+        opportunities: {
+          where: { deletedAt: null },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            stage: true
+          }
         }
       }
     });

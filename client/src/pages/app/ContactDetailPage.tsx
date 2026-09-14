@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,6 +12,7 @@ import { useToast } from '@/components/ui/toast';
 import { contactsService } from '@/services/contacts.service';
 import { Contact } from '@/types/contacts.types';
 import { EditContactModal } from '@/components/contacts/EditContactModal';
+import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportunityModal';
 
 import {
   Users,
@@ -23,7 +25,9 @@ import {
   ArrowLeft,
   Calendar,
   CheckCircle2,
-  UserCheck
+  UserCheck,
+  TrendingUp,
+  Plus
 } from 'lucide-react';
 
 export const ContactDetailPage: React.FC = () => {
@@ -38,6 +42,7 @@ export const ContactDetailPage: React.FC = () => {
   // Modals
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isCreateOpportunityOpen, setIsCreateOpportunityOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const fetchContactDetails = useCallback(async () => {
@@ -78,6 +83,15 @@ export const ContactDetailPage: React.FC = () => {
     } finally {
       setDeleting(false);
     }
+  };
+
+  const formatCurrency = (amount?: number | null) => {
+    if (amount === undefined || amount === null) return '—';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    }).format(amount);
   };
 
   if (loading) {
@@ -217,6 +231,96 @@ export const ContactDetailPage: React.FC = () => {
               </div>
             )}
           </Card>
+
+          {/* Linked Opportunities Table Card */}
+          <Card className="bg-vynexa-surface border-vynexa-border overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between border-b border-vynexa-border pb-4">
+              <div>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-vynexa-text-secondary" />
+                  Associated Opportunities ({contact.opportunities?.length || 0})
+                </CardTitle>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Plus className="h-3.5 w-3.5" />}
+                onClick={() => setIsCreateOpportunityOpen(true)}
+              >
+                New Opportunity
+              </Button>
+            </CardHeader>
+            <CardContent className="p-0">
+              {!contact.opportunities || contact.opportunities.length === 0 ? (
+                <div className="p-8 text-center">
+                  <Briefcase className="h-8 w-8 text-vynexa-text-muted mx-auto mb-2" />
+                  <p className="text-sm font-medium text-vynexa-text-primary">No Opportunities Linked</p>
+                  <p className="text-xs text-vynexa-text-secondary mt-1">
+                    Associate this contact with deal opportunities in your pipeline.
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>OPPORTUNITY</TableHead>
+                      <TableHead>STAGE</TableHead>
+                      <TableHead>VALUE</TableHead>
+                      <TableHead>STATUS</TableHead>
+                      <TableHead>CLOSE DATE</TableHead>
+                      <TableHead className="text-right">ACTION</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {contact.opportunities.map((opp: any) => (
+                      <TableRow key={opp.id} className="hover:bg-vynexa-elevated/40 transition-colors">
+                        <TableCell className="font-medium text-vynexa-text-primary">
+                          <button
+                            onClick={() => navigate(`/app/opportunities/${opp.id}`)}
+                            className="font-semibold text-vynexa-text-primary hover:text-white transition-colors text-left"
+                          >
+                            {opp.name}
+                          </button>
+                        </TableCell>
+                        <TableCell className="text-xs text-vynexa-text-secondary">
+                          <span className="inline-flex items-center gap-1.5">
+                            <span
+                              className="h-2 w-2 rounded-full"
+                              style={{ backgroundColor: opp.stage?.color || '#3B82F6' }}
+                            />
+                            {opp.stage?.name || 'Unassigned'}
+                          </span>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs font-semibold text-vynexa-text-primary">
+                          {formatCurrency(opp.value)}
+                        </TableCell>
+                        <TableCell>
+                          {opp.status === 'WON' && <Badge variant="emerald">Won</Badge>}
+                          {opp.status === 'LOST' && <Badge variant="red">Lost</Badge>}
+                          {opp.status === 'OPEN' && <Badge variant="blue">Open</Badge>}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs text-vynexa-text-muted">
+                          {opp.expectedCloseDate
+                            ? new Date(opp.expectedCloseDate).toLocaleDateString()
+                            : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 text-xs"
+                            onClick={() => navigate(`/app/opportunities/${opp.id}`)}
+                          >
+                            View
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right Column: Metadata */}
@@ -271,6 +375,17 @@ export const ContactDetailPage: React.FC = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSuccess={() => fetchContactDetails()}
       />
+
+      {/* Create Opportunity Modal */}
+      {contact && (
+        <CreateOpportunityModal
+          isOpen={isCreateOpportunityOpen}
+          initialAccountId={contact.accountId || undefined}
+          initialContactId={contact.id}
+          onClose={() => setIsCreateOpportunityOpen(false)}
+          onSuccess={() => fetchContactDetails()}
+        />
+      )}
 
       {/* Delete Contact Confirmation Modal */}
       <Dialog

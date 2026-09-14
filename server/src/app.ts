@@ -11,6 +11,8 @@ import { organizationRoutes } from './modules/organization/organization.routes.j
 import { leadsRoutes } from './modules/leads/leads.routes.js';
 import { accountsRoutes } from './modules/accounts/accounts.routes.js';
 import { contactsRoutes } from './modules/contacts/contacts.routes.js';
+import { opportunitiesRoutes } from './modules/opportunities/opportunities.routes.js';
+import { pipelinesRoutes, pipelineStagesRoutes } from './modules/pipelines/pipelines.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -36,6 +38,9 @@ app.use('/api/leads', leadsRoutes);
 app.use('/api/customers', accountsRoutes);
 app.use('/api/accounts', accountsRoutes);
 app.use('/api/contacts', contactsRoutes);
+app.use('/api/opportunities', opportunitiesRoutes);
+app.use('/api/pipelines', pipelinesRoutes);
+app.use('/api/pipeline-stages', pipelineStagesRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

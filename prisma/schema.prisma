@@ -403,8 +403,13 @@ model Opportunity {
   documents  Document[]
 
   @@index([organizationId, stageId])
+  @@index([organizationId, status])
+  @@index([organizationId, pipelineId])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, expectedCloseDate])
   @@index([accountId])
   @@index([ownerId])
+  @@index([contactId])
   @@map("opportunities")
 }
 

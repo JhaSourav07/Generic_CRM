@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Command, LayoutDashboard, UserCheck, Building2, Contact, Kanban, CheckSquare, Calendar, LifeBuoy, Megaphone, BarChart3, Settings, ShieldCheck, UserCog, X } from 'lucide-react';
+import { Search, Command, LayoutDashboard, UserCheck, Building2, Contact, Kanban, TrendingUp, CheckSquare, Calendar, LifeBuoy, Megaphone, BarChart3, Settings, ShieldCheck, UserCog, X } from 'lucide-react';
 
 export interface GlobalSearchModalProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ const SEARCH_ITEMS: SearchItem[] = [
   { id: 'customers', category: 'CRM', label: 'Customer Accounts', description: 'Company accounts, billing info, and status', path: '/app/customers', icon: Building2 },
   { id: 'contacts', category: 'CRM', label: 'People & Contacts', description: 'Individual person records tied to accounts', path: '/app/contacts', icon: Contact },
   { id: 'pipeline', category: 'Sales', label: 'Sales Kanban Pipeline', description: 'Visual deal movement and probability stage view', path: '/app/pipeline', icon: Kanban },
+  { id: 'opportunities', category: 'Sales', label: 'Opportunities Directory', description: 'Deal values, close dates, stages, and commercial statuses', path: '/app/opportunities', icon: TrendingUp },
   { id: 'tasks', category: 'Workspace', label: 'Tasks & Action Items', description: 'Action items, assigned tasks, and due dates', path: '/app/tasks', icon: CheckSquare },
   { id: 'activities', category: 'Workspace', label: 'Interaction Log', description: 'Calls, meetings, notes, and emails', path: '/app/activities', icon: Calendar },
   { id: 'support', category: 'Support', label: 'Support Cases & Tickethub', description: 'Customer tickets, SLAs, and resolution tracking', path: '/app/support', icon: LifeBuoy },

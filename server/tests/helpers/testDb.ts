@@ -44,8 +44,8 @@ export async function clearTestDb(): Promise<void> {
  * Seeds basic system permissions for tests.
  */
 export async function seedTestPermissions(): Promise<void> {
-  const resources = ['leads', 'accounts', 'contacts', 'opportunities', 'users'];
-  const actions = ['VIEW', 'CREATE', 'UPDATE', 'DELETE'];
+  const resources = ['leads', 'accounts', 'contacts', 'opportunities', 'pipelines', 'users', 'roles', 'settings'];
+  const actions = ['VIEW', 'CREATE', 'UPDATE', 'DELETE', 'ASSIGN', 'APPROVE', 'EXPORT'];
 
   for (const resource of resources) {
     for (const action of actions) {
