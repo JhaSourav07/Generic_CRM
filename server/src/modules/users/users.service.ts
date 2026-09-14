@@ -50,7 +50,7 @@ export class UsersService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
       organizationId: user.organizationId,
-      roleId: user.roleId || user.role?.id,
+      roleId: user.roleId,
       organization: {
         id: user.organization.id,
         name: user.organization.name,
@@ -68,8 +68,8 @@ export class UsersService {
    * List organization users with server-side pagination, search, and filtering
    */
   public async getUsers(organizationId: string, query: GetUsersQuery) {
-    const page = query.page || 1;
-    const limit = query.limit || 10;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
     const skip = (page - 1) * limit;
 
     const whereClause: Prisma.UserWhereInput = {
@@ -92,13 +92,16 @@ export class UsersService {
       whereClause.isActive = query.isActive;
     }
 
+    const sortBy = query.sortBy ?? 'createdAt';
+    const sortOrder = query.sortOrder ?? 'desc';
+
     const [total, users]: [number, UserWithRelations[]] = await Promise.all([
       prisma.user.count({ where: whereClause }),
       prisma.user.findMany({
         where: whereClause,
         take: limit,
         skip,
-        orderBy: { [query.sortBy || 'createdAt']: query.sortOrder || 'desc' },
+        orderBy: { [sortBy]: sortOrder },
         include: {
           organization: true,
           role: true
@@ -187,7 +190,7 @@ export class UsersService {
         name: input.name.trim(),
         email: normalizedEmail,
         passwordHash,
-        isActive: input.isActive ?? true
+        isActive: input.isActive
       },
       include: {
         organization: true,

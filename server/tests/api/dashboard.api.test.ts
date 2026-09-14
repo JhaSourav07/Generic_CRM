@@ -92,6 +92,26 @@ describe('Dashboard API Routes (/api/dashboard) (API integration)', () => {
         }
       });
 
+      const leadNoCompany = await prismaTest.lead.create({
+        data: {
+          organizationId: org.id,
+          firstName: 'NoCompany',
+          lastName: 'Lead',
+          company: null
+        }
+      });
+
+      await prismaTest.activity.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          type: 'NOTE',
+          subject: 'Note for no company lead',
+          activityDate: new Date(),
+          leadId: leadNoCompany.id
+        }
+      });
+
       // Create 4 activities (lead, account, contact, opportunity)
       await prismaTest.activity.create({
         data: {
@@ -137,6 +157,43 @@ describe('Dashboard API Routes (/api/dashboard) (API integration)', () => {
         }
       });
 
+      // Create 3 tasks (account, lead, opportunity) with past and future due dates
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      await prismaTest.task.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          assignedToId: user.id,
+          title: 'Account Task',
+          status: 'TODO',
+          priority: 'HIGH',
+          dueDate: yesterday,
+          accountId: account.id
+        }
+      });
+
+      await prismaTest.task.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          title: 'Lead Task',
+          status: 'IN_PROGRESS',
+          priority: 'MEDIUM',
+          leadId: lead.id
+        }
+      });
+
+      await prismaTest.task.create({
+        data: {
+          organizationId: org.id,
+          createdById: user.id,
+          title: 'Opportunity Task',
+          status: 'TODO',
+          priority: 'LOW',
+          opportunityId: opportunity.id
+        }
+      });
+
       const response = await request(app)
         .get('/api/dashboard/overview')
         .set('Cookie', [`vynexa_token=${token}`]);
@@ -145,8 +202,8 @@ describe('Dashboard API Routes (/api/dashboard) (API integration)', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.data.organization.name).toBe('Apex Corp');
       expect(response.body.data.organization.currency).toBe('USD');
-      expect(response.body.data.metrics.totalLeads).toBe(1);
-      expect(response.body.data.recentActivities.length).toBe(4);
+      expect(response.body.data.metrics.totalLeads).toBe(2);
+      expect(response.body.data.recentActivities.length).toBe(5);
       expect(response.body.data.metrics).toHaveProperty('activeOpportunities');
       expect(response.body.data.metrics).toHaveProperty('pipelineValue');
       expect(response.body.data.metrics).toHaveProperty('openTasks');

@@ -82,6 +82,30 @@ describe('Roles & Permissions API Routes (/api/roles, /api/permissions)', () => 
       expect(res.body.data.organizationId).toBe(org.id);
       expect(res.body.data.permissions.length).toBe(2);
     });
+
+    it('should create a custom tenant role without description or permissions', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: 'SUPER_ADMIN',
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .post('/api/roles')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({
+          name: 'Bare Role'
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body.data.name).toBe('Bare Role');
+    });
   });
 
   describe('DELETE /api/roles/:id', () => {
@@ -275,6 +299,22 @@ describe('Roles & Permissions API Routes (/api/roles, /api/permissions)', () => 
 
       expect(resPut.status).toBe(200);
       expect(resPut.body.data.name).toBe('PUT Role Name');
+
+      const resDesc = await request(app)
+        .patch(`/api/roles/${customRole.id}`)
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ description: 'Updated Description Only' });
+
+      expect(resDesc.status).toBe(200);
+      expect(resDesc.body.data.description).toBe('Updated Description Only');
+
+      const resNullDesc = await request(app)
+        .patch(`/api/roles/${customRole.id}`)
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({ description: null });
+
+      expect(resNullDesc.status).toBe(200);
+      expect(resNullDesc.body.data.description).toBeNull();
     });
 
     it('should return 403 when updating system role', async () => {
@@ -296,7 +336,8 @@ describe('Roles & Permissions API Routes (/api/roles, /api/permissions)', () => 
         .set('Cookie', [`vynexa_token=${token}`])
         .send({ name: 'System Rename' });
 
-      expect(res.status).toBe(404); // Or 403 depending on filter
+      expect(res.status).toBe(403);
+      expect(res.body.error.code).toBe('SYSTEM_ROLE_PROTECTED');
     });
   });
 });

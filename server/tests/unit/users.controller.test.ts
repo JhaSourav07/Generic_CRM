@@ -80,4 +80,43 @@ describe('UsersController (unit)', () => {
     expect(next).toHaveBeenCalledWith(expect.any(Error));
     spy.mockRestore();
   });
+
+  it('should list users with default query fallbacks and create active user', async () => {
+    const { createTestOrg } = await import('../factories/org.factory.js');
+    const { createTestRole } = await import('../factories/role.factory.js');
+    const { createTestUser } = await import('../factories/user.factory.js');
+
+    const org = await createTestOrg();
+    const role = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+    const user = await createTestUser({ organizationId: org.id, roleId: role.id });
+
+    const res = await usersService.getUsers(org.id, {});
+    expect(res.meta.page).toBe(1);
+    expect(res.meta.limit).toBe(10);
+
+    const created = await usersService.createUser(org.id, user.id, {
+      name: 'Explicit Active User',
+      email: 'explicit.active@acme.com',
+      password: 'Password123!',
+      roleId: role.id,
+      isActive: true
+    });
+    expect(created.isActive).toBe(true);
+
+    const { prismaTest } = await import('../helpers/testDb.js');
+    const loggedInUser = await prismaTest.user.create({
+      data: {
+        organizationId: org.id,
+        roleId: role.id,
+        name: 'Logged In User',
+        email: 'login@acme.com',
+        passwordHash: 'hash',
+        lastLoginAt: new Date()
+      },
+      include: { organization: true, role: true }
+    });
+
+    const sanitized = usersService.sanitizeUser(loggedInUser);
+    expect(sanitized.lastLoginAt).toBeDefined();
+  });
 });

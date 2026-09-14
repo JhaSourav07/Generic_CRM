@@ -196,7 +196,7 @@ export class DashboardService {
 
     // Format Pipeline Stages Overview
     const pipeline: PipelineStageOverview[] = pipelineStages.map((stage) => {
-      const stageTotal = stage.opportunities.reduce((acc, opp) => acc + Number(opp.value || 0), 0);
+      const stageTotal = stage.opportunities.reduce((acc, opp) => acc + Number(opp.value), 0);
       const percentage = totalPipelineValue > 0 ? Math.round((stageTotal / totalPipelineValue) * 100) : 0;
 
       return {
@@ -270,12 +270,19 @@ export class DashboardService {
     }));
 
     return {
-      organization: {
-        id: org?.id || organizationId,
-        name: org?.name || 'Organization',
-        currency: org?.currency || 'USD',
-        timezone: org?.timezone || 'UTC'
-      },
+      organization: org
+        ? {
+            id: org.id,
+            name: org.name,
+            currency: org.currency,
+            timezone: org.timezone
+          }
+        : {
+            id: organizationId,
+            name: 'Organization',
+            currency: 'USD',
+            timezone: 'UTC'
+          },
       metrics: {
         totalLeads,
         activeOpportunities,

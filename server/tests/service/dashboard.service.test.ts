@@ -20,6 +20,16 @@ describe('DashboardService (unit & database integration)', () => {
       const role = await createTestRole({ organizationId: org.id, name: 'SALES_MANAGER' });
       const user = await createTestUser({ organizationId: org.id, roleId: role.id });
 
+      await prismaTest.pipeline.create({
+        data: {
+          organizationId: org.id,
+          name: 'Empty Pipeline',
+          stages: {
+            create: [{ name: 'Qualification', order: 1, probability: 0.2 }]
+          }
+        }
+      });
+
       const overview = await dashboardService.getDashboardOverview(org.id, user.id);
 
       expect(overview.organization.name).toBe('Empty Org');

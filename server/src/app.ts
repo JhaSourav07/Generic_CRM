@@ -8,6 +8,7 @@ import { dashboardRoutes } from './modules/dashboard/dashboard.routes.js';
 import { usersRoutes } from './modules/users/users.routes.js';
 import { rolesRoutes, permissionsRoutes } from './modules/roles/roles.routes.js';
 import { organizationRoutes } from './modules/organization/organization.routes.js';
+import { leadsRoutes } from './modules/leads/leads.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/permissions', permissionsRoutes);
 app.use('/api/organization', organizationRoutes);
+app.use('/api/leads', leadsRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

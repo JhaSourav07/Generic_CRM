@@ -6,6 +6,7 @@ import { SignupPage } from '@/pages/auth/SignupPage';
 import { ApplicationShell } from '@/layouts/ApplicationShell';
 import { DashboardPage } from '@/pages/app/DashboardPage';
 import { LeadsPage } from '@/pages/app/LeadsPage';
+import { LeadDetailPage } from '@/pages/app/LeadDetailPage';
 import { CustomersPage } from '@/pages/app/CustomersPage';
 import { ContactsPage } from '@/pages/app/ContactsPage';
 import { PipelinePage } from '@/pages/app/PipelinePage';
@@ -80,6 +81,7 @@ export const AppRoutes: React.FC = () => {
           <Route index element={<Navigate to="/app/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="leads" element={<LeadsPage />} />
+          <Route path="leads/:id" element={<LeadDetailPage />} />
           <Route path="customers" element={<CustomersPage />} />
           <Route path="contacts" element={<ContactsPage />} />
           <Route path="pipeline" element={<PipelinePage />} />

@@ -227,6 +227,7 @@ model Lead {
   email              String?
   phone              String?
   company            String?
+  jobTitle           String?
   source             String?
   status             LeadStatus @default(NEW)
   score              Int        @default(0)
@@ -249,6 +250,8 @@ model Lead {
   campaignLeads CampaignLead[]
 
   @@index([organizationId, status])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, email])
   @@index([ownerId])
   @@map("leads")
 }

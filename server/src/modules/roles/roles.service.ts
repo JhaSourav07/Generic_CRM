@@ -161,7 +161,7 @@ export class RolesService {
         data: {
           organizationId,
           name: roleName,
-          description: input.description?.trim() || null
+          description: input.description ? input.description.trim() : null
         }
       });
 
@@ -195,7 +195,7 @@ export class RolesService {
         action: 'ROLE_CREATED',
         entity: 'Role',
         entityId: newRole.id,
-        newValue: { name: newRole.name, permissionCount: input.permissionIds?.length || 0 }
+        newValue: { name: newRole.name, permissionCount: input.permissionIds.length }
       }
     });
 
@@ -212,7 +212,10 @@ export class RolesService {
     input: UpdateRoleInput
   ): Promise<RoleDetail> {
     const role = await prisma.role.findFirst({
-      where: { id: roleId, organizationId }
+      where: {
+        id: roleId,
+        OR: [{ organizationId }, { organizationId: null }]
+      }
     });
 
     if (!role) {
@@ -237,7 +240,7 @@ export class RolesService {
           where: { id: roleId },
           data: {
             ...(input.name ? { name: input.name.trim() } : {}),
-            ...(input.description !== undefined ? { description: input.description?.trim() || null } : {})
+            ...(input.description !== undefined ? { description: input.description ? input.description.trim() : null } : {})
           }
         });
       }

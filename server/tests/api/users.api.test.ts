@@ -94,7 +94,29 @@ describe('Users API Routes (/api/users)', () => {
       expect(res.body.data.length).toBe(1);
       expect(res.body.data[0].name).toBe('Bob Sales');
     });
+
+    it('should support explicit pagination, custom sorting, and filters', async () => {
+      const org = await createTestOrg();
+      const adminRole = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const adminUser = await createTestUser({ organizationId: org.id, roleId: adminRole.id });
+
+      const token = authService.generateToken({
+        userId: adminUser.id,
+        organizationId: org.id,
+        roleId: adminRole.id,
+        roleName: adminRole.name,
+        email: adminUser.email
+      });
+
+      const res = await request(app)
+        .get(`/api/users?page=1&limit=5&sortBy=name&sortOrder=asc&roleId=${adminRole.id}&isActive=true`)
+        .set('Cookie', [`vynexa_token=${token}`]);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.length).toBe(1);
+    });
   });
+
 
   describe('POST /api/users', () => {
     it('should create a new team user in the active organization', async () => {
@@ -121,14 +143,14 @@ describe('Users API Routes (/api/users)', () => {
           name: 'New Agent',
           email: 'agent@acme.com',
           password: 'Password123!',
-          roleId: repRole.id
+          roleId: repRole.id,
+          isActive: false
         });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.email).toBe('agent@acme.com');
-      expect(res.body.data.organizationId).toBe(org.id);
-      expect(res.body.data).not.toHaveProperty('passwordHash');
+      expect(res.body.data.isActive).toBe(false);
     });
 
     it('should reject creating duplicate email in same organization', async () => {

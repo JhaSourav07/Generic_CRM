@@ -61,6 +61,10 @@ describe('Organization API Routes (/api/organization)', () => {
         .send({
           name: 'Wayne Global Corp',
           slug: 'wayne-global',
+          email: 'contact@wayne.com',
+          phone: '+1-555-0199',
+          website: 'https://wayne.com',
+          logo: 'https://wayne.com/logo.png',
           currency: 'EUR',
           timezone: 'Europe/Paris'
         });
@@ -120,5 +124,42 @@ describe('Organization API Routes (/api/organization)', () => {
       expect(resPatch.status).toBe(404);
       expect(resPatch.body.success).toBe(false);
     });
+
+    it('should support partial updates and keeping same slug', async () => {
+      const org = await createTestOrg({ name: 'Org Partial', slug: 'org-partial' });
+      const role = await createTestRole({ organizationId: org.id, name: 'SUPER_ADMIN' });
+      const user = await createTestUser({ organizationId: org.id, roleId: role.id });
+
+      const token = authService.generateToken({
+        userId: user.id,
+        organizationId: org.id,
+        roleId: role.id,
+        roleName: role.name,
+        email: user.email
+      });
+
+      const res = await request(app)
+        .patch('/api/organization/current')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({
+          name: 'Org Partial Updated',
+          slug: 'org-partial',
+          timezone: 'America/New_York'
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.name).toBe('Org Partial Updated');
+
+      const res2 = await request(app)
+        .patch('/api/organization/current')
+        .set('Cookie', [`vynexa_token=${token}`])
+        .send({
+          currency: 'GBP'
+        });
+
+      expect(res2.status).toBe(200);
+      expect(res2.body.data.currency).toBe('GBP');
+    });
   });
 });
+

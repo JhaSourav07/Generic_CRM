@@ -36,4 +36,12 @@ describe('DashboardController (unit)', () => {
     expect(next).toHaveBeenCalledWith(expect.any(Error));
     spy.mockRestore();
   });
+
+  it('should return fallback organization payload when organization is not found in database', async () => {
+    const res = await dashboardService.getDashboardOverview('3c8e4202-6b94-4d87-8fb2-e3e7f415ef99', 'u-1');
+    expect(res.organization.id).toBe('3c8e4202-6b94-4d87-8fb2-e3e7f415ef99');
+    expect(res.organization.name).toBe('Organization');
+    expect(res.organization.currency).toBe('USD');
+    expect(res.organization.timezone).toBe('UTC');
+  });
 });
