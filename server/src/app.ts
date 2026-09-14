@@ -9,6 +9,8 @@ import { usersRoutes } from './modules/users/users.routes.js';
 import { rolesRoutes, permissionsRoutes } from './modules/roles/roles.routes.js';
 import { organizationRoutes } from './modules/organization/organization.routes.js';
 import { leadsRoutes } from './modules/leads/leads.routes.js';
+import { accountsRoutes } from './modules/accounts/accounts.routes.js';
+import { contactsRoutes } from './modules/contacts/contacts.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -31,6 +33,9 @@ app.use('/api/roles', rolesRoutes);
 app.use('/api/permissions', permissionsRoutes);
 app.use('/api/organization', organizationRoutes);
 app.use('/api/leads', leadsRoutes);
+app.use('/api/customers', accountsRoutes);
+app.use('/api/accounts', accountsRoutes);
+app.use('/api/contacts', contactsRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

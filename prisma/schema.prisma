@@ -294,6 +294,8 @@ model Account {
   documents          Document[]
 
   @@index([organizationId, name])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, email])
   @@index([ownerId])
   @@map("accounts")
 }
@@ -325,7 +327,8 @@ model Contact {
   documents          Document[]
 
   @@index([organizationId, accountId])
-  @@index([email])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, email])
   @@map("contacts")
 }
 

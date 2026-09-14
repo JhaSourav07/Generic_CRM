@@ -8,7 +8,9 @@ import { DashboardPage } from '@/pages/app/DashboardPage';
 import { LeadsPage } from '@/pages/app/LeadsPage';
 import { LeadDetailPage } from '@/pages/app/LeadDetailPage';
 import { CustomersPage } from '@/pages/app/CustomersPage';
+import { CustomerDetailPage } from '@/pages/app/CustomerDetailPage';
 import { ContactsPage } from '@/pages/app/ContactsPage';
+import { ContactDetailPage } from '@/pages/app/ContactDetailPage';
 import { PipelinePage } from '@/pages/app/PipelinePage';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -83,7 +85,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="leads" element={<LeadsPage />} />
           <Route path="leads/:id" element={<LeadDetailPage />} />
           <Route path="customers" element={<CustomersPage />} />
+          <Route path="customers/:id" element={<CustomerDetailPage />} />
           <Route path="contacts" element={<ContactsPage />} />
+          <Route path="contacts/:id" element={<ContactDetailPage />} />
           <Route path="pipeline" element={<PipelinePage />} />
 
           {/* Navigation placeholders matching AGENTS.md footprint */}
