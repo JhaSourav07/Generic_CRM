@@ -14,6 +14,9 @@ import { ContactDetailPage } from '@/pages/app/ContactDetailPage';
 import { PipelinePage } from '@/pages/app/PipelinePage';
 import { OpportunitiesPage } from '@/pages/app/OpportunitiesPage';
 import { OpportunityDetailPage } from '@/pages/app/OpportunityDetailPage';
+import { ActivitiesPage } from '@/pages/app/ActivitiesPage';
+import { TasksPage } from '@/pages/app/TasksPage';
+import { FollowUpsPage } from '@/pages/app/FollowUpsPage';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -99,9 +102,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="quotes" element={<ModulePlaceholder title="Quotes" phase="Phase 11" />} />
           <Route path="orders" element={<ModulePlaceholder title="Orders" phase="Phase 11" />} />
           <Route path="products" element={<ModulePlaceholder title="Products Catalog" phase="Phase 11" />} />
-          <Route path="tasks" element={<ModulePlaceholder title="Tasks" phase="Phase 10" />} />
-          <Route path="activities" element={<ModulePlaceholder title="Activities" phase="Phase 10" />} />
-          <Route path="follow-ups" element={<ModulePlaceholder title="Follow-ups" phase="Phase 10" />} />
+          <Route path="tasks" element={<TasksPage />} />
+          <Route path="activities" element={<ActivitiesPage />} />
+          <Route path="follow-ups" element={<FollowUpsPage />} />
           <Route path="documents" element={<ModulePlaceholder title="Documents" phase="Phase 12" />} />
           <Route path="support" element={<ModulePlaceholder title="Support Cases" phase="Phase 12" />} />
           <Route path="campaigns" element={<ModulePlaceholder title="Marketing Campaigns" phase="Phase 13" />} />

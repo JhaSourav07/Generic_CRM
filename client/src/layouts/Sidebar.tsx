@@ -70,9 +70,9 @@ const navSections: NavSectionConfig[] = [
   {
     title: 'WORKSPACE',
     items: [
-      { label: 'Tasks', path: '/app/tasks', icon: CheckSquare, isImplemented: false },
-      { label: 'Activities', path: '/app/activities', icon: Calendar, isImplemented: false },
-      { label: 'Follow-ups', path: '/app/follow-ups', icon: Clock, isImplemented: false },
+      { label: 'Tasks', path: '/app/tasks', icon: CheckSquare, isImplemented: true },
+      { label: 'Activities', path: '/app/activities', icon: Calendar, isImplemented: true },
+      { label: 'Follow-ups', path: '/app/follow-ups', icon: Clock, isImplemented: true },
       { label: 'Documents', path: '/app/documents', icon: FileCode, isImplemented: false }
     ]
   },

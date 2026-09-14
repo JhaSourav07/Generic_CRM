@@ -39,3 +39,5 @@ export * from './dashboard.types.ts';
 export * from './users.types.ts';
 export * from './roles.types.ts';
 export * from './organization.types.ts';
+export * from './activities.types.ts';
+export * from './tasks.types.ts';

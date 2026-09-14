@@ -14,6 +14,8 @@ import { Lead, LeadStatus } from '@/types/leads.types';
 import { EditLeadModal } from '@/components/leads/EditLeadModal';
 import { AssignLeadModal } from '@/components/leads/AssignLeadModal';
 import { ConvertLeadDialog } from '@/components/leads/ConvertLeadDialog';
+import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
+import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 
 import {
   Edit2,
@@ -290,6 +292,12 @@ export const LeadDetailPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Interaction Stream & Timeline */}
+          <ActivityTimeline leadId={lead.id} />
+
+          {/* Scheduled Tasks & Follow-ups */}
+          <EntityTasksCard leadId={lead.id} />
         </div>
 
         {/* Sidebar Metadata */}

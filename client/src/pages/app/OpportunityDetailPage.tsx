@@ -16,6 +16,8 @@ import { ChangeStageModal } from '@/components/opportunities/ChangeStageModal';
 import { AssignOpportunityModal } from '@/components/opportunities/AssignOpportunityModal';
 import { MarkWonModal } from '@/components/opportunities/MarkWonModal';
 import { MarkLostModal } from '@/components/opportunities/MarkLostModal';
+import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
+import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 
 import {
   DollarSign,
@@ -387,32 +389,11 @@ export const OpportunityDetailPage: React.FC = () => {
             </Card>
           )}
 
-          {/* Activities & Tasks Timeline */}
-          <Card className="bg-vynexa-surface border-vynexa-border p-6 space-y-4">
-            <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider flex items-center gap-2">
-              <Clock className="h-4 w-4" /> Activity Stream & Tasks
-            </h3>
-            {(!opportunity.activities || opportunity.activities.length === 0) &&
-            (!opportunity.tasks || opportunity.tasks.length === 0) ? (
-              <div className="text-center py-6 text-xs text-vynexa-text-muted">
-                No recorded interactions or tasks logged for this deal yet.
-              </div>
-            ) : (
-              <div className="space-y-3 text-xs">
-                {opportunity.activities?.map((act: any) => (
-                  <div key={act.id} className="p-3 bg-vynexa-surface-secondary rounded border border-vynexa-border space-y-1">
-                    <div className="flex items-center justify-between font-semibold text-vynexa-text-primary">
-                      <span>{act.subject}</span>
-                      <span className="font-mono text-[10px] text-vynexa-text-muted">
-                        {new Date(act.activityDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                    {act.description && <p className="text-vynexa-text-muted text-[11px]">{act.description}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
+          {/* Interaction Stream & Timeline */}
+          <ActivityTimeline opportunityId={opportunity.id} />
+
+          {/* Scheduled Tasks & Follow-ups */}
+          <EntityTasksCard opportunityId={opportunity.id} />
         </div>
 
         {/* Right Column (1 Col): Ownership & Metadata */}

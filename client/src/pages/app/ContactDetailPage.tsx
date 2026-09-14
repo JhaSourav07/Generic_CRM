@@ -13,6 +13,8 @@ import { contactsService } from '@/services/contacts.service';
 import { Contact } from '@/types/contacts.types';
 import { EditContactModal } from '@/components/contacts/EditContactModal';
 import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportunityModal';
+import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
+import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 
 import {
   Users,
@@ -321,6 +323,12 @@ export const ContactDetailPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Interaction Stream & Timeline */}
+          <ActivityTimeline contactId={contact.id} />
+
+          {/* Scheduled Tasks & Follow-ups */}
+          <EntityTasksCard contactId={contact.id} />
         </div>
 
         {/* Right Column: Metadata */}

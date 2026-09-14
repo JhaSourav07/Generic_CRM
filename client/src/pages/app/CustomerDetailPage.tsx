@@ -18,6 +18,8 @@ import { EditCustomerModal } from '@/components/customers/EditCustomerModal';
 import { CreateContactModal } from '@/components/contacts/CreateContactModal';
 import { EditContactModal } from '@/components/contacts/EditContactModal';
 import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportunityModal';
+import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
+import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 
 import {
   Building2,
@@ -489,6 +491,12 @@ export const CustomerDetailPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Interaction Stream & Timeline */}
+          <ActivityTimeline accountId={customer.id} />
+
+          {/* Scheduled Tasks & Follow-ups */}
+          <EntityTasksCard accountId={customer.id} />
         </div>
 
         {/* Right Column: Metadata & Converted Context */}

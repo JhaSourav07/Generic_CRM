@@ -13,6 +13,8 @@ import { accountsRoutes } from './modules/accounts/accounts.routes.js';
 import { contactsRoutes } from './modules/contacts/contacts.routes.js';
 import { opportunitiesRoutes } from './modules/opportunities/opportunities.routes.js';
 import { pipelinesRoutes, pipelineStagesRoutes } from './modules/pipelines/pipelines.routes.js';
+import { activitiesRoutes } from './modules/activities/activities.routes.js';
+import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -41,6 +43,8 @@ app.use('/api/contacts', contactsRoutes);
 app.use('/api/opportunities', opportunitiesRoutes);
 app.use('/api/pipelines', pipelinesRoutes);
 app.use('/api/pipeline-stages', pipelineStagesRoutes);
+app.use('/api/activities', activitiesRoutes);
+app.use('/api/tasks', tasksRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

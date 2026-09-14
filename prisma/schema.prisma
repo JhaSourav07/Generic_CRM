@@ -441,6 +441,12 @@ model Activity {
   opportunity  Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, activityDate])
+  @@index([organizationId, leadId])
+  @@index([organizationId, accountId])
+  @@index([organizationId, contactId])
+  @@index([organizationId, opportunityId])
+  @@index([organizationId, type])
+  @@index([organizationId, createdById])
   @@map("activities")
 }
 
@@ -472,6 +478,12 @@ model Task {
   opportunity  Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, assignedToId, status])
+  @@index([organizationId, status])
+  @@index([organizationId, dueDate])
+  @@index([organizationId, leadId])
+  @@index([organizationId, accountId])
+  @@index([organizationId, contactId])
+  @@index([organizationId, opportunityId])
   @@index([dueDate])
   @@map("tasks")
 }
