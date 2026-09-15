@@ -103,7 +103,7 @@ describe('Tasks API Routes (/api/tasks) (API integration)', () => {
         .send(payload);
 
       expect(res.status).toBe(400);
-      expect(res.body.error.code).toBe('RELATIONAL_CONSISTENCY_ERROR');
+      expect(res.body.error.code).toBe('INCONSISTENT_RELATION');
     });
   });
 

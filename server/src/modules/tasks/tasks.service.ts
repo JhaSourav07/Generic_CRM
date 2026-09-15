@@ -211,9 +211,9 @@ export class TasksService {
     if (query.contactId) whereClause.contactId = query.contactId;
     if (query.opportunityId) whereClause.opportunityId = query.opportunityId;
 
-    // 4. Overdue filter: dueDate < todayStart (or < now) and status not COMPLETED/CANCELLED
+    // 4. Overdue filter: dueDate < todayStart and status not COMPLETED/CANCELLED
     if (query.overdue === true) {
-      whereClause.dueDate = { lt: now };
+      whereClause.dueDate = { lt: todayStart };
       whereClause.status = { notIn: [TaskStatus.COMPLETED, TaskStatus.CANCELLED] };
     }
 
@@ -313,6 +313,83 @@ export class TasksService {
         overdueCount,
         dueTodayCount,
         completedCount
+      }
+    };
+  }
+
+  /**
+   * Get follow-up agenda grouped into overdue, today, and upcoming touchpoints.
+   */
+  public async getFollowUps(organizationId: string) {
+    const org = await prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { timezone: true }
+    });
+    const tz = org?.timezone || 'UTC';
+    const { startUtc: todayStart, endUtc: todayEnd } = this.getTimezoneDayRange(tz);
+    const now = new Date();
+    const futureLimit = new Date(todayEnd.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+    const [overdue, today, upcoming] = await Promise.all([
+      prisma.task.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          dueDate: { lt: todayStart },
+          status: { notIn: [TaskStatus.COMPLETED, TaskStatus.CANCELLED] }
+        },
+        orderBy: { dueDate: 'asc' },
+        include: {
+          assignedTo: { select: { id: true, name: true, email: true } },
+          lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+          account: { select: { id: true, name: true } },
+          contact: { select: { id: true, firstName: true, lastName: true, email: true } },
+          opportunity: { select: { id: true, name: true } }
+        }
+      }),
+      prisma.task.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          dueDate: { gte: todayStart, lte: todayEnd },
+          status: { notIn: [TaskStatus.CANCELLED] }
+        },
+        orderBy: { dueDate: 'asc' },
+        include: {
+          assignedTo: { select: { id: true, name: true, email: true } },
+          lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+          account: { select: { id: true, name: true } },
+          contact: { select: { id: true, firstName: true, lastName: true, email: true } },
+          opportunity: { select: { id: true, name: true } }
+        }
+      }),
+      prisma.task.findMany({
+        where: {
+          organizationId,
+          deletedAt: null,
+          dueDate: { gt: todayEnd, lte: futureLimit },
+          status: { notIn: [TaskStatus.COMPLETED, TaskStatus.CANCELLED] }
+        },
+        orderBy: { dueDate: 'asc' },
+        include: {
+          assignedTo: { select: { id: true, name: true, email: true } },
+          lead: { select: { id: true, firstName: true, lastName: true, company: true } },
+          account: { select: { id: true, name: true } },
+          contact: { select: { id: true, firstName: true, lastName: true, email: true } },
+          opportunity: { select: { id: true, name: true } }
+        }
+      })
+    ]);
+
+    return {
+      overdue,
+      today,
+      upcoming,
+      counts: {
+        overdue: overdue.length,
+        today: today.length,
+        upcoming: upcoming.length,
+        total: overdue.length + today.length + upcoming.length
       }
     };
   }

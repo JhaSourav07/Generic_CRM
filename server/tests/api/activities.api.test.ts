@@ -115,7 +115,7 @@ describe('Activities API Routes (/api/activities) (API integration)', () => {
         .send(payload);
 
       expect(res.status).toBe(400);
-      expect(res.body.error.code).toBe('RELATIONAL_CONSISTENCY_ERROR');
+      expect(res.body.error.code).toBe('INCONSISTENT_RELATION');
     });
 
     it('should reject activity when opportunity does not belong to specified account', async () => {
@@ -143,7 +143,7 @@ describe('Activities API Routes (/api/activities) (API integration)', () => {
         .send(payload);
 
       expect(res.status).toBe(400);
-      expect(res.body.error.code).toBe('RELATIONAL_CONSISTENCY_ERROR');
+      expect(res.body.error.code).toBe('INCONSISTENT_RELATION');
     });
   });
 

@@ -3,7 +3,7 @@ import { ActivityType } from '@prisma/client';
 
 export const createActivitySchema = z.object({
   type: z.nativeEnum(ActivityType).default(ActivityType.NOTE),
-  subject: z.string().min(1, 'Subject is required').max(200, 'Subject cannot exceed 200 characters'),
+  subject: z.string().trim().min(1, 'Subject is required').max(200, 'Subject cannot exceed 200 characters'),
   description: z.string().max(4000, 'Description cannot exceed 4000 characters').optional().nullable(),
   activityDate: z.coerce.date().optional(),
   duration: z.number().int().min(0, 'Duration cannot be negative').max(10080, 'Duration cannot exceed 7 days').optional().nullable(),
@@ -15,7 +15,7 @@ export const createActivitySchema = z.object({
 
 export const updateActivitySchema = z.object({
   type: z.nativeEnum(ActivityType).optional(),
-  subject: z.string().min(1, 'Subject is required').max(200, 'Subject cannot exceed 200 characters').optional(),
+  subject: z.string().trim().min(1, 'Subject is required').max(200, 'Subject cannot exceed 200 characters').optional(),
   description: z.string().max(4000, 'Description cannot exceed 4000 characters').optional().nullable(),
   activityDate: z.coerce.date().optional(),
   duration: z.number().int().min(0, 'Duration cannot be negative').max(10080, 'Duration cannot exceed 7 days').optional().nullable(),

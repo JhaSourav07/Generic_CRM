@@ -28,6 +28,21 @@ export class TasksController {
     }
   }
 
+  public async getFollowUps(req: Request, res: Response, next: NextFunction) {
+    try {
+      const organizationId = (req as any).user.organizationId;
+      const data = await tasksService.getFollowUps(organizationId);
+
+      res.status(200).json({
+        success: true,
+        data,
+        error: null
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   public async getTaskById(req: Request, res: Response, next: NextFunction) {
     try {
       const organizationId = (req as any).user.organizationId;

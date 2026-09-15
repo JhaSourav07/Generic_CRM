@@ -10,6 +10,10 @@ tasksRoutes.get('/', requirePermission('tasks', 'VIEW'), (req, res, next) =>
   tasksController.getTasks(req, res, next)
 );
 
+tasksRoutes.get('/follow-ups', requirePermission('tasks', 'VIEW'), (req, res, next) =>
+  tasksController.getFollowUps(req, res, next)
+);
+
 tasksRoutes.get('/:id', requirePermission('tasks', 'VIEW'), (req, res, next) =>
   tasksController.getTaskById(req, res, next)
 );

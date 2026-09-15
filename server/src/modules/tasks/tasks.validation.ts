@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { TaskStatus, TaskPriority } from '@prisma/client';
 
 export const createTaskSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title cannot exceed 200 characters'),
+  title: z.string().trim().min(1, 'Title is required').max(200, 'Title cannot exceed 200 characters'),
   description: z.string().max(4000, 'Description cannot exceed 4000 characters').optional().nullable(),
   status: z.nativeEnum(TaskStatus).default(TaskStatus.TODO),
   priority: z.nativeEnum(TaskPriority).default(TaskPriority.MEDIUM),
@@ -15,7 +15,7 @@ export const createTaskSchema = z.object({
 });
 
 export const updateTaskSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(200, 'Title cannot exceed 200 characters').optional(),
+  title: z.string().trim().min(1, 'Title is required').max(200, 'Title cannot exceed 200 characters').optional(),
   description: z.string().max(4000, 'Description cannot exceed 4000 characters').optional().nullable(),
   status: z.nativeEnum(TaskStatus).optional(),
   priority: z.nativeEnum(TaskPriority).optional(),
@@ -32,6 +32,8 @@ export const changeTaskStatusSchema = z.object({
     errorMap: () => ({ message: 'Status must be one of: TODO, IN_PROGRESS, COMPLETED, CANCELLED' })
   })
 });
+
+export const updateTaskStatusSchema = changeTaskStatusSchema;
 
 export const assignTaskSchema = z.object({
   assignedToId: z.string().uuid('Invalid assigned user ID format').nullable()

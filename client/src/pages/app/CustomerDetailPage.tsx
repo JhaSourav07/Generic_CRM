@@ -20,6 +20,7 @@ import { EditContactModal } from '@/components/contacts/EditContactModal';
 import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportunityModal';
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
+import { EntityQuotesOrdersCard } from '@/components/commercial/EntityQuotesOrdersCard';
 
 import {
   Building2,
@@ -491,6 +492,9 @@ export const CustomerDetailPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Commercial Quotes & Fulfillment Orders */}
+          <EntityQuotesOrdersCard accountId={customer.id} />
 
           {/* Interaction Stream & Timeline */}
           <ActivityTimeline accountId={customer.id} />

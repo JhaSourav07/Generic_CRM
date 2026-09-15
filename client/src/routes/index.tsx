@@ -17,6 +17,12 @@ import { OpportunityDetailPage } from '@/pages/app/OpportunityDetailPage';
 import { ActivitiesPage } from '@/pages/app/ActivitiesPage';
 import { TasksPage } from '@/pages/app/TasksPage';
 import { FollowUpsPage } from '@/pages/app/FollowUpsPage';
+import { ProductsPage } from '@/pages/app/ProductsPage';
+import { ProductDetailPage } from '@/pages/app/ProductDetailPage';
+import { QuotesPage } from '@/pages/app/QuotesPage';
+import { QuoteDetailPage } from '@/pages/app/QuoteDetailPage';
+import { OrdersPage } from '@/pages/app/OrdersPage';
+import { OrderDetailPage } from '@/pages/app/OrderDetailPage';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -99,9 +105,12 @@ export const AppRoutes: React.FC = () => {
           <Route path="organizations" element={<OrganizationSettingsPage />} />
           <Route path="opportunities" element={<OpportunitiesPage />} />
           <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
-          <Route path="quotes" element={<ModulePlaceholder title="Quotes" phase="Phase 11" />} />
-          <Route path="orders" element={<ModulePlaceholder title="Orders" phase="Phase 11" />} />
-          <Route path="products" element={<ModulePlaceholder title="Products Catalog" phase="Phase 11" />} />
+          <Route path="quotes" element={<QuotesPage />} />
+          <Route path="quotes/:id" element={<QuoteDetailPage />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="orders/:id" element={<OrderDetailPage />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="products/:id" element={<ProductDetailPage />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="activities" element={<ActivitiesPage />} />
           <Route path="follow-ups" element={<FollowUpsPage />} />

@@ -62,9 +62,9 @@ const navSections: NavSectionConfig[] = [
     items: [
       { label: 'Pipeline', path: '/app/pipeline', icon: Kanban, isImplemented: true },
       { label: 'Opportunities', path: '/app/opportunities', icon: TrendingUp, isImplemented: true },
-      { label: 'Quotes', path: '/app/quotes', icon: FileText, isImplemented: false },
-      { label: 'Orders', path: '/app/orders', icon: ShoppingBag, isImplemented: false },
-      { label: 'Products', path: '/app/products', icon: Package, isImplemented: false }
+      { label: 'Quotes', path: '/app/quotes', icon: FileText, isImplemented: true },
+      { label: 'Orders', path: '/app/orders', icon: ShoppingBag, isImplemented: true },
+      { label: 'Products', path: '/app/products', icon: Package, isImplemented: true }
     ]
   },
   {

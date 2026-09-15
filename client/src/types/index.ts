@@ -41,3 +41,6 @@ export * from './roles.types.ts';
 export * from './organization.types.ts';
 export * from './activities.types.ts';
 export * from './tasks.types.ts';
+export * from './products.types.ts';
+export * from './quotes.types.ts';
+export * from './orders.types.ts';

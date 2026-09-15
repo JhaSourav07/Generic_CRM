@@ -18,6 +18,7 @@ import { MarkWonModal } from '@/components/opportunities/MarkWonModal';
 import { MarkLostModal } from '@/components/opportunities/MarkLostModal';
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
+import { EntityQuotesOrdersCard } from '@/components/commercial/EntityQuotesOrdersCard';
 
 import {
   DollarSign,
@@ -388,6 +389,12 @@ export const OpportunityDetailPage: React.FC = () => {
               </p>
             </Card>
           )}
+
+          {/* Commercial Quotes & Fulfillment Orders */}
+          <EntityQuotesOrdersCard
+            accountId={opportunity.account?.id}
+            opportunityId={opportunity.id}
+          />
 
           {/* Interaction Stream & Timeline */}
           <ActivityTimeline opportunityId={opportunity.id} />
