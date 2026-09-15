@@ -25,6 +25,7 @@ import { supportCasesRoutes } from './modules/support/support.routes.js';
 import { campaignsRoutes } from './modules/campaigns/campaigns.routes.js';
 import { reportsRoutes } from './modules/reports/reports.routes.js';
 import { auditLogsRoutes } from './modules/audit-logs/audit-logs.routes.js';
+import { searchRoutes } from './modules/search/search.routes.js';
 import { authRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -72,6 +73,7 @@ app.use('/api/support', supportCasesRoutes);
 app.use('/api/campaigns', campaignsRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/audit-logs', auditLogsRoutes);
+app.use('/api/search', searchRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

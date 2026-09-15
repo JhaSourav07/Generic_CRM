@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table';
@@ -73,6 +73,15 @@ export const OpportunitiesPage: React.FC = () => {
   const [selectedOppForLost, setSelectedOppForLost] = useState<Opportunity | null>(null);
   const [selectedOppForDelete, setSelectedOppForDelete] = useState<Opportunity | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'create') {
+      setIsCreateOpen(true);
+      searchParams.delete('action');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Metrics
   const [metrics, setMetrics] = useState({

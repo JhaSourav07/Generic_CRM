@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/ui/page-header';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -69,6 +69,15 @@ export const TasksPage: React.FC = () => {
   const [selectedForAssign, setSelectedForAssign] = useState<Task | null>(null);
   const [selectedForDelete, setSelectedForDelete] = useState<Task | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('action') === 'create') {
+      setIsCreateOpen(true);
+      searchParams.delete('action');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   // Load active users for filter dropdown
   useEffect(() => {

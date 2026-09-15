@@ -1,6 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Bell, Menu, Command, Building, Check, Sparkles } from 'lucide-react';
+import {
+  Search,
+  Bell,
+  Menu,
+  Command,
+  Building,
+  Sparkles,
+  Plus,
+  UserCheck,
+  Building2,
+  Contact,
+  TrendingUp,
+  FileText,
+  ShoppingBag,
+  Package,
+  CheckSquare,
+  Calendar,
+  LifeBuoy
+} from 'lucide-react';
 import { Avatar } from '@/components/ui/avatar';
 import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown';
 import { useToast } from '@/components/ui/toast';
@@ -74,75 +92,207 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   const orgName = user?.organization?.name || 'Workspace';
   const roleName = user?.role?.name || 'MEMBER';
 
-  // Compute clean breadcrumb path
+  // Compute clean breadcrumb hierarchy
   const currentPath = location.pathname;
+  let sectionName = 'CRM';
   let pageTitle = 'Dashboard';
-  if (currentPath.includes('/leads')) pageTitle = 'Leads Directory';
-  else if (currentPath.includes('/customers')) pageTitle = 'Customer Accounts';
-  else if (currentPath.includes('/contacts')) pageTitle = 'Contacts Directory';
-  else if (currentPath.includes('/pipeline')) pageTitle = 'Sales Pipeline';
-  else if (currentPath.includes('/opportunities')) pageTitle = 'Opportunities';
-  else if (currentPath.includes('/quotes')) pageTitle = 'Quotes & Proposals';
-  else if (currentPath.includes('/orders')) pageTitle = 'Commercial Orders';
-  else if (currentPath.includes('/products')) pageTitle = 'Products & Services';
-  else if (currentPath.includes('/tasks')) pageTitle = 'Tasks & Actions';
-  else if (currentPath.includes('/activities')) pageTitle = 'Interaction Logs';
-  else if (currentPath.includes('/follow-ups')) pageTitle = 'Follow-up Reminders';
-  else if (currentPath.includes('/documents')) pageTitle = 'Document Management';
-  else if (currentPath.includes('/notifications')) pageTitle = 'Notifications';
-  else if (currentPath.includes('/support')) pageTitle = 'Support Cases';
-  else if (currentPath.includes('/campaigns')) pageTitle = 'Marketing Campaigns';
-  else if (currentPath.includes('/reports')) pageTitle = 'Reports & Analytics';
-  else if (currentPath.includes('/audit-logs')) pageTitle = 'Audit Logs';
-  else if (currentPath.includes('/settings')) pageTitle = 'Organization Settings';
+
+  if (currentPath.includes('/dashboard')) {
+    sectionName = 'Overview';
+    pageTitle = 'Executive Dashboard';
+  } else if (currentPath.includes('/leads')) {
+    sectionName = 'CRM';
+    pageTitle = currentPath.split('/leads/')[1] ? 'Lead Details' : 'Leads Directory';
+  } else if (currentPath.includes('/customers')) {
+    sectionName = 'CRM';
+    pageTitle = currentPath.split('/customers/')[1] ? 'Customer Account' : 'Customer Accounts';
+  } else if (currentPath.includes('/contacts')) {
+    sectionName = 'CRM';
+    pageTitle = currentPath.split('/contacts/')[1] ? 'Contact Details' : 'Contacts Directory';
+  } else if (currentPath.includes('/pipeline')) {
+    sectionName = 'Sales';
+    pageTitle = 'Pipeline (Kanban)';
+  } else if (currentPath.includes('/opportunities')) {
+    sectionName = 'Sales';
+    pageTitle = currentPath.split('/opportunities/')[1] ? 'Opportunity Details' : 'Opportunities';
+  } else if (currentPath.includes('/quotes')) {
+    sectionName = 'Sales';
+    pageTitle = currentPath.split('/quotes/')[1] ? 'Quote Details' : 'Quotes & Proposals';
+  } else if (currentPath.includes('/orders')) {
+    sectionName = 'Sales';
+    pageTitle = currentPath.split('/orders/')[1] ? 'Order Details' : 'Commercial Orders';
+  } else if (currentPath.includes('/products')) {
+    sectionName = 'Sales';
+    pageTitle = currentPath.split('/products/')[1] ? 'Product Details' : 'Products & Services';
+  } else if (currentPath.includes('/tasks')) {
+    sectionName = 'Workspace';
+    pageTitle = 'Tasks & Actions';
+  } else if (currentPath.includes('/activities')) {
+    sectionName = 'Workspace';
+    pageTitle = 'Interaction Logs';
+  } else if (currentPath.includes('/follow-ups')) {
+    sectionName = 'Workspace';
+    pageTitle = 'Follow-up Reminders';
+  } else if (currentPath.includes('/documents')) {
+    sectionName = 'Workspace';
+    pageTitle = currentPath.split('/documents/')[1] ? 'Document Details' : 'Document Management';
+  } else if (currentPath.includes('/notifications')) {
+    sectionName = 'Workspace';
+    pageTitle = 'Notifications';
+  } else if (currentPath.includes('/support')) {
+    sectionName = 'Support';
+    pageTitle = currentPath.includes('/support-cases/') ? 'Support Case Details' : 'Support Cases';
+  } else if (currentPath.includes('/campaigns')) {
+    sectionName = 'Marketing';
+    pageTitle = currentPath.split('/campaigns/')[1] ? 'Campaign Details' : 'Marketing Campaigns';
+  } else if (currentPath.includes('/reports')) {
+    sectionName = 'Insights';
+    pageTitle = 'Reports & Analytics';
+  } else if (currentPath.includes('/users')) {
+    sectionName = 'Admin';
+    pageTitle = 'Team Members & Users';
+  } else if (currentPath.includes('/roles')) {
+    sectionName = 'Admin';
+    pageTitle = 'Roles & RBAC Permissions';
+  } else if (currentPath.includes('/settings')) {
+    sectionName = 'Admin';
+    pageTitle = 'Organization Settings';
+  } else if (currentPath.includes('/audit-logs')) {
+    sectionName = 'Admin';
+    pageTitle = 'System Audit Logs';
+  }
 
   return (
     <>
-      <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-vynexa-border bg-vynexa-surface/90 px-4 backdrop-blur-sm select-none">
+      <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between border-b border-vynexa-border bg-vynexa-surface/90 px-3 sm:px-4 backdrop-blur-sm select-none">
         {/* Left Region: Mobile Menu, Breadcrumbs & Organization Badge */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <button
             onClick={onMenuToggle}
-            className="md:hidden text-vynexa-text-muted hover:text-vynexa-text-primary transition-colors p-1"
+            className="md:hidden text-vynexa-text-muted hover:text-vynexa-text-primary transition-colors p-1 shrink-0"
             title="Toggle Sidebar"
+            aria-label="Toggle Sidebar"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-mono text-vynexa-text-muted hidden sm:inline">CRM /</span>
-            <span className="font-semibold text-vynexa-text-primary">{pageTitle}</span>
+          <div className="flex items-center gap-1.5 text-xs truncate">
+            <span className="font-mono text-vynexa-text-muted hidden sm:inline">{sectionName} /</span>
+            <span className="font-semibold text-vynexa-text-primary truncate">{pageTitle}</span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded border border-vynexa-border bg-vynexa-surface-secondary text-xs font-medium text-vynexa-text-secondary select-none">
-            <Building className="h-3.5 w-3.5 text-vynexa-text-muted" />
-            <span className="font-mono text-vynexa-text-primary text-[11px] truncate max-w-[140px]">{orgName}</span>
-            <span className="text-[10px] text-vynexa-text-muted font-mono bg-vynexa-surface px-1 py-0.5 rounded tracking-wider">{roleName}</span>
+          <div className="hidden lg:flex items-center gap-2 px-2 py-0.5 rounded border border-vynexa-border bg-vynexa-surface-secondary text-xs font-medium text-vynexa-text-secondary select-none shrink-0">
+            <Building className="h-3 w-3 text-vynexa-text-muted" />
+            <span className="font-mono text-vynexa-text-primary text-[11px] truncate max-w-[130px]">{orgName}</span>
+            <span className="text-[9px] text-vynexa-text-muted font-mono bg-vynexa-surface px-1 py-0.2 rounded tracking-wider">{roleName}</span>
           </div>
         </div>
 
         {/* Center Region: Global Search Trigger */}
-        <div className="flex-1 max-w-md mx-4 hidden md:block">
+        <div className="flex-1 max-w-md mx-3 hidden md:block">
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="w-full h-8 pl-9 pr-3 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-xs text-vynexa-text-muted hover:text-vynexa-text-primary hover:border-vynexa-border/80 flex items-center justify-between transition-colors cursor-pointer"
+            className="w-full h-8 pl-3 pr-2.5 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-xs text-vynexa-text-muted hover:text-vynexa-text-primary hover:border-vynexa-border/80 flex items-center justify-between transition-colors cursor-pointer"
+            aria-label="Open Command Palette"
           >
-            <div className="flex items-center gap-2">
-              <Search className="h-3.5 w-3.5 text-vynexa-text-muted" />
-              <span>Search CRM modules, leads, tasks...</span>
+            <div className="flex items-center gap-2 truncate">
+              <Search className="h-3.5 w-3.5 text-vynexa-text-muted shrink-0" />
+              <span className="truncate">Search leads, customers, deals, quotes...</span>
             </div>
-            <kbd className="inline-flex h-4 items-center gap-0.5 rounded border border-vynexa-border bg-vynexa-surface px-1.5 font-mono text-[10px] font-medium text-vynexa-text-muted">
+            <kbd className="inline-flex h-4 items-center gap-0.5 rounded border border-vynexa-border bg-vynexa-surface px-1 font-mono text-[10px] font-medium text-vynexa-text-muted shrink-0">
               <Command className="h-2.5 w-2.5" /> K
             </kbd>
           </button>
         </div>
 
-        {/* Right Region: Search Icon (Mobile), Notifications & User Account */}
-        <div className="flex items-center gap-2.5">
+        {/* Right Region: Quick Create, Search (Mobile), Notifications & User Account */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Global Quick Create Menu */}
+          <Dropdown
+            trigger={
+              <button
+                className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-xs font-medium text-vynexa-text-primary hover:bg-vynexa-surface-secondary/80 hover:border-vynexa-border/80 transition-colors"
+                title="Create CRM Record"
+                aria-label="Create CRM Record"
+              >
+                <Plus className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span className="hidden sm:inline">Create</span>
+              </button>
+            }
+          >
+            <div className="px-3 py-1 text-[10px] font-mono font-semibold text-vynexa-text-muted uppercase border-b border-vynexa-border select-none">
+              Quick Create
+            </div>
+            <DropdownItem onClick={() => navigate('/app/leads?action=create')}>
+              <div className="flex items-center gap-2">
+                <UserCheck className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Lead</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/customers?action=create')}>
+              <div className="flex items-center gap-2">
+                <Building2 className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Customer</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/contacts?action=create')}>
+              <div className="flex items-center gap-2">
+                <Contact className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Contact</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/opportunities?action=create')}>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Opportunity</span>
+              </div>
+            </DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem onClick={() => navigate('/app/quotes?action=create')}>
+              <div className="flex items-center gap-2">
+                <FileText className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Quote</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/orders?action=create')}>
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Order</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/products?action=create')}>
+              <div className="flex items-center gap-2">
+                <Package className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Product</span>
+              </div>
+            </DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem onClick={() => navigate('/app/tasks?action=create')}>
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Task</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/activities?action=create')}>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>Log Activity</span>
+              </div>
+            </DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/support?action=create')}>
+              <div className="flex items-center gap-2">
+                <LifeBuoy className="h-3.5 w-3.5 text-vynexa-text-muted" />
+                <span>New Support Case</span>
+              </div>
+            </DropdownItem>
+          </Dropdown>
+
+          {/* Search Icon Trigger on Mobile */}
           <button
             onClick={() => setIsSearchOpen(true)}
             className="md:hidden p-1.5 rounded-md text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
             title="Search"
+            aria-label="Search"
           >
             <Search className="h-4 w-4" />
           </button>
@@ -152,6 +302,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             <button
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
               title="Notifications"
+              aria-label="Notifications"
               className="relative p-1.5 rounded-md text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
             >
               <Bell className="h-4 w-4" />

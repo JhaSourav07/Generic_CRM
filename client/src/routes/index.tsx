@@ -38,6 +38,8 @@ import { CampaignsPage } from '@/pages/app/CampaignsPage';
 import { CampaignDetailPage } from '@/pages/app/CampaignDetailPage';
 import { ReportsPage } from '@/pages/app/ReportsPage';
 import { AuditLogsPage } from '@/pages/app/AuditLogsPage';
+import { NotFoundPage } from '@/pages/public/NotFoundPage';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 
@@ -77,69 +79,71 @@ const ModulePlaceholder: React.FC<{ title: string; phase: string }> = ({ title, 
 
 export const AppRoutes: React.FC = () => {
   return (
-    <Routes>
-      {/* Public Experience Routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route
-        path="/login"
-        element={
-          <PublicOnlyRoute>
-            <LoginPage />
-          </PublicOnlyRoute>
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          <PublicOnlyRoute>
-            <SignupPage />
-          </PublicOnlyRoute>
-        }
-      />
+    <ErrorBoundary>
+      <Routes>
+        {/* Public Experience Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/login"
+          element={
+            <PublicOnlyRoute>
+              <LoginPage />
+            </PublicOnlyRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicOnlyRoute>
+              <SignupPage />
+            </PublicOnlyRoute>
+          }
+        />
 
-      {/* Protected Application Routes */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/app" element={<ApplicationShell />}>
-          <Route index element={<Navigate to="/app/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="leads" element={<LeadsPage />} />
-          <Route path="leads/:id" element={<LeadDetailPage />} />
-          <Route path="customers" element={<CustomersPage />} />
-          <Route path="customers/:id" element={<CustomerDetailPage />} />
-          <Route path="contacts" element={<ContactsPage />} />
-          <Route path="contacts/:id" element={<ContactDetailPage />} />
-          <Route path="pipeline" element={<PipelinePage />} />
+        {/* Protected Application Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/app" element={<ApplicationShell />}>
+            <Route index element={<Navigate to="/app/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="leads" element={<LeadsPage />} />
+            <Route path="leads/:id" element={<LeadDetailPage />} />
+            <Route path="customers" element={<CustomersPage />} />
+            <Route path="customers/:id" element={<CustomerDetailPage />} />
+            <Route path="contacts" element={<ContactsPage />} />
+            <Route path="contacts/:id" element={<ContactDetailPage />} />
+            <Route path="pipeline" element={<PipelinePage />} />
 
-          {/* Navigation redirect for legacy /app/organizations */}
-          <Route path="organizations" element={<Navigate to="/app/settings" replace />} />
-          <Route path="opportunities" element={<OpportunitiesPage />} />
-          <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
-          <Route path="quotes" element={<QuotesPage />} />
-          <Route path="quotes/:id" element={<QuoteDetailPage />} />
-          <Route path="orders" element={<OrdersPage />} />
-          <Route path="orders/:id" element={<OrderDetailPage />} />
-          <Route path="products" element={<ProductsPage />} />
-          <Route path="products/:id" element={<ProductDetailPage />} />
-          <Route path="tasks" element={<TasksPage />} />
-          <Route path="activities" element={<ActivitiesPage />} />
-          <Route path="follow-ups" element={<FollowUpsPage />} />
-          <Route path="documents" element={<DocumentsPage />} />
-          <Route path="documents/:id" element={<DocumentDetailPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="support" element={<SupportCasesPage />} />
-          <Route path="support-cases/:id" element={<SupportCaseDetailPage />} />
-          <Route path="campaigns" element={<CampaignsPage />} />
-          <Route path="campaigns/:id" element={<CampaignDetailPage />} />
-          <Route path="reports" element={<ReportsPage />} />
-          <Route path="users" element={<UsersPage />} />
-          <Route path="roles" element={<RolesPage />} />
-          <Route path="settings" element={<OrganizationSettingsPage />} />
-          <Route path="audit-logs" element={<AuditLogsPage />} />
+            {/* Navigation redirect for legacy /app/organizations */}
+            <Route path="organizations" element={<Navigate to="/app/settings" replace />} />
+            <Route path="opportunities" element={<OpportunitiesPage />} />
+            <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
+            <Route path="quotes" element={<QuotesPage />} />
+            <Route path="quotes/:id" element={<QuoteDetailPage />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="orders/:id" element={<OrderDetailPage />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="products/:id" element={<ProductDetailPage />} />
+            <Route path="tasks" element={<TasksPage />} />
+            <Route path="activities" element={<ActivitiesPage />} />
+            <Route path="follow-ups" element={<FollowUpsPage />} />
+            <Route path="documents" element={<DocumentsPage />} />
+            <Route path="documents/:id" element={<DocumentDetailPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="support" element={<SupportCasesPage />} />
+            <Route path="support-cases/:id" element={<SupportCaseDetailPage />} />
+            <Route path="campaigns" element={<CampaignsPage />} />
+            <Route path="campaigns/:id" element={<CampaignDetailPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="roles" element={<RolesPage />} />
+            <Route path="settings" element={<OrganizationSettingsPage />} />
+            <Route path="audit-logs" element={<AuditLogsPage />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* Fallback Route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Fallback Not Found Route */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </ErrorBoundary>
   );
 };

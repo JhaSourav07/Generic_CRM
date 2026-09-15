@@ -14,6 +14,15 @@ export const ApplicationShell: React.FC = () => {
         onMobileClose={() => setIsMobileOpen(false)}
       />
 
+      {/* Mobile Backdrop Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-150"
+          onClick={() => setIsMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Main Content Viewport */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <Topbar onMenuToggle={() => setIsMobileOpen(!isMobileOpen)} />
