@@ -99,7 +99,7 @@ const navSections: NavSectionConfig[] = [
       { label: 'Users', path: '/app/users', icon: UserCog, isImplemented: true },
       { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck, isImplemented: true },
       { label: 'Settings', path: '/app/settings', icon: Settings, isImplemented: true },
-      { label: 'Audit Logs', path: '/app/audit-logs', icon: History, isImplemented: false }
+      { label: 'Audit Logs', path: '/app/audit-logs', icon: History, isImplemented: true }
     ]
   }
 ];

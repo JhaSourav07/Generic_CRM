@@ -254,6 +254,31 @@ export class UsersService {
         error.code = 'INVALID_ROLE';
         throw error;
       }
+
+      // Last Admin Protection: Prevent demoting the last active admin
+      const isCurrentlyAdmin = ['SUPER_ADMIN', 'SALES_MANAGER'].includes(existingUser.role.name);
+      const isNewRoleAdmin = ['SUPER_ADMIN', 'SALES_MANAGER'].includes(role.name);
+      if (isCurrentlyAdmin && !isNewRoleAdmin && existingUser.isActive) {
+        const activeAdminCount = await prisma.user.count({
+          where: {
+            organizationId,
+            isActive: true,
+            role: {
+              name: { in: ['SUPER_ADMIN', 'SALES_MANAGER'] }
+            }
+          }
+        });
+
+        if (activeAdminCount <= 1) {
+          const error: AppError = new Error(
+            'Cannot demote the last active administrator of the organization. Please assign another administrator first.'
+          );
+          error.statusCode = 400;
+          error.code = 'LAST_ADMIN_PROTECTION';
+          throw error;
+        }
+      }
+
       updateData.roleId = role.id;
     }
 

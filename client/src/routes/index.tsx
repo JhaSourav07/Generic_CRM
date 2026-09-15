@@ -37,6 +37,7 @@ import { SupportCaseDetailPage } from '@/pages/app/SupportCaseDetailPage';
 import { CampaignsPage } from '@/pages/app/CampaignsPage';
 import { CampaignDetailPage } from '@/pages/app/CampaignDetailPage';
 import { ReportsPage } from '@/pages/app/ReportsPage';
+import { AuditLogsPage } from '@/pages/app/AuditLogsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 
@@ -133,7 +134,7 @@ export const AppRoutes: React.FC = () => {
           <Route path="users" element={<UsersPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="settings" element={<OrganizationSettingsPage />} />
-          <Route path="audit-logs" element={<ModulePlaceholder title="Audit Logs" phase="Phase 14" />} />
+          <Route path="audit-logs" element={<AuditLogsPage />} />
         </Route>
       </Route>
 

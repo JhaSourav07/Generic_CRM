@@ -173,6 +173,21 @@ export class AuthService {
       return user;
     });
 
+    // Record audit event for organization creation & initial admin registration
+    await prisma.auditLog.create({
+      data: {
+        organizationId: result.organizationId,
+        userId: result.id,
+        action: 'ORGANIZATION_REGISTERED',
+        entity: 'Organization',
+        entityId: result.organizationId,
+        metadata: {
+          organizationName: result.organization.name,
+          creatorEmail: result.email
+        }
+      }
+    }).catch(() => {});
+
     const safeUser = this.sanitizeUser(result);
     const token = this.generateToken({
       userId: result.id,
@@ -224,6 +239,18 @@ export class AuthService {
     // Verify password hash
     const isPasswordValid = await this.comparePassword(input.password, user.passwordHash);
     if (!isPasswordValid) {
+      // Record failed authentication attempt without leaking details to client
+      await prisma.auditLog.create({
+        data: {
+          organizationId: user.organizationId,
+          userId: user.id,
+          action: 'FAILED_LOGIN',
+          entity: 'User',
+          entityId: user.id,
+          metadata: { email: user.email, reason: 'Invalid password' }
+        }
+      }).catch(() => {});
+
       throw genericAuthError();
     }
 
@@ -232,6 +259,18 @@ export class AuthService {
       where: { id: user.id },
       data: { lastLoginAt: new Date() }
     });
+
+    // Record successful login audit event
+    await prisma.auditLog.create({
+      data: {
+        organizationId: user.organizationId,
+        userId: user.id,
+        action: 'USER_LOGIN',
+        entity: 'User',
+        entityId: user.id,
+        metadata: { email: user.email }
+      }
+    }).catch(() => {});
 
     const safeUser = this.sanitizeUser(user);
     const token = this.generateToken({

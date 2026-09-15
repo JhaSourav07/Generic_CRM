@@ -49,3 +49,4 @@ export * from './notifications.types.ts';
 export * from './support.types.ts';
 export * from './campaigns.types.ts';
 export * from './reports.types.ts';
+export * from './audit-logs.types.ts';

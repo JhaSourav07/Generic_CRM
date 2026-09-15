@@ -68,6 +68,11 @@ export async function hasPermission(
   const targetResource = resource.toLowerCase();
   const targetAction = action.toUpperCase();
 
+  // Tenant admin role default permission for audit_logs
+  if (targetResource === 'audit_logs' && targetAction === 'VIEW' && ['SUPER_ADMIN', 'SALES_MANAGER'].includes(user.role.name)) {
+    return true;
+  }
+
   const match = user.role.rolePermissions.some(
     (rp: { permission: { resource: string; action: string } }) =>
       rp.permission.resource.toLowerCase() === targetResource &&

@@ -20,6 +20,29 @@ export const errorHandler = (
     statusCode = 400;
     errorCode = 'VALIDATION_ERROR';
     message = err.errors.map((e) => e.message).join(', ');
+  } else if (err.name === 'PrismaClientKnownRequestError' || (typeof err.code === 'string' && /^P\d{4}$/.test(err.code))) {
+    switch (err.code) {
+      case 'P2002':
+        statusCode = 409;
+        errorCode = 'DUPLICATE_RECORD';
+        message = 'A record with this unique field already exists.';
+        break;
+      case 'P2003':
+        statusCode = 400;
+        errorCode = 'FOREIGN_KEY_VIOLATION';
+        message = 'Referenced related entity does not exist or cannot be modified.';
+        break;
+      case 'P2025':
+        statusCode = 404;
+        errorCode = 'NOT_FOUND';
+        message = 'The requested resource was not found.';
+        break;
+      default:
+        statusCode = 500;
+        errorCode = 'DATABASE_ERROR';
+        message = 'A database operation error occurred.';
+        break;
+    }
   }
 
   // Log error details server-side

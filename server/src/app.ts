@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { env } from './config/env.js';
 import cookieParser from 'cookie-parser';
 import healthRouter from './routes/health.routes.js';
@@ -23,9 +24,17 @@ import { notificationsRoutes } from './modules/notifications/notifications.route
 import { supportCasesRoutes } from './modules/support/support.routes.js';
 import { campaignsRoutes } from './modules/campaigns/campaigns.routes.js';
 import { reportsRoutes } from './modules/reports/reports.routes.js';
+import { auditLogsRoutes } from './modules/audit-logs/audit-logs.routes.js';
+import { authRateLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
+
+// Security Headers with Helmet
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
 
 // Middleware setup
 app.use(cors({
@@ -38,7 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use('/api', healthRouter);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRateLimiter, authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/roles', rolesRoutes);
@@ -62,6 +71,7 @@ app.use('/api/support-cases', supportCasesRoutes);
 app.use('/api/support', supportCasesRoutes);
 app.use('/api/campaigns', campaignsRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/audit-logs', auditLogsRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {
