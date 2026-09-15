@@ -1,6 +1,7 @@
 import { PrismaClient, Prisma, LeadStatus } from '@prisma/client';
 import { GetLeadsQuery, CreateLeadInput, UpdateLeadInput, ConvertLeadInput } from './leads.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { notificationsService } from '../notifications/notifications.service.js';
 
 const prisma = new PrismaClient();
 
@@ -325,6 +326,14 @@ export class LeadsService {
         oldValue: { ownerId: lead.ownerId },
         newValue: { ownerId: owner.id, ownerName: owner.name }
       }
+    });
+
+    await notificationsService.createNotification({
+      organizationId,
+      userId: ownerId,
+      type: 'LEAD_ASSIGNED',
+      title: 'Lead Assigned',
+      message: `Lead ${lead.firstName} ${lead.lastName} has been assigned to you.`
     });
 
     return updated;

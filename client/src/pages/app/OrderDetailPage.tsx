@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/toast';
 import { ordersService } from '@/services/orders.service';
 import { Order, OrderStatus } from '@/types/orders.types';
+import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
 import {
   ShoppingBag,
   ArrowLeft,
@@ -423,6 +424,9 @@ export const OrderDetailPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Order Attachments Vault */}
+          <EntityDocumentsCard orderId={order.id} />
         </div>
       </div>
 

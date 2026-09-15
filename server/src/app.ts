@@ -18,6 +18,9 @@ import { tasksRoutes } from './modules/tasks/tasks.routes.js';
 import { productsRoutes } from './modules/products/products.routes.js';
 import { quotesRoutes } from './modules/quotes/quotes.routes.js';
 import { ordersRoutes } from './modules/orders/orders.routes.js';
+import { documentsRoutes } from './modules/documents/documents.routes.js';
+import { notificationsRoutes } from './modules/notifications/notifications.routes.js';
+import { supportCasesRoutes } from './modules/support/support.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -51,6 +54,10 @@ app.use('/api/tasks', tasksRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/quotes', quotesRoutes);
 app.use('/api/orders', ordersRoutes);
+app.use('/api/documents', documentsRoutes);
+app.use('/api/notifications', notificationsRoutes);
+app.use('/api/support-cases', supportCasesRoutes);
+app.use('/api/support', supportCasesRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

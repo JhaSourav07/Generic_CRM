@@ -11,6 +11,7 @@ import { useToast } from '@/components/ui/toast';
 import { quotesService } from '@/services/quotes.service';
 import { Quote, QuoteStatus } from '@/types/quotes.types';
 import { EditQuoteModal } from '@/components/quotes/EditQuoteModal';
+import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
 import {
   FileText,
   ArrowLeft,
@@ -497,6 +498,9 @@ export const QuoteDetailPage: React.FC = () => {
               </CardContent>
             </Card>
           )}
+
+          {/* Quote Proposal Documents Vault */}
+          <EntityDocumentsCard quoteId={quote.id} />
         </div>
       </div>
 

@@ -44,3 +44,6 @@ export * from './tasks.types.ts';
 export * from './products.types.ts';
 export * from './quotes.types.ts';
 export * from './orders.types.ts';
+export * from './documents.types.ts';
+export * from './notifications.types.ts';
+export * from './support.types.ts';

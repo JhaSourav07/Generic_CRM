@@ -21,6 +21,8 @@ import { CreateOpportunityModal } from '@/components/opportunities/CreateOpportu
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 import { EntityQuotesOrdersCard } from '@/components/commercial/EntityQuotesOrdersCard';
+import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
+import { EntitySupportCasesCard } from '@/components/support/EntitySupportCasesCard';
 
 import {
   Building2,
@@ -557,6 +559,12 @@ export const CustomerDetailPage: React.FC = () => {
               ))}
             </Card>
           )}
+
+          {/* Support Cases Hub */}
+          <EntitySupportCasesCard accountId={customer.id} />
+
+          {/* Customer Document Vault */}
+          <EntityDocumentsCard accountId={customer.id} />
         </div>
       </div>
 

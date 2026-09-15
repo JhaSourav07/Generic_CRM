@@ -2,6 +2,7 @@ import { PrismaClient, Prisma, QuoteStatus, OrderStatus } from '@prisma/client';
 import { GetQuotesQuery, CreateQuoteInput, UpdateQuoteInput } from './quotes.validation.js';
 import { calculateDocumentTotals, LineItemInput } from '../../utils/pricing.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { notificationsService } from '../notifications/notifications.service.js';
 
 const prisma = new PrismaClient();
 
@@ -632,6 +633,14 @@ export class QuotesService {
       }
     });
 
+    await notificationsService.createNotification({
+      organizationId,
+      userId: quote.createdById,
+      type: 'QUOTE_APPROVED',
+      title: 'Quote Approved',
+      message: `Quote #${quote.quoteNumber} has been approved.`
+    });
+
     return this.formatQuote(updated);
   }
 
@@ -677,6 +686,14 @@ export class QuotesService {
         oldValue: { status: quote.status },
         newValue: { status: QuoteStatus.REJECTED, reason }
       }
+    });
+
+    await notificationsService.createNotification({
+      organizationId,
+      userId: quote.createdById,
+      type: 'QUOTE_REJECTED',
+      title: 'Quote Rejected',
+      message: `Quote #${quote.quoteNumber} has been rejected.${reason ? ` Reason: ${reason}` : ''}`
     });
 
     return this.formatQuote(updated);

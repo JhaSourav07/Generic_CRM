@@ -19,6 +19,7 @@ import { MarkLostModal } from '@/components/opportunities/MarkLostModal';
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 import { EntityQuotesOrdersCard } from '@/components/commercial/EntityQuotesOrdersCard';
+import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
 
 import {
   DollarSign,
@@ -475,6 +476,9 @@ export const OpportunityDetailPage: React.FC = () => {
               </div>
             </div>
           </Card>
+
+          {/* Attached Documents Vault */}
+          <EntityDocumentsCard opportunityId={opportunity.id} />
         </div>
       </div>
 

@@ -29,6 +29,11 @@ import { Badge } from '@/components/ui/badge';
 import { UsersPage } from '@/pages/app/UsersPage';
 import { RolesPage } from '@/pages/app/RolesPage';
 import { OrganizationSettingsPage } from '@/pages/app/OrganizationSettingsPage';
+import { DocumentsPage } from '@/pages/app/DocumentsPage';
+import { DocumentDetailPage } from '@/pages/app/DocumentDetailPage';
+import { NotificationsPage } from '@/pages/app/NotificationsPage';
+import { SupportCasesPage } from '@/pages/app/SupportCasesPage';
+import { SupportCaseDetailPage } from '@/pages/app/SupportCaseDetailPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 
@@ -114,8 +119,11 @@ export const AppRoutes: React.FC = () => {
           <Route path="tasks" element={<TasksPage />} />
           <Route path="activities" element={<ActivitiesPage />} />
           <Route path="follow-ups" element={<FollowUpsPage />} />
-          <Route path="documents" element={<ModulePlaceholder title="Documents" phase="Phase 12" />} />
-          <Route path="support" element={<ModulePlaceholder title="Support Cases" phase="Phase 12" />} />
+          <Route path="documents" element={<DocumentsPage />} />
+          <Route path="documents/:id" element={<DocumentDetailPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="support" element={<SupportCasesPage />} />
+          <Route path="support-cases/:id" element={<SupportCaseDetailPage />} />
           <Route path="campaigns" element={<ModulePlaceholder title="Marketing Campaigns" phase="Phase 13" />} />
           <Route path="reports" element={<ModulePlaceholder title="Reports & Analytics" phase="Phase 13" />} />
           <Route path="users" element={<UsersPage />} />

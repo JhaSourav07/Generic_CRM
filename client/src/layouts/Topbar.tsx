@@ -6,6 +6,8 @@ import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropd
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/context/AuthContext';
 import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
+import { NotificationPopover } from '@/components/notifications/NotificationPopover';
+import { notificationsService } from '@/services/notifications.service';
 
 export interface TopbarProps {
   onMenuToggle?: () => void;
@@ -31,10 +33,23 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   }, []);
 
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [unreadNotifications, setUnreadNotifications] = useState([
-    { id: '1', title: 'System Initialization', message: 'Authenticated workspace shell loaded successfully.', isRead: false, time: 'Just now' },
-    { id: '2', title: 'Tenant Isolation Guard', message: 'Multi-tenant security boundary active.', isRead: false, time: '10m ago' }
-  ]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchCount = async () => {
+      try {
+        const count = await notificationsService.getUnreadCount();
+        if (mounted) setUnreadCount(count);
+      } catch (_err) {}
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 30000);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -54,15 +69,6 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
     }
   };
 
-  const markAllRead = () => {
-    setUnreadNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-    toast({
-      type: 'success',
-      title: 'Notifications Cleared',
-      message: 'All notifications marked as read.'
-    });
-  };
-
   const displayName = user?.name || 'User';
   const displayEmail = user?.email || '';
   const orgName = user?.organization?.name || 'Workspace';
@@ -76,12 +82,16 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   else if (currentPath.includes('/contacts')) pageTitle = 'Contacts Directory';
   else if (currentPath.includes('/pipeline')) pageTitle = 'Sales Pipeline';
   else if (currentPath.includes('/opportunities')) pageTitle = 'Opportunities';
+  else if (currentPath.includes('/quotes')) pageTitle = 'Quotes & Proposals';
+  else if (currentPath.includes('/orders')) pageTitle = 'Commercial Orders';
+  else if (currentPath.includes('/products')) pageTitle = 'Products & Services';
   else if (currentPath.includes('/tasks')) pageTitle = 'Tasks & Actions';
   else if (currentPath.includes('/activities')) pageTitle = 'Interaction Logs';
-  else if (currentPath.includes('/support')) pageTitle = 'Support Tickets';
+  else if (currentPath.includes('/follow-ups')) pageTitle = 'Follow-up Reminders';
+  else if (currentPath.includes('/documents')) pageTitle = 'Document Management';
+  else if (currentPath.includes('/notifications')) pageTitle = 'Notifications';
+  else if (currentPath.includes('/support')) pageTitle = 'Support Cases';
   else if (currentPath.includes('/settings')) pageTitle = 'Organization Settings';
-
-  const hasUnread = unreadNotifications.some((n) => !n.isRead);
 
   return (
     <>
@@ -134,7 +144,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             <Search className="h-4 w-4" />
           </button>
 
-          {/* Notifications Dropdown */}
+          {/* Notifications Popover */}
           <div className="relative">
             <button
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
@@ -142,49 +152,17 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
               className="relative p-1.5 rounded-md text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
             >
               <Bell className="h-4 w-4" />
-              {hasUnread && (
-                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-vynexa-status-info animate-pulse" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
               )}
             </button>
 
-            {isNotificationsOpen && (
-              <div
-                className="absolute right-0 mt-2 w-80 rounded-md border border-vynexa-border bg-vynexa-surface-elevated shadow-elevated z-50 p-3 space-y-2"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex items-center justify-between border-b border-vynexa-border pb-2">
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                    <span className="text-xs font-semibold text-vynexa-text-primary">Notifications</span>
-                  </div>
-                  {hasUnread && (
-                    <button
-                      onClick={markAllRead}
-                      className="text-[10px] text-vynexa-text-secondary hover:text-vynexa-text-primary flex items-center gap-1 font-mono"
-                    >
-                      <Check className="h-3 w-3" /> Mark all read
-                    </button>
-                  )}
-                </div>
-
-                <div className="space-y-1.5 max-h-60 overflow-y-auto">
-                  {unreadNotifications.map((n) => (
-                    <div
-                      key={n.id}
-                      className={`p-2 rounded border text-xs space-y-0.5 transition-colors ${
-                        n.isRead ? 'border-vynexa-border/30 bg-vynexa-surface/40 text-vynexa-text-muted' : 'border-vynexa-border bg-vynexa-surface text-vynexa-text-primary'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between font-medium">
-                        <span>{n.title}</span>
-                        <span className="text-[9px] font-mono text-vynexa-text-muted">{n.time}</span>
-                      </div>
-                      <p className="text-[11px] text-vynexa-text-secondary">{n.message}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <NotificationPopover
+              isOpen={isNotificationsOpen}
+              onClose={() => setIsNotificationsOpen(false)}
+              unreadCount={unreadCount}
+              onCountChange={setUnreadCount}
+            />
           </div>
 
           {/* User Account Dropdown */}

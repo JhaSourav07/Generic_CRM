@@ -73,13 +73,13 @@ const navSections: NavSectionConfig[] = [
       { label: 'Tasks', path: '/app/tasks', icon: CheckSquare, isImplemented: true },
       { label: 'Activities', path: '/app/activities', icon: Calendar, isImplemented: true },
       { label: 'Follow-ups', path: '/app/follow-ups', icon: Clock, isImplemented: true },
-      { label: 'Documents', path: '/app/documents', icon: FileCode, isImplemented: false }
+      { label: 'Documents', path: '/app/documents', icon: FileCode, isImplemented: true }
     ]
   },
   {
     title: 'SUPPORT',
     items: [
-      { label: 'Support Cases', path: '/app/support', icon: LifeBuoy, isImplemented: false }
+      { label: 'Support Cases', path: '/app/support', icon: LifeBuoy, isImplemented: true }
     ]
   },
   {

@@ -16,6 +16,7 @@ import { AssignLeadModal } from '@/components/leads/AssignLeadModal';
 import { ConvertLeadDialog } from '@/components/leads/ConvertLeadDialog';
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
+import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
 
 import {
   Edit2,
@@ -345,6 +346,9 @@ export const LeadDetailPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Lead Documents Vault */}
+          <EntityDocumentsCard leadId={lead.id} />
         </div>
       </div>
 

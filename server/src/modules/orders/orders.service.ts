@@ -2,6 +2,7 @@ import { PrismaClient, Prisma, OrderStatus } from '@prisma/client';
 import { GetOrdersQuery, CreateOrderInput, UpdateOrderInput } from './orders.validation.js';
 import { calculateDocumentTotals, LineItemInput } from '../../utils/pricing.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { notificationsService } from '../notifications/notifications.service.js';
 
 const prisma = new PrismaClient();
 
@@ -320,6 +321,14 @@ export class OrdersService {
             status: order.status
           }
         }
+      });
+
+      await notificationsService.createNotification({
+        organizationId,
+        userId,
+        type: 'ORDER_CREATED',
+        title: 'Order Created',
+        message: `Order #${order.orderNumber} has been created.`
       });
 
       return this.formatOrder(order);
