@@ -91,6 +91,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
   else if (currentPath.includes('/documents')) pageTitle = 'Document Management';
   else if (currentPath.includes('/notifications')) pageTitle = 'Notifications';
   else if (currentPath.includes('/support')) pageTitle = 'Support Cases';
+  else if (currentPath.includes('/campaigns')) pageTitle = 'Marketing Campaigns';
+  else if (currentPath.includes('/reports')) pageTitle = 'Reports & Analytics';
   else if (currentPath.includes('/settings')) pageTitle = 'Organization Settings';
 
   return (

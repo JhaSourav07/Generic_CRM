@@ -21,6 +21,8 @@ import { ordersRoutes } from './modules/orders/orders.routes.js';
 import { documentsRoutes } from './modules/documents/documents.routes.js';
 import { notificationsRoutes } from './modules/notifications/notifications.routes.js';
 import { supportCasesRoutes } from './modules/support/support.routes.js';
+import { campaignsRoutes } from './modules/campaigns/campaigns.routes.js';
+import { reportsRoutes } from './modules/reports/reports.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -58,6 +60,8 @@ app.use('/api/documents', documentsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/support-cases', supportCasesRoutes);
 app.use('/api/support', supportCasesRoutes);
+app.use('/api/campaigns', campaignsRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // 404 Route Handler
 app.use((_req: Request, res: Response) => {

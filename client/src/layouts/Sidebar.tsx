@@ -53,8 +53,7 @@ const navSections: NavSectionConfig[] = [
     items: [
       { label: 'Leads', path: '/app/leads', icon: UserCheck, isImplemented: true },
       { label: 'Customers', path: '/app/customers', icon: Building2, isImplemented: true },
-      { label: 'Contacts', path: '/app/contacts', icon: Contact, isImplemented: true },
-      { label: 'Organizations', path: '/app/organizations', icon: Users, isImplemented: true }
+      { label: 'Contacts', path: '/app/contacts', icon: Contact, isImplemented: true }
     ]
   },
   {
@@ -85,13 +84,13 @@ const navSections: NavSectionConfig[] = [
   {
     title: 'MARKETING',
     items: [
-      { label: 'Campaigns', path: '/app/campaigns', icon: Megaphone, isImplemented: false }
+      { label: 'Campaigns', path: '/app/campaigns', icon: Megaphone, isImplemented: true }
     ]
   },
   {
     title: 'INSIGHTS',
     items: [
-      { label: 'Reports', path: '/app/reports', icon: BarChart3, isImplemented: false }
+      { label: 'Reports', path: '/app/reports', icon: BarChart3, isImplemented: true }
     ]
   },
   {

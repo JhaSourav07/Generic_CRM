@@ -47,3 +47,5 @@ export * from './orders.types.ts';
 export * from './documents.types.ts';
 export * from './notifications.types.ts';
 export * from './support.types.ts';
+export * from './campaigns.types.ts';
+export * from './reports.types.ts';

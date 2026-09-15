@@ -34,6 +34,9 @@ import { DocumentDetailPage } from '@/pages/app/DocumentDetailPage';
 import { NotificationsPage } from '@/pages/app/NotificationsPage';
 import { SupportCasesPage } from '@/pages/app/SupportCasesPage';
 import { SupportCaseDetailPage } from '@/pages/app/SupportCaseDetailPage';
+import { CampaignsPage } from '@/pages/app/CampaignsPage';
+import { CampaignDetailPage } from '@/pages/app/CampaignDetailPage';
+import { ReportsPage } from '@/pages/app/ReportsPage';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
 
@@ -106,8 +109,8 @@ export const AppRoutes: React.FC = () => {
           <Route path="contacts/:id" element={<ContactDetailPage />} />
           <Route path="pipeline" element={<PipelinePage />} />
 
-          {/* Navigation placeholders matching AGENTS.md footprint */}
-          <Route path="organizations" element={<OrganizationSettingsPage />} />
+          {/* Navigation redirect for legacy /app/organizations */}
+          <Route path="organizations" element={<Navigate to="/app/settings" replace />} />
           <Route path="opportunities" element={<OpportunitiesPage />} />
           <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
           <Route path="quotes" element={<QuotesPage />} />
@@ -124,8 +127,9 @@ export const AppRoutes: React.FC = () => {
           <Route path="notifications" element={<NotificationsPage />} />
           <Route path="support" element={<SupportCasesPage />} />
           <Route path="support-cases/:id" element={<SupportCaseDetailPage />} />
-          <Route path="campaigns" element={<ModulePlaceholder title="Marketing Campaigns" phase="Phase 13" />} />
-          <Route path="reports" element={<ModulePlaceholder title="Reports & Analytics" phase="Phase 13" />} />
+          <Route path="campaigns" element={<CampaignsPage />} />
+          <Route path="campaigns/:id" element={<CampaignDetailPage />} />
+          <Route path="reports" element={<ReportsPage />} />
           <Route path="users" element={<UsersPage />} />
           <Route path="roles" element={<RolesPage />} />
           <Route path="settings" element={<OrganizationSettingsPage />} />
