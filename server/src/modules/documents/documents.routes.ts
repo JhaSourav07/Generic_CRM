@@ -3,6 +3,7 @@ import multer from 'multer';
 import { documentsController } from './documents.controller.js';
 import { requireAuth, requirePermission } from '../../middleware/auth.middleware.js';
 import { MAX_FILE_SIZE_BYTES } from '../../storage/storage.service.js';
+import { uploadRateLimiter } from '../../middleware/rateLimiter.js';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -30,9 +31,11 @@ documentsRoutes.get('/:id/download', requirePermission('documents', 'VIEW'), (re
 documentsRoutes.post(
   '/upload',
   requirePermission('documents', 'CREATE'),
+  uploadRateLimiter,
   upload.single('file'),
   (req, res, next) => documentsController.upload(req, res, next)
 );
+
 
 documentsRoutes.patch('/:id', requirePermission('documents', 'UPDATE'), (req, res, next) =>
   documentsController.update(req, res, next)

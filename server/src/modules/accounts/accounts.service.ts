@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { GetAccountsQuery, CreateAccountInput, UpdateAccountInput } from './accounts.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export class AccountsService {
   /**

@@ -541,6 +541,8 @@ model Quote {
   documents Document[]
 
   @@unique([organizationId, quoteNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
   @@map("quotes")
 }
 
@@ -589,6 +591,8 @@ model Order {
   documents Document[]
 
   @@unique([organizationId, orderNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
   @@map("orders")
 }
 
@@ -640,6 +644,8 @@ model SupportCase {
   documents Document[]
 
   @@index([organizationId, status, priority])
+  @@index([organizationId, createdAt])
+  @@index([organizationId, assignedToId])
   @@map("support_cases")
 }
 
@@ -663,6 +669,8 @@ model Campaign {
   campaignLeads CampaignLead[]
 
   @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
   @@map("campaigns")
 }
 
@@ -714,6 +722,7 @@ model Document {
   supportCase  SupportCase? @relation(fields: [supportCaseId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
+  @@index([organizationId, createdAt])
   @@index([accountId])
   @@map("documents")
 }
@@ -754,5 +763,6 @@ model AuditLog {
   user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([organizationId, entity, entityId])
+  @@index([organizationId, createdAt])
   @@map("audit_logs")
 }

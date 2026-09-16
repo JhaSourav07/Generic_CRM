@@ -1,9 +1,9 @@
-import { PrismaClient, Prisma, LeadStatus } from '@prisma/client';
+import { Prisma, LeadStatus } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { GetLeadsQuery, CreateLeadInput, UpdateLeadInput, ConvertLeadInput } from './leads.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
 
-const prisma = new PrismaClient();
 
 export class LeadsService {
   /**

@@ -97,3 +97,18 @@ export const exportRateLimiter = createRateLimiter({
   max: 30,
   message: 'Export rate limit reached. Please wait a few minutes before downloading additional reports.'
 });
+
+// 3. Limiter for search endpoints - 60 requests / minute
+export const searchRateLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  max: 60,
+  message: 'Too many search requests. Please slow down.'
+});
+
+// 4. Limiter for file uploads - 20 uploads / minute
+export const uploadRateLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: 'Upload rate limit reached. Please wait a moment before uploading more files.'
+});
+

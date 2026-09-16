@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma, LeadStatus, OpportunityStatus, TaskStatus, SupportCaseStatus, ActivityType } from '@prisma/client';
+import { Prisma, LeadStatus, OpportunityStatus, TaskStatus, SupportCaseStatus, ActivityType } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext } from '../../utils/rbac.js';
 import { ReportFilterQuery } from './reports.validation.js';
 
-const prisma = new PrismaClient();
 
 /**
  * Utility to safely sanitize strings for CSV export against CSV formula injection.

@@ -31,20 +31,42 @@ import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
+const isProduction = env.NODE_ENV === 'production';
+
 // Security Headers with Helmet
 app.use(helmet({
   contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  hsts: isProduction ? {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  } : false
 }));
 
-// Middleware setup
+// Restrictive CORS Configuration
+const allowedOrigins = isProduction
+  ? [env.CLIENT_URL, ...(env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',').map((s) => s.trim()) : [])].filter(Boolean)
+  : [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'];
+
 app.use(cors({
-  origin: [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests without Origin (curl, server-to-server, mobile) or matching allowed origins
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS blocked: Origin not permitted'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
 
 // API Routes
 app.use('/api', healthRouter);

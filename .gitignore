@@ -38,3 +38,12 @@ Thumbs.db
 
 # Prisma generated
 prisma/migrations/dev/
+
+# File Storage & Uploads
+server/uploads/
+uploads/
+
+# Test coverage
+coverage/
+server/coverage/
+

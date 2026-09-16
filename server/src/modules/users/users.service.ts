@@ -1,9 +1,9 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import bcrypt from 'bcryptjs';
 import { GetUsersQuery, CreateUserInput, UpdateUserInput } from './users.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export type UserWithRelations = Prisma.UserGetPayload<{
   include: {

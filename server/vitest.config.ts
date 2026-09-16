@@ -9,6 +9,11 @@ export default defineConfig({
     fileParallelism: false,
     maxWorkers: 1,
     minWorkers: 1,
+    maxConcurrency: 1,
+    sequence: {
+      hooks: 'list',
+      concurrent: false
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],

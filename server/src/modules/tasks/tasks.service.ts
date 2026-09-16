@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma, TaskStatus } from '@prisma/client';
+import { Prisma, TaskStatus } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import {
   CreateTaskInput,
   UpdateTaskInput,
@@ -8,7 +9,6 @@ import {
 } from './tasks.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export class TasksService {
   /**

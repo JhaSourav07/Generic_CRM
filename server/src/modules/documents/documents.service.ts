@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { fileStorageService, FileStreamResult } from '../../storage/storage.service.js';
 import { AuthContext } from '../../utils/rbac.js';
 import { ListDocumentsQuery, UploadDocumentMetadata, UpdateDocumentInput } from './documents.validation.js';
 
-const prisma = new PrismaClient();
 
 interface AppError extends Error {
   statusCode?: number;

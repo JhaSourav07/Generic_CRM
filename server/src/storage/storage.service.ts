@@ -57,7 +57,7 @@ export class FileStorageService {
   private baseDir: string;
 
   constructor(customBaseDir?: string) {
-    this.baseDir = customBaseDir || path.resolve(process.cwd(), 'uploads', 'documents');
+    this.baseDir = customBaseDir || process.env.STORAGE_PATH || path.resolve(process.cwd(), 'uploads', 'documents');
     this.ensureBaseDir();
   }
 

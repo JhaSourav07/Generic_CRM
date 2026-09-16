@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma, ProductType } from '@prisma/client';
+import { Prisma, ProductType } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { GetProductsQuery, CreateProductInput, UpdateProductInput } from './products.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export class ProductsService {
   /**

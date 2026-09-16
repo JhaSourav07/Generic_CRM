@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import {
   CreatePipelineInput,
   UpdatePipelineInput,
@@ -8,7 +9,6 @@ import {
 } from './pipelines.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export class PipelinesService {
   /**

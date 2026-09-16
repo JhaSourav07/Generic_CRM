@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext } from '../../utils/rbac.js';
 import { ListNotificationsQuery, CreateNotificationInput } from './notifications.validation.js';
 
-const prisma = new PrismaClient();
 
 interface AppError extends Error {
   statusCode?: number;

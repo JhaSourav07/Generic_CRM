@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma, LeadStatus } from '@prisma/client';
+import { Prisma, LeadStatus } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext } from '../../utils/rbac.js';
 import {
   ListCampaignsQuery,
@@ -7,7 +8,6 @@ import {
   ListCampaignLeadsQuery
 } from './campaigns.validation.js';
 
-const prisma = new PrismaClient();
 
 interface AppError extends Error {
   statusCode?: number;

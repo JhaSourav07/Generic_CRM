@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma, Permission } from '@prisma/client';
+import { Prisma, Permission } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { CreateRoleInput, UpdateRoleInput } from './roles.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export type RoleWithDetails = Prisma.RoleGetPayload<{
   include: {

@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/prisma.js';
 import { env } from '../config/env.js';
 
-const prisma = new PrismaClient();
 
 export const SUPER_ADMIN_ROLE = 'SUPER_ADMIN';
 

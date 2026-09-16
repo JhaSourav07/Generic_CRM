@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma, SupportCaseStatus, SupportCasePriority } from '@prisma/client';
+import { Prisma, SupportCaseStatus, SupportCasePriority } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext } from '../../utils/rbac.js';
 import {
   ListSupportCasesQuery,
@@ -11,7 +12,6 @@ import {
 } from './support.validation.js';
 import { notificationsService } from '../notifications/notifications.service.js';
 
-const prisma = new PrismaClient();
 
 interface AppError extends Error {
   statusCode?: number;

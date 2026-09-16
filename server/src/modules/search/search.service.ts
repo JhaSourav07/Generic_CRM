@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext, hasPermission } from '../../utils/rbac.js';
 
-const prisma = new PrismaClient();
 
 export interface SearchResultItem {
   id: string;

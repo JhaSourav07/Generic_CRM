@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LandingPage } from '@/pages/public/LandingPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
@@ -17,31 +17,31 @@ import { OpportunityDetailPage } from '@/pages/app/OpportunityDetailPage';
 import { ActivitiesPage } from '@/pages/app/ActivitiesPage';
 import { TasksPage } from '@/pages/app/TasksPage';
 import { FollowUpsPage } from '@/pages/app/FollowUpsPage';
-import { ProductsPage } from '@/pages/app/ProductsPage';
-import { ProductDetailPage } from '@/pages/app/ProductDetailPage';
-import { QuotesPage } from '@/pages/app/QuotesPage';
-import { QuoteDetailPage } from '@/pages/app/QuoteDetailPage';
-import { OrdersPage } from '@/pages/app/OrdersPage';
-import { OrderDetailPage } from '@/pages/app/OrderDetailPage';
-import { PageHeader } from '@/components/ui/page-header';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { UsersPage } from '@/pages/app/UsersPage';
-import { RolesPage } from '@/pages/app/RolesPage';
-import { OrganizationSettingsPage } from '@/pages/app/OrganizationSettingsPage';
-import { DocumentsPage } from '@/pages/app/DocumentsPage';
-import { DocumentDetailPage } from '@/pages/app/DocumentDetailPage';
 import { NotificationsPage } from '@/pages/app/NotificationsPage';
-import { SupportCasesPage } from '@/pages/app/SupportCasesPage';
-import { SupportCaseDetailPage } from '@/pages/app/SupportCaseDetailPage';
-import { CampaignsPage } from '@/pages/app/CampaignsPage';
-import { CampaignDetailPage } from '@/pages/app/CampaignDetailPage';
-import { ReportsPage } from '@/pages/app/ReportsPage';
-import { AuditLogsPage } from '@/pages/app/AuditLogsPage';
 import { NotFoundPage } from '@/pages/public/NotFoundPage';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { PageLoadingFallback } from '@/components/common/PageLoadingFallback';
 import { useAuth } from '@/context/AuthContext';
+
+// Route-level Code Splitting for heavy operational and analytical modules
+const ProductsPage = lazy(() => import('@/pages/app/ProductsPage').then((m) => ({ default: m.ProductsPage })));
+const ProductDetailPage = lazy(() => import('@/pages/app/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
+const QuotesPage = lazy(() => import('@/pages/app/QuotesPage').then((m) => ({ default: m.QuotesPage })));
+const QuoteDetailPage = lazy(() => import('@/pages/app/QuoteDetailPage').then((m) => ({ default: m.QuoteDetailPage })));
+const OrdersPage = lazy(() => import('@/pages/app/OrdersPage').then((m) => ({ default: m.OrdersPage })));
+const OrderDetailPage = lazy(() => import('@/pages/app/OrderDetailPage').then((m) => ({ default: m.OrderDetailPage })));
+const DocumentsPage = lazy(() => import('@/pages/app/DocumentsPage').then((m) => ({ default: m.DocumentsPage })));
+const DocumentDetailPage = lazy(() => import('@/pages/app/DocumentDetailPage').then((m) => ({ default: m.DocumentDetailPage })));
+const SupportCasesPage = lazy(() => import('@/pages/app/SupportCasesPage').then((m) => ({ default: m.SupportCasesPage })));
+const SupportCaseDetailPage = lazy(() => import('@/pages/app/SupportCaseDetailPage').then((m) => ({ default: m.SupportCaseDetailPage })));
+const CampaignsPage = lazy(() => import('@/pages/app/CampaignsPage').then((m) => ({ default: m.CampaignsPage })));
+const CampaignDetailPage = lazy(() => import('@/pages/app/CampaignDetailPage').then((m) => ({ default: m.CampaignDetailPage })));
+const ReportsPage = lazy(() => import('@/pages/app/ReportsPage').then((m) => ({ default: m.ReportsPage })));
+const UsersPage = lazy(() => import('@/pages/app/UsersPage').then((m) => ({ default: m.UsersPage })));
+const RolesPage = lazy(() => import('@/pages/app/RolesPage').then((m) => ({ default: m.RolesPage })));
+const OrganizationSettingsPage = lazy(() => import('@/pages/app/OrganizationSettingsPage').then((m) => ({ default: m.OrganizationSettingsPage })));
+const AuditLogsPage = lazy(() => import('@/pages/app/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage })));
 
 // Redirect authenticated users away from public auth pages
 const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -51,31 +51,6 @@ const PublicOnlyRoute: React.FC<{ children: React.ReactNode }> = ({ children }) 
   }
   return <>{children}</>;
 };
-
-// Generic module placeholder for routes defined in sidebar but implemented in future roadmap phases
-const ModulePlaceholder: React.FC<{ title: string; phase: string }> = ({ title, phase }) => (
-  <div className="space-y-6">
-    <PageHeader
-      title={title}
-      description={`Visual shell layout for ${title.toLowerCase()}.`}
-      breadcrumbs={[
-        { label: 'Application', href: '/app/dashboard' },
-        { label: title }
-      ]}
-    />
-    <Card className="bg-vynexa-surface border-vynexa-border">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle>{title} Module Shell</CardTitle>
-          <CardDescription>
-            This module will be fully implemented with relational database models and domain business logic in later roadmap phases.
-          </CardDescription>
-        </div>
-        <Badge variant="slate">{phase}</Badge>
-      </CardHeader>
-    </Card>
-  </div>
-);
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -117,27 +92,149 @@ export const AppRoutes: React.FC = () => {
             <Route path="organizations" element={<Navigate to="/app/settings" replace />} />
             <Route path="opportunities" element={<OpportunitiesPage />} />
             <Route path="opportunities/:id" element={<OpportunityDetailPage />} />
-            <Route path="quotes" element={<QuotesPage />} />
-            <Route path="quotes/:id" element={<QuoteDetailPage />} />
-            <Route path="orders" element={<OrdersPage />} />
-            <Route path="orders/:id" element={<OrderDetailPage />} />
-            <Route path="products" element={<ProductsPage />} />
-            <Route path="products/:id" element={<ProductDetailPage />} />
+
             <Route path="tasks" element={<TasksPage />} />
             <Route path="activities" element={<ActivitiesPage />} />
             <Route path="follow-ups" element={<FollowUpsPage />} />
-            <Route path="documents" element={<DocumentsPage />} />
-            <Route path="documents/:id" element={<DocumentDetailPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
-            <Route path="support" element={<SupportCasesPage />} />
-            <Route path="support-cases/:id" element={<SupportCaseDetailPage />} />
-            <Route path="campaigns" element={<CampaignsPage />} />
-            <Route path="campaigns/:id" element={<CampaignDetailPage />} />
-            <Route path="reports" element={<ReportsPage />} />
-            <Route path="users" element={<UsersPage />} />
-            <Route path="roles" element={<RolesPage />} />
-            <Route path="settings" element={<OrganizationSettingsPage />} />
-            <Route path="audit-logs" element={<AuditLogsPage />} />
+
+            {/* Code-split Analytical & Commercial Routes */}
+            <Route
+              path="quotes"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <QuotesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="quotes/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <QuoteDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="orders"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <OrdersPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="orders/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <OrderDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="products"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <ProductsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="products/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <ProductDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="documents"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <DocumentsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="documents/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <DocumentDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="support"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <SupportCasesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="support-cases/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <SupportCaseDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="campaigns"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <CampaignsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="campaigns/:id"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <CampaignDetailPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="reports"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <ReportsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="users"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <UsersPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="roles"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <RolesPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="settings"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <OrganizationSettingsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="audit-logs"
+              element={
+                <Suspense fallback={<PageLoadingFallback />}>
+                  <AuditLogsPage />
+                </Suspense>
+              }
+            />
           </Route>
         </Route>
 

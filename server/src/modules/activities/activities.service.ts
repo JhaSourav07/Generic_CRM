@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import {
   CreateActivityInput,
   UpdateActivityInput,
@@ -7,7 +8,6 @@ import {
 } from './activities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
-const prisma = new PrismaClient();
 
 export class ActivitiesService {
   /**

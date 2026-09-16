@@ -1,10 +1,10 @@
-import { PrismaClient, Prisma, QuoteStatus, OrderStatus } from '@prisma/client';
+import { Prisma, QuoteStatus, OrderStatus } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { GetQuotesQuery, CreateQuoteInput, UpdateQuoteInput } from './quotes.validation.js';
 import { calculateDocumentTotals, LineItemInput } from '../../utils/pricing.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
 
-const prisma = new PrismaClient();
 
 export class QuotesService {
   /**

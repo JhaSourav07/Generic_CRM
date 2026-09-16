@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { reportsController } from './reports.controller.js';
 import { requireAuth, requirePermission } from '../../middleware/auth.middleware.js';
+import { exportRateLimiter } from '../../middleware/rateLimiter.js';
 
 export const reportsRoutes = Router();
 
@@ -38,6 +39,7 @@ reportsRoutes.get('/campaigns', requirePermission('reports', 'VIEW'), (req, res,
   reportsController.campaigns(req, res, next)
 );
 
-reportsRoutes.get('/:reportType/export', requirePermission('reports', 'EXPORT'), (req, res, next) =>
+reportsRoutes.get('/:reportType/export', requirePermission('reports', 'EXPORT'), exportRateLimiter, (req, res, next) =>
   reportsController.exportCsv(req, res, next)
 );
+

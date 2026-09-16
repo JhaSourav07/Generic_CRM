@@ -1,8 +1,8 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { prisma } from '../../config/prisma.js';
 import { AuthContext } from '../../utils/rbac.js';
 import { ListAuditLogsQuery } from './audit-logs.validation.js';
 
-const prisma = new PrismaClient();
 
 interface AppError extends Error {
   statusCode?: number;
