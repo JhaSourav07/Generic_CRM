@@ -2,6 +2,7 @@ import { prisma } from '../../config/prisma.js';
 import { fileStorageService, FileStreamResult } from '../../storage/storage.service.js';
 import { AuthContext } from '../../utils/rbac.js';
 import { ListDocumentsQuery, UploadDocumentMetadata, UpdateDocumentInput } from './documents.validation.js';
+import { assertCanModifyDocument } from '../../utils/auth-helpers.js';
 
 
 interface AppError extends Error {
@@ -352,6 +353,7 @@ export class DocumentsService {
    */
   async updateDocument(context: AuthContext, id: string, input: UpdateDocumentInput) {
     const existing = await this.getDocumentById(context, id);
+    assertCanModifyDocument(context, existing, 'update');
 
     const updated = await prisma.document.update({
       where: { id: existing.id },
@@ -380,6 +382,7 @@ export class DocumentsService {
    */
   async deleteDocument(context: AuthContext, id: string) {
     const document = await this.getDocumentById(context, id);
+    assertCanModifyDocument(context, document, 'delete');
 
     await prisma.document.update({
       where: { id: document.id },

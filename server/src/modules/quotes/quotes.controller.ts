@@ -6,6 +6,17 @@ import {
   updateQuoteSchema,
   rejectQuoteSchema
 } from './quotes.validation.js';
+import { AuthContext } from '../../utils/auth-helpers.js';
+
+function getAuthContext(req: Request): AuthContext {
+  const u = (req as any).user;
+  return {
+    userId: u.userId || u.id,
+    organizationId: u.organizationId,
+    role: u.roleName || u.role || 'SALES_REPRESENTATIVE',
+    email: u.email || ''
+  };
+}
 
 export class QuotesController {
   public async getQuotes(req: Request, res: Response, next: NextFunction) {
@@ -41,11 +52,10 @@ export class QuotesController {
 
   public async createQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
       const validatedData = createQuoteSchema.parse(req.body);
 
-      const quote = await quotesService.createQuote(organizationId, userId, validatedData);
+      const quote = await quotesService.createQuote(context, validatedData);
 
       res.status(201).json({
         success: true,
@@ -58,13 +68,11 @@ export class QuotesController {
 
   public async updateQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
       const validatedData = updateQuoteSchema.parse(req.body);
 
       const updated = await quotesService.updateQuote(
-        organizationId,
-        userId,
+        context,
         req.params.id,
         validatedData
       );
@@ -80,10 +88,9 @@ export class QuotesController {
 
   public async deleteQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
 
-      const result = await quotesService.deleteQuote(organizationId, userId, req.params.id);
+      const result = await quotesService.deleteQuote(context, req.params.id);
 
       res.status(200).json({
         success: true,
@@ -96,10 +103,9 @@ export class QuotesController {
 
   public async sendQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
 
-      const result = await quotesService.sendQuote(organizationId, userId, req.params.id);
+      const result = await quotesService.sendQuote(context, req.params.id);
 
       res.status(200).json({
         success: true,
@@ -113,10 +119,9 @@ export class QuotesController {
 
   public async approveQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
 
-      const result = await quotesService.approveQuote(organizationId, userId, req.params.id);
+      const result = await quotesService.approveQuote(context, req.params.id);
 
       res.status(200).json({
         success: true,
@@ -130,11 +135,10 @@ export class QuotesController {
 
   public async rejectQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
       const { reason } = rejectQuoteSchema.parse(req.body);
 
-      const result = await quotesService.rejectQuote(organizationId, userId, req.params.id, reason);
+      const result = await quotesService.rejectQuote(context, req.params.id, reason);
 
       res.status(200).json({
         success: true,
@@ -148,10 +152,9 @@ export class QuotesController {
 
   public async expireQuote(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
 
-      const result = await quotesService.expireQuote(organizationId, userId, req.params.id);
+      const result = await quotesService.expireQuote(context, req.params.id);
 
       res.status(200).json({
         success: true,
@@ -165,10 +168,9 @@ export class QuotesController {
 
   public async convertToOrder(req: Request, res: Response, next: NextFunction) {
     try {
-      const organizationId = req.user!.organizationId;
-      const userId = req.user!.userId;
+      const context = getAuthContext(req);
 
-      const order = await quotesService.convertQuoteToOrder(organizationId, userId, req.params.id);
+      const order = await quotesService.convertQuoteToOrder(context, req.params.id);
 
       res.status(201).json({
         success: true,

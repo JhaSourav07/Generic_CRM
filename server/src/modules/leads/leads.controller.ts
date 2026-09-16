@@ -10,6 +10,18 @@ import {
 } from './leads.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 
+import { AuthContext } from '../../utils/auth-helpers.js';
+
+function getAuthContext(req: Request): AuthContext {
+  const u = (req as any).user;
+  return {
+    userId: u.userId,
+    organizationId: u.organizationId,
+    role: u.roleName,
+    email: u.email
+  };
+}
+
 export class LeadsController {
   public async getLeads(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -65,8 +77,9 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const input = createLeadSchema.parse(req.body);
-      const lead = await leadsService.createLead(req.user.organizationId, req.user.userId, input);
+      const lead = await leadsService.createLead(context, input);
 
       res.status(201).json({
         success: true,
@@ -87,9 +100,10 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = updateLeadSchema.parse(req.body);
-      const updated = await leadsService.updateLead(req.user.organizationId, req.user.userId, id, input);
+      const updated = await leadsService.updateLead(context, id, input);
 
       res.status(200).json({
         success: true,
@@ -110,9 +124,10 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const { ownerId } = assignLeadSchema.parse(req.body);
-      const updated = await leadsService.assignLead(req.user.organizationId, req.user.userId, id, ownerId);
+      const updated = await leadsService.assignLead(context, id, ownerId);
 
       res.status(200).json({
         success: true,
@@ -133,9 +148,10 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const { status } = changeLeadStatusSchema.parse(req.body);
-      const updated = await leadsService.changeLeadStatus(req.user.organizationId, req.user.userId, id, status);
+      const updated = await leadsService.changeLeadStatus(context, id, status);
 
       res.status(200).json({
         success: true,
@@ -156,8 +172,9 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
-      const result = await leadsService.deleteLead(req.user.organizationId, req.user.userId, id);
+      const result = await leadsService.deleteLead(context, id);
 
       res.status(200).json({
         success: true,
@@ -178,9 +195,10 @@ export class LeadsController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = convertLeadSchema.parse(req.body);
-      const result = await leadsService.convertLead(req.user.organizationId, req.user.userId, id, input);
+      const result = await leadsService.convertLead(context, id, input);
 
       res.status(200).json({
         success: true,

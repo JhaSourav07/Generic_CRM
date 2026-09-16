@@ -4,6 +4,7 @@ import { GetQuotesQuery, CreateQuoteInput, UpdateQuoteInput } from './quotes.val
 import { calculateDocumentTotals, LineItemInput } from '../../utils/pricing.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
+import { AuthContext, assertCanApproveQuote, assertResourceOwnership } from '../../utils/auth-helpers.js';
 
 
 export class QuotesService {
@@ -180,7 +181,29 @@ export class QuotesService {
    * Create a new quote with line items atomically inside a transaction.
    * All pricing is calculated server-side.
    */
-  public async createQuote(organizationId: string, userId: string, input: CreateQuoteInput) {
+  public async createQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrInput: string | CreateQuoteInput,
+    maybeInput?: CreateQuoteInput
+  ) {
+    let context: AuthContext;
+    let input: CreateQuoteInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      input = userIdOrInput as CreateQuoteInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrInput as string,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      input = maybeInput!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     return prisma.$transaction(async (tx) => {
       // 1. Validate Account relation if supplied
       if (input.accountId) {
@@ -329,7 +352,33 @@ export class QuotesService {
   /**
    * Update quote. Approved quotes are immutable.
    */
-  public async updateQuote(organizationId: string, userId: string, id: string, input: UpdateQuoteInput) {
+  public async updateQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    idOrInput: string | UpdateQuoteInput,
+    maybeInput?: UpdateQuoteInput
+  ) {
+    let context: AuthContext;
+    let id: string;
+    let input: UpdateQuoteInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+      input = idOrInput as UpdateQuoteInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = idOrInput as string;
+      input = maybeInput!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     return prisma.$transaction(async (tx) => {
       const existing = await tx.quote.findFirst({
         where: { id, organizationId },
@@ -342,6 +391,12 @@ export class QuotesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertResourceOwnership(context, existing, {
+        domain: 'quotes',
+        allowCreator: true,
+        actionDescription: 'You do not have permission to update this quote because you did not create it.'
+      });
 
       // Approved quote immutability rule
       if (existing.status === QuoteStatus.APPROVED) {
@@ -500,7 +555,29 @@ export class QuotesService {
   /**
    * Delete quote if DRAFT or REJECTED.
    */
-  public async deleteQuote(organizationId: string, userId: string, id: string) {
+  public async deleteQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const quote = await prisma.quote.findFirst({
       where: { id, organizationId }
     });
@@ -511,6 +588,12 @@ export class QuotesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertResourceOwnership(context, quote, {
+      domain: 'quotes',
+      allowCreator: true,
+      actionDescription: 'You do not have permission to delete this quote because you did not create it.'
+    });
 
     if (quote.status === QuoteStatus.APPROVED) {
       const error: AppError = new Error('Cannot delete an approved quote');
@@ -540,7 +623,29 @@ export class QuotesService {
   /**
    * Send quote (Transition DRAFT -> SENT).
    */
-  public async sendQuote(organizationId: string, userId: string, id: string) {
+  public async sendQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const quote = await prisma.quote.findFirst({
       where: { id, organizationId }
     });
@@ -551,6 +656,12 @@ export class QuotesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertResourceOwnership(context, quote, {
+      domain: 'quotes',
+      allowCreator: true,
+      actionDescription: 'You do not have permission to send this quote because you did not create it.'
+    });
 
     if (quote.status !== QuoteStatus.DRAFT) {
       const error: AppError = new Error(`Cannot send quote with status '${quote.status}'`);
@@ -582,7 +693,29 @@ export class QuotesService {
   /**
    * Approve quote. Enforces RBAC & non-expired rules.
    */
-  public async approveQuote(organizationId: string, userId: string, id: string) {
+  public async approveQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const quote = await prisma.quote.findFirst({
       where: { id, organizationId }
     });
@@ -593,6 +726,8 @@ export class QuotesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanApproveQuote(context, quote);
 
     if (quote.status === QuoteStatus.APPROVED) {
       const error: AppError = new Error('Quote is already approved');
@@ -647,7 +782,33 @@ export class QuotesService {
   /**
    * Reject quote.
    */
-  public async rejectQuote(organizationId: string, userId: string, id: string, reason?: string) {
+  public async rejectQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    idOrReason?: string,
+    maybeReason?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+    let reason: string | undefined;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+      reason = idOrReason;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = idOrReason!;
+      reason = maybeReason;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const quote = await prisma.quote.findFirst({
       where: { id, organizationId }
     });
@@ -658,6 +819,8 @@ export class QuotesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanApproveQuote(context, quote);
 
     if (quote.status === QuoteStatus.APPROVED) {
       const error: AppError = new Error('Cannot reject an already approved quote');
@@ -702,7 +865,29 @@ export class QuotesService {
   /**
    * Mark quote as expired.
    */
-  public async expireQuote(organizationId: string, userId: string, id: string) {
+  public async expireQuote(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const quote = await prisma.quote.findFirst({
       where: { id, organizationId }
     });
@@ -713,6 +898,8 @@ export class QuotesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanApproveQuote(context, quote);
 
     if (quote.status === QuoteStatus.APPROVED) {
       const error: AppError = new Error('Cannot expire an approved quote');
@@ -747,7 +934,29 @@ export class QuotesService {
    * Returns 409 CONFLICT if quote was already converted.
    * Preserves historical approved pricing!
    */
-  public async convertQuoteToOrder(organizationId: string, userId: string, quoteId: string) {
+  public async convertQuoteToOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let quoteId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      quoteId = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      quoteId = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     return prisma.$transaction(async (tx) => {
       // 1. Load Quote with items
       const quote = await tx.quote.findFirst({
@@ -761,6 +970,12 @@ export class QuotesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertResourceOwnership(context, quote, {
+        domain: 'quotes',
+        allowCreator: true,
+        actionDescription: 'You do not have permission to convert this quote to an order because you did not create it.'
+      });
 
       // 2. Validate status is APPROVED
       if (quote.status !== QuoteStatus.APPROVED) {

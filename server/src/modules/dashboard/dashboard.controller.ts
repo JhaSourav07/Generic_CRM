@@ -17,8 +17,9 @@ export class DashboardController {
       }
 
       const { organizationId, userId } = req.user;
+      const role = (req.user as any).roleName || req.user.role;
 
-      const data = await dashboardService.getDashboardOverview(organizationId, userId);
+      const data = await dashboardService.getDashboardOverview(organizationId, userId, role);
 
       res.status(200).json({
         success: true,

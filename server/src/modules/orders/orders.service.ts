@@ -4,6 +4,7 @@ import { GetOrdersQuery, CreateOrderInput, UpdateOrderInput } from './orders.val
 import { calculateDocumentTotals, LineItemInput } from '../../utils/pricing.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
+import { AuthContext, assertCanModifyOrder } from '../../utils/auth-helpers.js';
 
 
 export class OrdersService {
@@ -176,7 +177,29 @@ export class OrdersService {
    * Manual order creation (if not converted from quote).
    * Atomically calculated and created.
    */
-  public async createOrder(organizationId: string, userId: string, input: CreateOrderInput) {
+  public async createOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrInput: string | CreateOrderInput,
+    maybeInput?: CreateOrderInput
+  ) {
+    let context: AuthContext;
+    let input: CreateOrderInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      input = userIdOrInput as CreateOrderInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrInput as string,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      input = maybeInput!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     return prisma.$transaction(async (tx) => {
       // Validate account
       if (input.accountId) {
@@ -338,7 +361,33 @@ export class OrdersService {
   /**
    * Update order details (e.g. notes).
    */
-  public async updateOrder(organizationId: string, userId: string, id: string, input: UpdateOrderInput) {
+  public async updateOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    idOrInput: string | UpdateOrderInput,
+    maybeInput?: UpdateOrderInput
+  ) {
+    let context: AuthContext;
+    let id: string;
+    let input: UpdateOrderInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+      input = idOrInput as UpdateOrderInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = idOrInput as string;
+      input = maybeInput!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const existing = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -349,6 +398,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, existing, 'update');
 
     if (existing.status === OrderStatus.COMPLETED || existing.status === OrderStatus.CANCELLED) {
       const error: AppError = new Error(`Cannot modify an order with status '${existing.status}'`);
@@ -382,7 +433,29 @@ export class OrdersService {
   /**
    * Delete order if PENDING or CANCELLED.
    */
-  public async deleteOrder(organizationId: string, userId: string, id: string) {
+  public async deleteOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const order = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -393,6 +466,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, order, 'delete');
 
     if (order.status !== OrderStatus.PENDING && order.status !== OrderStatus.CANCELLED) {
       const error: AppError = new Error(`Cannot delete order with status '${order.status}'`);
@@ -422,7 +497,29 @@ export class OrdersService {
   /**
    * Confirm order (PENDING -> CONFIRMED).
    */
-  public async confirmOrder(organizationId: string, userId: string, id: string) {
+  public async confirmOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const order = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -433,6 +530,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, order, 'confirm');
 
     if (order.status !== OrderStatus.PENDING) {
       const error: AppError = new Error(`Cannot confirm order with current status '${order.status}'`);
@@ -464,7 +563,29 @@ export class OrdersService {
   /**
    * Process order (CONFIRMED -> PROCESSING).
    */
-  public async processOrder(organizationId: string, userId: string, id: string) {
+  public async processOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const order = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -475,6 +596,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, order, 'process');
 
     if (order.status !== OrderStatus.CONFIRMED) {
       const error: AppError = new Error(`Cannot process order with current status '${order.status}'. Order must be CONFIRMED first.`);
@@ -506,7 +629,29 @@ export class OrdersService {
   /**
    * Complete order (PROCESSING -> COMPLETED).
    */
-  public async completeOrder(organizationId: string, userId: string, id: string) {
+  public async completeOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = maybeId!;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const order = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -517,6 +662,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, order, 'complete');
 
     if (order.status !== OrderStatus.PROCESSING) {
       const error: AppError = new Error(`Cannot complete order with current status '${order.status}'. Order must be PROCESSING first.`);
@@ -548,7 +695,33 @@ export class OrdersService {
   /**
    * Cancel order (PENDING or CONFIRMED -> CANCELLED).
    */
-  public async cancelOrder(organizationId: string, userId: string, id: string, reason?: string) {
+  public async cancelOrder(
+    contextOrOrgId: AuthContext | string,
+    userIdOrId: string,
+    idOrReason?: string,
+    maybeReason?: string
+  ) {
+    let context: AuthContext;
+    let id: string;
+    let reason: string | undefined;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      id = userIdOrId;
+      reason = idOrReason;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: userIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      id = idOrReason!;
+      reason = maybeReason;
+    }
+    const organizationId = context.organizationId;
+    const userId = context.userId;
+
     const order = await prisma.order.findFirst({
       where: { id, organizationId }
     });
@@ -559,6 +732,8 @@ export class OrdersService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOrder(context, order, 'cancel');
 
     if (order.status === OrderStatus.COMPLETED) {
       const error: AppError = new Error('Completed orders cannot be cancelled');

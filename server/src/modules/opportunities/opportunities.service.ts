@@ -7,6 +7,7 @@ import {
   LoseOpportunityInput
 } from './opportunities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { AuthContext, assertCanModifyOpportunity } from '../../utils/auth-helpers.js';
 
 
 export class OpportunitiesService {
@@ -359,7 +360,25 @@ export class OpportunitiesService {
   /**
    * Create a new Opportunity within tenant boundary with strict relational integrity.
    */
-  public async createOpportunity(organizationId: string, currentUserId: string, input: CreateOpportunityInput) {
+  public async createOpportunity(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrInput: string | CreateOpportunityInput,
+    maybeInput?: CreateOpportunityInput
+  ) {
+    let organizationId: string;
+    let currentUserId: string;
+    let input: CreateOpportunityInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      organizationId = contextOrOrgId.organizationId;
+      currentUserId = contextOrOrgId.userId;
+      input = currentUserIdOrInput as CreateOpportunityInput;
+    } else {
+      organizationId = contextOrOrgId;
+      currentUserId = currentUserIdOrInput as string;
+      input = maybeInput!;
+    }
+
     return await prisma.$transaction(async (tx) => {
       // Validate all relationships
       const { stage } = await this.validateRelationships(tx, organizationId, {
@@ -443,14 +462,33 @@ export class OpportunitiesService {
    * Update general opportunity details.
    */
   public async updateOpportunity(
-    organizationId: string,
-    currentUserId: string,
-    opportunityId: string,
-    input: UpdateOpportunityInput
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrId: string,
+    idOrInput: string | UpdateOpportunityInput,
+    maybeInput?: UpdateOpportunityInput
   ) {
+    let context: AuthContext;
+    let opportunityId: string;
+    let input: UpdateOpportunityInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrId;
+      input = idOrInput as UpdateOpportunityInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = idOrInput as string;
+      input = maybeInput!;
+    }
+
     return await prisma.$transaction(async (tx) => {
       const existing = await tx.opportunity.findFirst({
-        where: { id: opportunityId, organizationId, deletedAt: null },
+        where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null },
         include: { stage: true }
       });
 
@@ -460,6 +498,15 @@ export class OpportunitiesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertCanModifyOpportunity(context, existing, 'update');
+
+      if (input.ownerId && input.ownerId !== existing.ownerId) {
+        assertCanModifyOpportunity(context, existing, 'reassign');
+      }
+
+      const organizationId = context.organizationId;
+      const currentUserId = context.userId;
 
       const targetPipelineId = input.pipelineId || existing.pipelineId;
       const targetStageId = input.stageId || existing.stageId;
@@ -530,10 +577,34 @@ export class OpportunitiesService {
   /**
    * Move opportunity to another stage in the SAME pipeline.
    */
-  public async changeStage(organizationId: string, currentUserId: string, opportunityId: string, stageId: string) {
+  public async changeStage(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrId: string,
+    idOrStageId: string,
+    maybeStageId?: string
+  ) {
+    let context: AuthContext;
+    let opportunityId: string;
+    let stageId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrId;
+      stageId = idOrStageId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = idOrStageId;
+      stageId = maybeStageId!;
+    }
+
     return await prisma.$transaction(async (tx) => {
       const opportunity = await tx.opportunity.findFirst({
-        where: { id: opportunityId, organizationId, deletedAt: null },
+        where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null },
         include: { stage: true }
       });
 
@@ -543,6 +614,11 @@ export class OpportunitiesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertCanModifyOpportunity(context, opportunity, 'change stage on');
+
+      const organizationId = context.organizationId;
+      const currentUserId = context.userId;
 
       // Target stage must belong to the same pipeline and organization
       const targetStage = await tx.pipelineStage.findFirst({
@@ -624,10 +700,34 @@ export class OpportunitiesService {
   /**
    * Assign opportunity to a team member in the organization.
    */
-  public async assignOpportunity(organizationId: string, currentUserId: string, opportunityId: string, ownerId: string) {
+  public async assignOpportunity(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrId: string,
+    idOrOwnerId: string,
+    maybeOwnerId?: string
+  ) {
+    let context: AuthContext;
+    let opportunityId: string;
+    let ownerId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrId;
+      ownerId = idOrOwnerId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = idOrOwnerId;
+      ownerId = maybeOwnerId!;
+    }
+
     return await prisma.$transaction(async (tx) => {
       const opportunity = await tx.opportunity.findFirst({
-        where: { id: opportunityId, organizationId, deletedAt: null }
+        where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null }
       });
 
       if (!opportunity) {
@@ -636,6 +736,11 @@ export class OpportunitiesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertCanModifyOpportunity(context, opportunity, 'reassign');
+
+      const organizationId = context.organizationId;
+      const currentUserId = context.userId;
 
       const newOwner = await tx.user.findFirst({
         where: { id: ownerId, organizationId, isActive: true }
@@ -677,11 +782,39 @@ export class OpportunitiesService {
   /**
    * Mark Opportunity as WON. Enforces status = WON, closedAt = now, and creates audit event.
    */
-  public async winOpportunity(organizationId: string, currentUserId: string, opportunityId: string) {
+  public async winOpportunity(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrOppId: string,
+    maybeOppId?: string
+  ) {
+    let context: AuthContext;
+    let opportunityId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrOppId;
+    } else if (maybeOppId) {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrOppId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = maybeOppId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: '',
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = currentUserIdOrOppId;
+    }
+
     return await prisma.$transaction(async (tx) => {
       // 1. Resolve current deal to verify state and find pipeline Closed Won stage
       const current = await tx.opportunity.findFirst({
-        where: { id: opportunityId, organizationId, deletedAt: null }
+        where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null }
       });
 
       if (!current) {
@@ -690,6 +823,11 @@ export class OpportunitiesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertCanModifyOpportunity(context, current, 'mark as won');
+
+      const organizationId = context.organizationId;
+      const currentUserId = context.userId;
 
       if (current.status === OpportunityStatus.WON) {
         const error: AppError = new Error('Opportunity is already marked as WON');
@@ -770,17 +908,45 @@ export class OpportunitiesService {
    * Mark Opportunity as LOST with reason. Enforces status = LOST, closedAt = now, and creates audit event.
    */
   public async loseOpportunity(
-    organizationId: string,
-    currentUserId: string,
-    opportunityId: string,
-    input: LoseOpportunityInput = {}
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrOppId: string,
+    oppIdOrInput: string | LoseOpportunityInput = {},
+    maybeInput: LoseOpportunityInput = {}
   ) {
+    let context: AuthContext;
+    let opportunityId: string;
+    let input: LoseOpportunityInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrOppId;
+      input = oppIdOrInput as LoseOpportunityInput;
+    } else if (typeof oppIdOrInput === 'string') {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrOppId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = oppIdOrInput;
+      input = maybeInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: '',
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = currentUserIdOrOppId;
+      input = oppIdOrInput as LoseOpportunityInput;
+    }
+
     return await prisma.$transaction(async (tx) => {
       const reason = input.reason || input.lostReason || null;
 
       // 1. Resolve current deal to verify state and find pipeline Closed Lost stage
       const current = await tx.opportunity.findFirst({
-        where: { id: opportunityId, organizationId, deletedAt: null }
+        where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null }
       });
 
       if (!current) {
@@ -789,6 +955,11 @@ export class OpportunitiesService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      assertCanModifyOpportunity(context, current, 'mark as lost');
+
+      const organizationId = context.organizationId;
+      const currentUserId = context.userId;
 
       if (current.status === OpportunityStatus.LOST) {
         const error: AppError = new Error('Opportunity is already marked as LOST');
@@ -866,9 +1037,37 @@ export class OpportunitiesService {
   /**
    * Soft-delete opportunity.
    */
-  public async deleteOpportunity(organizationId: string, currentUserId: string, opportunityId: string) {
+  public async deleteOpportunity(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrId: string,
+    maybeId?: string
+  ) {
+    let context: AuthContext;
+    let opportunityId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      opportunityId = currentUserIdOrId;
+    } else if (maybeId) {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrId,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = maybeId;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: '',
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      opportunityId = currentUserIdOrId;
+    }
+
     const opportunity = await prisma.opportunity.findFirst({
-      where: { id: opportunityId, organizationId, deletedAt: null }
+      where: { id: opportunityId, organizationId: context.organizationId, deletedAt: null }
     });
 
     if (!opportunity) {
@@ -877,6 +1076,11 @@ export class OpportunitiesService {
       error.code = 'NOT_FOUND';
       throw error;
     }
+
+    assertCanModifyOpportunity(context, opportunity, 'delete');
+
+    const organizationId = context.organizationId;
+    const currentUserId = context.userId;
 
     await prisma.opportunity.update({
       where: { id: opportunityId },

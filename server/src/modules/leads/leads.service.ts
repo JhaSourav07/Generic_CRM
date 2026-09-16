@@ -3,6 +3,13 @@ import { prisma } from '../../config/prisma.js';
 import { GetLeadsQuery, CreateLeadInput, UpdateLeadInput, ConvertLeadInput } from './leads.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
+import {
+  AuthContext,
+  assertResourceOwnership,
+  assertCanConvertLead,
+  assertCanAssignLead,
+  isManagerOrAdmin
+} from '../../utils/auth-helpers.js';
 
 
 export class LeadsService {
@@ -154,7 +161,38 @@ export class LeadsService {
   /**
    * Create a new lead with duplicate protection and tenant owner verification.
    */
-  public async createLead(organizationId: string, currentUserId: string, input: CreateLeadInput) {
+  public async createLead(
+    contextOrOrgId: AuthContext | string,
+    currentUserIdOrInput: string | CreateLeadInput,
+    maybeInput?: CreateLeadInput
+  ) {
+    let context: AuthContext;
+    let input: CreateLeadInput;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      input = currentUserIdOrInput as CreateLeadInput;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: currentUserIdOrInput as string,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      input = maybeInput!;
+    }
+
+    const organizationId = context.organizationId;
+    const currentUserId = context.userId;
+
+    // Assignment authorization: If ownerId is provided and !== currentUserId, require manager/admin
+    if (input.ownerId && input.ownerId !== currentUserId && !isManagerOrAdmin(context, 'leads')) {
+      const error: AppError = new Error('Only managers can assign leads to other team members.');
+      error.statusCode = 403;
+      error.code = 'FORBIDDEN';
+      throw error;
+    }
+
     // 1. Duplicate Lead Protection
     if (input.email && input.email.trim() !== '') {
       const existingEmail = await prisma.lead.findFirst({
@@ -239,12 +277,19 @@ export class LeadsService {
   /**
    * Update an existing lead.
    */
-  public async updateLead(organizationId: string, currentUserId: string, leadId: string, input: UpdateLeadInput) {
-    const existing = await this.getLeadById(organizationId, leadId);
+  public async updateLead(context: AuthContext, leadId: string, input: UpdateLeadInput) {
+    const existing = await this.getLeadById(context.organizationId, leadId);
+
+    assertResourceOwnership(context, existing, {
+      domain: 'leads',
+      actionDescription: 'You do not have permission to update this lead because it is owned by another user.'
+    });
 
     if (input.ownerId && input.ownerId !== existing.ownerId) {
+      assertCanAssignLead(context, existing);
+
       const owner = await prisma.user.findFirst({
-        where: { id: input.ownerId, organizationId, isActive: true }
+        where: { id: input.ownerId, organizationId: context.organizationId, isActive: true }
       });
       if (!owner) {
         const error: AppError = new Error('Target owner does not exist or is inactive in this organization');
@@ -278,8 +323,8 @@ export class LeadsService {
 
     await prisma.auditLog.create({
       data: {
-        organizationId,
-        userId: currentUserId,
+        organizationId: context.organizationId,
+        userId: context.userId,
         action: 'LEAD_UPDATED',
         entity: 'Lead',
         entityId: leadId,
@@ -294,11 +339,37 @@ export class LeadsService {
   /**
    * Assign lead to a tenant team member.
    */
-  public async assignLead(organizationId: string, currentUserId: string, leadId: string, ownerId: string) {
-    const lead = await this.getLeadById(organizationId, leadId);
+  public async assignLead(
+    contextOrOrgId: AuthContext | string,
+    secondArg: string,
+    thirdArg: string,
+    fourthArg?: string
+  ) {
+    let context: AuthContext;
+    let leadId: string;
+    let ownerId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      leadId = secondArg;
+      ownerId = thirdArg;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: secondArg,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      leadId = thirdArg;
+      ownerId = fourthArg!;
+    }
+
+    const lead = await this.getLeadById(context.organizationId, leadId);
+
+    assertCanAssignLead(context, lead);
 
     const owner = await prisma.user.findFirst({
-      where: { id: ownerId, organizationId, isActive: true }
+      where: { id: ownerId, organizationId: context.organizationId, isActive: true }
     });
 
     if (!owner) {
@@ -318,8 +389,8 @@ export class LeadsService {
 
     await prisma.auditLog.create({
       data: {
-        organizationId,
-        userId: currentUserId,
+        organizationId: context.organizationId,
+        userId: context.userId,
         action: 'LEAD_ASSIGNED',
         entity: 'Lead',
         entityId: leadId,
@@ -329,7 +400,7 @@ export class LeadsService {
     });
 
     await notificationsService.createNotification({
-      organizationId,
+      organizationId: context.organizationId,
       userId: ownerId,
       type: 'LEAD_ASSIGNED',
       title: 'Lead Assigned',
@@ -342,8 +413,13 @@ export class LeadsService {
   /**
    * Update lead lifecycle status with transition controls.
    */
-  public async changeLeadStatus(organizationId: string, currentUserId: string, leadId: string, newStatus: LeadStatus) {
-    const lead = await this.getLeadById(organizationId, leadId);
+  public async changeLeadStatus(context: AuthContext, leadId: string, newStatus: LeadStatus) {
+    const lead = await this.getLeadById(context.organizationId, leadId);
+
+    assertResourceOwnership(context, lead, {
+      domain: 'leads',
+      actionDescription: 'You do not have permission to change status of this lead because it is owned by another user.'
+    });
 
     if (lead.status === LeadStatus.CONVERTED && newStatus !== LeadStatus.CONVERTED) {
       const error: AppError = new Error('Converted leads cannot be reverted to un-converted status');
@@ -362,8 +438,8 @@ export class LeadsService {
 
     await prisma.auditLog.create({
       data: {
-        organizationId,
-        userId: currentUserId,
+        organizationId: context.organizationId,
+        userId: context.userId,
         action: 'LEAD_STATUS_CHANGED',
         entity: 'Lead',
         entityId: leadId,
@@ -378,8 +454,33 @@ export class LeadsService {
   /**
    * Soft delete a lead record.
    */
-  public async deleteLead(organizationId: string, currentUserId: string, leadId: string) {
-    const lead = await this.getLeadById(organizationId, leadId);
+  public async deleteLead(
+    contextOrOrgId: AuthContext | string,
+    secondArg: string,
+    thirdArg?: string
+  ) {
+    let context: AuthContext;
+    let leadId: string;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      leadId = secondArg;
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: secondArg,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      leadId = thirdArg!;
+    }
+
+    const lead = await this.getLeadById(context.organizationId, leadId);
+
+    assertResourceOwnership(context, lead, {
+      domain: 'leads',
+      actionDescription: 'You do not have permission to delete this lead because it is owned by another user.'
+    });
 
     await prisma.lead.update({
       where: { id: leadId },
@@ -388,8 +489,8 @@ export class LeadsService {
 
     await prisma.auditLog.create({
       data: {
-        organizationId,
-        userId: currentUserId,
+        organizationId: context.organizationId,
+        userId: context.userId,
         action: 'LEAD_DELETED',
         entity: 'Lead',
         entityId: leadId,
@@ -403,7 +504,34 @@ export class LeadsService {
   /**
    * Execute ATOMIC Lead Conversion transaction into Account, Contact, and optional Opportunity.
    */
-  public async convertLead(organizationId: string, currentUserId: string, leadId: string, input: Partial<ConvertLeadInput> = {}) {
+  public async convertLead(
+    contextOrOrgId: AuthContext | string,
+    secondArg: string,
+    thirdArg?: string | Partial<ConvertLeadInput>,
+    fourthArg: Partial<ConvertLeadInput> = {}
+  ) {
+    let context: AuthContext;
+    let leadId: string;
+    let input: Partial<ConvertLeadInput>;
+
+    if (typeof contextOrOrgId === 'object' && contextOrOrgId !== null) {
+      context = contextOrOrgId;
+      leadId = secondArg;
+      input = (thirdArg as Partial<ConvertLeadInput>) || {};
+    } else {
+      context = {
+        organizationId: contextOrOrgId,
+        userId: secondArg,
+        role: 'SUPER_ADMIN',
+        email: ''
+      };
+      leadId = thirdArg as string;
+      input = fourthArg;
+    }
+
+    const organizationId = context.organizationId;
+    const currentUserId = context.userId;
+
     return await prisma.$transaction(async (tx) => {
       // 1. Fetch Lead in tenant scope
       const lead = await tx.lead.findFirst({
@@ -416,6 +544,9 @@ export class LeadsService {
         error.code = 'NOT_FOUND';
         throw error;
       }
+
+      // Assert caller is lead owner or manager/admin
+      assertCanConvertLead(context, lead);
 
       // 2. Prevent Double Conversion
       if (lead.status === LeadStatus.CONVERTED || lead.convertedAt !== null) {

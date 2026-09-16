@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/toast';
+import { useAuth } from '@/context/AuthContext';
 import { tasksService } from '@/services/tasks.service';
 import { usersService } from '@/services/users.service';
 import { Task, TaskPriority, TaskStatus, TaskSummary } from '@/types/tasks.types';
@@ -38,6 +39,19 @@ import {
 export const TasksPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+  const isManagerOrAdmin =
+    currentUser?.role?.name === 'SUPER_ADMIN' || currentUser?.role?.name === 'SALES_MANAGER';
+
+  const canModifyTask = (task: Task) => {
+    if (isManagerOrAdmin) return true;
+    if (!currentUser) return false;
+    return (
+      task.assignedToId === currentUser.id ||
+      task.createdById === currentUser.id ||
+      !task.assignedToId
+    );
+  };
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<UserItem[]>([]);
@@ -130,6 +144,15 @@ export const TasksPage: React.FC = () => {
 
   // One-click task completion toggle
   const handleToggleComplete = async (task: Task) => {
+    if (!canModifyTask(task)) {
+      toast({
+        type: 'error',
+        title: 'Permission Denied',
+        message: 'You cannot modify a task assigned to another user.'
+      });
+      return;
+    }
+
     try {
       if (task.status === 'COMPLETED') {
         // Reopen task
@@ -473,6 +496,7 @@ export const TasksPage: React.FC = () => {
             {tasks.map((task) => {
               const completed = task.status === 'COMPLETED';
               const overdue = isOverdue(task);
+              const canModify = canModifyTask(task);
 
               return (
                 <div
@@ -486,8 +510,19 @@ export const TasksPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleToggleComplete(task)}
-                      className="mt-0.5 text-vynexa-text-muted hover:text-vynexa-emerald transition-colors shrink-0"
-                      title={completed ? 'Reopen task' : 'Mark completed'}
+                      disabled={!canModify}
+                      className={`mt-0.5 text-vynexa-text-muted transition-colors shrink-0 ${
+                        !canModify
+                          ? 'opacity-40 cursor-not-allowed'
+                          : 'hover:text-vynexa-emerald cursor-pointer'
+                      }`}
+                      title={
+                        !canModify
+                          ? 'Only assigned user or manager can update this task'
+                          : completed
+                          ? 'Reopen task'
+                          : 'Mark completed'
+                      }
                     >
                       {completed ? (
                         <CheckCircle2 className="h-5 w-5 text-vynexa-emerald" />
@@ -552,8 +587,9 @@ export const TasksPage: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0"
-                        title="Reassign Task"
+                        className={`h-8 w-8 p-0 ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        title={!canModify ? 'Only assigned user or manager can reassign' : 'Reassign Task'}
+                        disabled={!canModify}
                         onClick={() => setSelectedForAssign(task)}
                       >
                         <UserPlus className="h-3.5 w-3.5 text-vynexa-text-secondary" />
@@ -561,8 +597,9 @@ export const TasksPage: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0"
-                        title="Edit Task"
+                        className={`h-8 w-8 p-0 ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        title={!canModify ? 'Only assigned user or manager can edit' : 'Edit Task'}
+                        disabled={!canModify}
                         onClick={() => setSelectedForEdit(task)}
                       >
                         <Edit2 className="h-3.5 w-3.5 text-vynexa-text-secondary" />
@@ -570,8 +607,9 @@ export const TasksPage: React.FC = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-8 w-8 p-0 text-vynexa-danger"
-                        title="Delete Task"
+                        className={`h-8 w-8 p-0 text-vynexa-danger ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
+                        title={!canModify ? 'Only assigned user or manager can delete' : 'Delete Task'}
+                        disabled={!canModify}
                         onClick={() => setSelectedForDelete(task)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />

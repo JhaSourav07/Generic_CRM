@@ -7,6 +7,18 @@ import {
 } from './activities.validation.js';
 import { activitiesService } from './activities.service.js';
 
+import { AuthContext } from '../../utils/auth-helpers.js';
+
+function getAuthContext(req: Request): AuthContext {
+  const u = (req as any).user;
+  return {
+    userId: u.userId,
+    organizationId: u.organizationId,
+    role: u.roleName,
+    email: u.email
+  };
+}
+
 export class ActivitiesController {
   public async getActivities(req: Request, res: Response, next: NextFunction) {
     try {
@@ -45,11 +57,11 @@ export class ActivitiesController {
 
   public async createActivity(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const input = createActivitySchema.parse(req.body);
 
       const activity = await activitiesService.createActivity(
-        { userId, organizationId },
+        context,
         input
       );
 
@@ -65,12 +77,12 @@ export class ActivitiesController {
 
   public async updateActivity(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = updateActivitySchema.parse(req.body);
 
       const activity = await activitiesService.updateActivity(
-        { userId, organizationId },
+        context,
         id,
         input
       );
@@ -87,11 +99,11 @@ export class ActivitiesController {
 
   public async deleteActivity(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
 
       const result = await activitiesService.deleteActivity(
-        { userId, organizationId },
+        context,
         id
       );
 

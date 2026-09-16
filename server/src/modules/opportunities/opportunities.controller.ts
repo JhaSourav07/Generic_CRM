@@ -9,6 +9,17 @@ import {
   loseOpportunitySchema
 } from './opportunities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { AuthContext } from '../../utils/auth-helpers.js';
+
+function getAuthContext(req: Request): AuthContext {
+  const u = (req as any).user;
+  return {
+    userId: u.userId || u.id,
+    organizationId: u.organizationId,
+    role: u.roleName || u.role || 'SALES_REPRESENTATIVE',
+    email: u.email || ''
+  };
+}
 
 export class OpportunitiesController {
   public async getOpportunities(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -65,8 +76,9 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const input = createOpportunitySchema.parse(req.body);
-      const opp = await opportunitiesService.createOpportunity(req.user.organizationId, req.user.userId, input);
+      const opp = await opportunitiesService.createOpportunity(context, input);
 
       res.status(201).json({
         success: true,
@@ -87,9 +99,10 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = updateOpportunitySchema.parse(req.body);
-      const updated = await opportunitiesService.updateOpportunity(req.user.organizationId, req.user.userId, id, input);
+      const updated = await opportunitiesService.updateOpportunity(context, id, input);
 
       res.status(200).json({
         success: true,
@@ -110,8 +123,9 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
-      const result = await opportunitiesService.deleteOpportunity(req.user.organizationId, req.user.userId, id);
+      const result = await opportunitiesService.deleteOpportunity(context, id);
 
       res.status(200).json({
         success: true,
@@ -132,9 +146,10 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const { stageId } = changeStageSchema.parse(req.body);
-      const updated = await opportunitiesService.changeStage(req.user.organizationId, req.user.userId, id, stageId);
+      const updated = await opportunitiesService.changeStage(context, id, stageId);
 
       res.status(200).json({
         success: true,
@@ -155,9 +170,10 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const { ownerId } = assignOpportunitySchema.parse(req.body);
-      const updated = await opportunitiesService.assignOpportunity(req.user.organizationId, req.user.userId, id, ownerId);
+      const updated = await opportunitiesService.assignOpportunity(context, id, ownerId);
 
       res.status(200).json({
         success: true,
@@ -178,8 +194,9 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
-      const updated = await opportunitiesService.winOpportunity(req.user.organizationId, req.user.userId, id);
+      const updated = await opportunitiesService.winOpportunity(context, id);
 
       res.status(200).json({
         success: true,
@@ -200,9 +217,10 @@ export class OpportunitiesController {
         return next(error);
       }
 
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = loseOpportunitySchema.parse(req.body);
-      const updated = await opportunitiesService.loseOpportunity(req.user.organizationId, req.user.userId, id, input);
+      const updated = await opportunitiesService.loseOpportunity(context, id, input);
 
       res.status(200).json({
         success: true,

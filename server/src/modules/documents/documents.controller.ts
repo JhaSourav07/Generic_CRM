@@ -12,7 +12,7 @@ function getAuthContext(req: Request): AuthContext {
   return {
     userId: user.userId || user.id,
     email: user.email,
-    role: user.role,
+    role: user.roleName || user.role || 'SALES_REPRESENTATIVE',
     organizationId: user.organizationId
   };
 }

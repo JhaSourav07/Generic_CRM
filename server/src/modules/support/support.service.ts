@@ -11,6 +11,7 @@ import {
   CloseSupportCaseInput
 } from './support.validation.js';
 import { notificationsService } from '../notifications/notifications.service.js';
+import { assertCanModifyCase } from '../../utils/auth-helpers.js';
 
 
 interface AppError extends Error {
@@ -304,6 +305,8 @@ export class SupportCasesService {
         throw err;
       }
 
+      assertCanModifyCase(context, existing, 'update');
+
       const targetAccountId = input.accountId !== undefined ? input.accountId : existing.accountId;
       const targetContactId = input.contactId !== undefined ? input.contactId : existing.contactId;
       const targetAssignedToId = input.assignedToId !== undefined ? input.assignedToId : existing.assignedToId;
@@ -365,6 +368,8 @@ export class SupportCasesService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      assertCanModifyCase(context, existing, 'assign');
 
       if (input.assignedToId) {
         const assignee = await tx.user.findFirst({
@@ -428,6 +433,8 @@ export class SupportCasesService {
         throw err;
       }
 
+      assertCanModifyCase(context, existing, 'change status of');
+
       // Disallow moving out of CLOSED without explicit reopen action
       if (existing.status === SupportCaseStatus.CLOSED && input.status !== SupportCaseStatus.CLOSED) {
         const err: AppError = new Error('Closed cases cannot be transitioned directly. Please use the Reopen workflow.');
@@ -476,6 +483,8 @@ export class SupportCasesService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      assertCanModifyCase(context, existing, 'resolve');
 
       if (existing.status === SupportCaseStatus.RESOLVED) {
         const err: AppError = new Error('Case is already resolved.');
@@ -535,6 +544,8 @@ export class SupportCasesService {
         throw err;
       }
 
+      assertCanModifyCase(context, existing, 'close');
+
       if (existing.status === SupportCaseStatus.CLOSED) {
         const err: AppError = new Error('Case is already closed.');
         err.statusCode = 400;
@@ -584,6 +595,8 @@ export class SupportCasesService {
         throw err;
       }
 
+      assertCanModifyCase(context, existing, 'reopen');
+
       if (existing.status === SupportCaseStatus.OPEN || existing.status === SupportCaseStatus.IN_PROGRESS) {
         const err: AppError = new Error('Only resolved or closed cases can be reopened.');
         err.statusCode = 400;
@@ -632,6 +645,8 @@ export class SupportCasesService {
       err.code = 'NOT_FOUND';
       throw err;
     }
+
+    assertCanModifyCase(context, existing, 'delete');
 
     await prisma.supportCase.update({
       where: { id },

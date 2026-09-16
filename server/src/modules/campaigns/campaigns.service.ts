@@ -7,6 +7,7 @@ import {
   UpdateCampaignInput,
   ListCampaignLeadsQuery
 } from './campaigns.validation.js';
+import { assertCanModifyCampaign } from '../../utils/auth-helpers.js';
 
 
 interface AppError extends Error {
@@ -346,6 +347,8 @@ export class CampaignsService {
         throw err;
       }
 
+      assertCanModifyCampaign(context, existing, 'update');
+
       const updateData: Prisma.CampaignUpdateInput = {};
 
       if (data.name !== undefined) updateData.name = data.name.trim();
@@ -404,6 +407,8 @@ export class CampaignsService {
         throw err;
       }
 
+      assertCanModifyCampaign(context, campaign, 'delete');
+
       await tx.campaign.delete({
         where: { id }
       });
@@ -441,6 +446,8 @@ export class CampaignsService {
         err.code = 'CAMPAIGN_NOT_FOUND';
         throw err;
       }
+
+      assertCanModifyCampaign(context, campaign, 'change status of');
 
       const updated = await tx.campaign.update({
         where: { id },
@@ -490,6 +497,8 @@ export class CampaignsService {
       err.code = 'CAMPAIGN_NOT_FOUND';
       throw err;
     }
+
+    assertCanModifyCampaign(context, campaign, 'add lead to');
 
     if (!lead) {
       const err: AppError = new Error('Lead not found');
@@ -545,6 +554,8 @@ export class CampaignsService {
       throw err;
     }
 
+    assertCanModifyCampaign(context, campaign, 'remove lead from');
+
     const existing = await prisma.campaignLead.findUnique({
       where: {
         campaignId_leadId: { campaignId, leadId }
@@ -593,6 +604,8 @@ export class CampaignsService {
         err.code = 'CAMPAIGN_NOT_FOUND';
         throw err;
       }
+
+      assertCanModifyCampaign(context, campaign, 'bulk add leads to');
 
       // Validate all leads belong to this organization
       const validLeads = await tx.lead.findMany({

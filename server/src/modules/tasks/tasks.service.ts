@@ -8,6 +8,12 @@ import {
   GetTasksQuery
 } from './tasks.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import {
+  AuthContext,
+  assertCanModifyTask,
+  assertCanAssignTask,
+  isManagerOrAdmin
+} from '../../utils/auth-helpers.js';
 
 
 export class TasksService {
@@ -424,10 +430,18 @@ export class TasksService {
    * Create a new task with cross-entity validation and notifications.
    */
   public async createTask(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     input: CreateTaskInput
   ) {
     return prisma.$transaction(async (tx) => {
+      // Assignment authorization: If assignedToId is specified and !== context.userId, require manager/admin
+      if (input.assignedToId && input.assignedToId !== context.userId && !isManagerOrAdmin(context, 'tasks')) {
+        const err: AppError = new Error('Only managers can assign tasks to other team members.');
+        err.statusCode = 403;
+        err.code = 'FORBIDDEN';
+        throw err;
+      }
+
       // Validate cross-entity relations
       await this.validateEntityRelationships(tx, context.organizationId, {
         leadId: input.leadId,
@@ -504,7 +518,7 @@ export class TasksService {
    * Update an existing task.
    */
   public async updateTask(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string,
     input: UpdateTaskInput
   ) {
@@ -518,6 +532,19 @@ export class TasksService {
         err.statusCode = 404;
         err.code = 'NOT_FOUND';
         throw err;
+      }
+
+      // Assert ownership / managerial authority
+      assertCanModifyTask(context, existing, 'update');
+
+      // Check reassignment authorization
+      if (input.assignedToId !== undefined && input.assignedToId !== existing.assignedToId) {
+        if (input.assignedToId && input.assignedToId !== context.userId && !isManagerOrAdmin(context, 'tasks')) {
+          const err: AppError = new Error('Only managers can reassign tasks to other team members.');
+          err.statusCode = 403;
+          err.code = 'FORBIDDEN';
+          throw err;
+        }
       }
 
       // Check status transition if changing
@@ -623,7 +650,7 @@ export class TasksService {
    * Change task status with controlled workflow state validation.
    */
   public async changeStatus(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string,
     input: ChangeTaskStatusInput
   ) {
@@ -638,6 +665,9 @@ export class TasksService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      // Assert ownership / managerial authority
+      assertCanModifyTask(context, existing, 'change status of');
 
       this.validateStatusTransition(existing.status, input.status);
 
@@ -682,7 +712,7 @@ export class TasksService {
    * Assign a task to an active user in the organization.
    */
   public async assignTask(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string,
     input: AssignTaskInput
   ) {
@@ -695,6 +725,15 @@ export class TasksService {
         const err: AppError = new Error('Task record not found.');
         err.statusCode = 404;
         err.code = 'NOT_FOUND';
+        throw err;
+      }
+
+      assertCanAssignTask(context, existing);
+
+      if (input.assignedToId && input.assignedToId !== context.userId && !isManagerOrAdmin(context, 'tasks')) {
+        const err: AppError = new Error('Only managers can reassign tasks to other team members.');
+        err.statusCode = 403;
+        err.code = 'FORBIDDEN';
         throw err;
       }
 
@@ -759,7 +798,7 @@ export class TasksService {
    * Complete a task (sets status: COMPLETED, completedAt: new Date()).
    */
   public async completeTask(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string
   ) {
     return prisma.$transaction(async (tx) => {
@@ -774,9 +813,14 @@ export class TasksService {
         throw err;
       }
 
+      // Assert ownership / managerial authority
+      assertCanModifyTask(context, existing, 'complete');
+
       if (existing.status === TaskStatus.COMPLETED) {
         return existing; // Idempotent completion
       }
+
+      this.validateStatusTransition(existing.status, TaskStatus.COMPLETED);
 
       const updated = await tx.task.update({
         where: { id },
@@ -815,7 +859,7 @@ export class TasksService {
    * Delete a task (soft delete with deletedAt timestamp).
    */
   public async deleteTask(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string
   ) {
     return prisma.$transaction(async (tx) => {
@@ -829,6 +873,8 @@ export class TasksService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      assertCanModifyTask(context, existing, 'delete');
 
       await tx.task.update({
         where: { id },

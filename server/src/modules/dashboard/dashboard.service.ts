@@ -82,7 +82,7 @@ export class DashboardService {
   /**
    * Aggregate and fetch full authenticated workspace dashboard data for tenant
    */
-  public async getDashboardOverview(organizationId: string, userId: string): Promise<DashboardOverviewData> {
+  public async getDashboardOverview(organizationId: string, userId: string, role?: string): Promise<DashboardOverviewData> {
     const now = new Date();
 
     // Independent database read queries executed in parallel
@@ -167,7 +167,12 @@ export class DashboardService {
 
       // 5. Tasks Overview
       prisma.task.findMany({
-        where: { organizationId, deletedAt: null, status: { in: ['TODO', 'IN_PROGRESS'] } },
+        where: {
+          organizationId,
+          deletedAt: null,
+          status: { in: ['TODO', 'IN_PROGRESS'] },
+          ...(role === 'SALES_REPRESENTATIVE' ? { assignedToId: userId } : {})
+        },
         take: 5,
         orderBy: { dueDate: 'asc' },
         include: {

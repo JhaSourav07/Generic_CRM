@@ -279,6 +279,13 @@ export class UsersService {
         }
       }
 
+      if (currentUserId === targetUserId) {
+        const error: AppError = new Error('You cannot modify your own role. Another administrator must change your role.');
+        error.statusCode = 403;
+        error.code = 'FORBIDDEN';
+        throw error;
+      }
+
       updateData.roleId = role.id;
     }
 

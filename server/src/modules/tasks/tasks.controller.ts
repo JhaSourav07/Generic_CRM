@@ -7,6 +7,17 @@ import {
   getTasksQuerySchema
 } from './tasks.validation.js';
 import { tasksService } from './tasks.service.js';
+import { AuthContext } from '../../utils/auth-helpers.js';
+
+function getAuthContext(req: Request): AuthContext {
+  const u = (req as any).user;
+  return {
+    userId: u.userId,
+    organizationId: u.organizationId,
+    role: u.roleName,
+    email: u.email
+  };
+}
 
 export class TasksController {
   public async getTasks(req: Request, res: Response, next: NextFunction) {
@@ -62,13 +73,10 @@ export class TasksController {
 
   public async createTask(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const input = createTaskSchema.parse(req.body);
 
-      const task = await tasksService.createTask(
-        { userId, organizationId },
-        input
-      );
+      const task = await tasksService.createTask(context, input);
 
       res.status(201).json({
         success: true,
@@ -82,15 +90,11 @@ export class TasksController {
 
   public async updateTask(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = updateTaskSchema.parse(req.body);
 
-      const task = await tasksService.updateTask(
-        { userId, organizationId },
-        id,
-        input
-      );
+      const task = await tasksService.updateTask(context, id, input);
 
       res.status(200).json({
         success: true,
@@ -104,15 +108,11 @@ export class TasksController {
 
   public async changeStatus(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = changeTaskStatusSchema.parse(req.body);
 
-      const task = await tasksService.changeStatus(
-        { userId, organizationId },
-        id,
-        input
-      );
+      const task = await tasksService.changeStatus(context, id, input);
 
       res.status(200).json({
         success: true,
@@ -126,15 +126,11 @@ export class TasksController {
 
   public async assignTask(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
       const input = assignTaskSchema.parse(req.body);
 
-      const task = await tasksService.assignTask(
-        { userId, organizationId },
-        id,
-        input
-      );
+      const task = await tasksService.assignTask(context, id, input);
 
       res.status(200).json({
         success: true,
@@ -148,13 +144,10 @@ export class TasksController {
 
   public async completeTask(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
 
-      const task = await tasksService.completeTask(
-        { userId, organizationId },
-        id
-      );
+      const task = await tasksService.completeTask(context, id);
 
       res.status(200).json({
         success: true,
@@ -168,13 +161,10 @@ export class TasksController {
 
   public async deleteTask(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, organizationId } = (req as any).user;
+      const context = getAuthContext(req);
       const { id } = req.params;
 
-      const result = await tasksService.deleteTask(
-        { userId, organizationId },
-        id
-      );
+      const result = await tasksService.deleteTask(context, id);
 
       res.status(200).json({
         success: true,

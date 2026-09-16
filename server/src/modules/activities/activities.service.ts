@@ -7,6 +7,7 @@ import {
   GetTimelineQuery
 } from './activities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
+import { AuthContext, assertResourceOwnership } from '../../utils/auth-helpers.js';
 
 
 export class ActivitiesService {
@@ -211,7 +212,7 @@ export class ActivitiesService {
    * Create a new activity with cross-entity validation and atomic audit logging.
    */
   public async createActivity(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     input: CreateActivityInput
   ) {
     return prisma.$transaction(async (tx) => {
@@ -274,7 +275,7 @@ export class ActivitiesService {
    * Update an existing activity with relational integrity checks and audit logging.
    */
   public async updateActivity(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string,
     input: UpdateActivityInput
   ) {
@@ -289,6 +290,12 @@ export class ActivitiesService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      assertResourceOwnership(context, existing, {
+        domain: 'sales',
+        allowCreator: true,
+        actionDescription: 'You do not have permission to update this activity because it was created by another user.'
+      });
 
       // Check relationships if any are being updated
       const resolvedLeadId = input.leadId !== undefined ? input.leadId : existing.leadId;
@@ -356,7 +363,7 @@ export class ActivitiesService {
    * Delete an activity record with audit logging.
    */
   public async deleteActivity(
-    context: { userId: string; organizationId: string },
+    context: AuthContext,
     id: string
   ) {
     return prisma.$transaction(async (tx) => {
@@ -370,6 +377,12 @@ export class ActivitiesService {
         err.code = 'NOT_FOUND';
         throw err;
       }
+
+      assertResourceOwnership(context, existing, {
+        domain: 'sales',
+        allowCreator: true,
+        actionDescription: 'You do not have permission to delete this activity because it was created by another user.'
+      });
 
       await tx.activity.delete({
         where: { id }
