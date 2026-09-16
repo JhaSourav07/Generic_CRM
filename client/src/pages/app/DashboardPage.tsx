@@ -10,6 +10,7 @@ import {
   Kanban,
   CheckSquare,
   CheckCircle2,
+  Circle,
   AlertCircle,
   RefreshCw,
   PhoneCall,
@@ -18,18 +19,24 @@ import {
   FileText,
   Clock,
   ArrowUpRight,
-  ShieldCheck
+  ShieldCheck,
+  Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { dashboardService } from '@/services/dashboard.service';
+import { tasksService } from '@/services/tasks.service';
+import { useToast } from '@/components/ui/toast';
 import { DashboardOverviewData } from '@/types/dashboard.types';
 import { useAuth } from '@/context/AuthContext';
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [data, setData] = useState<DashboardOverviewData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [taskTab, setTaskTab] = useState<'my' | 'all'>('my');
+  const [completingTaskId, setCompletingTaskId] = useState<string | null>(null);
 
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
@@ -48,6 +55,43 @@ export const DashboardPage: React.FC = () => {
     fetchDashboard();
   }, [fetchDashboard]);
 
+  const handleQuickComplete = async (taskId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (completingTaskId) return;
+
+    setCompletingTaskId(taskId);
+    try {
+      await tasksService.changeStatus(taskId, 'COMPLETED');
+      toast({
+        type: 'success',
+        title: 'Task completed',
+        message: 'Task status updated to completed.'
+      });
+      setData((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          tasks: prev.tasks.filter((t) => t.id !== taskId),
+          myTasks: prev.myTasks ? prev.myTasks.filter((t) => t.id !== taskId) : [],
+          metrics: {
+            ...prev.metrics,
+            openTasks: Math.max(0, prev.metrics.openTasks - 1),
+            myOpenTasks: prev.metrics.myOpenTasks ? Math.max(0, prev.metrics.myOpenTasks - 1) : undefined
+          }
+        };
+      });
+    } catch (_err) {
+      toast({
+        type: 'error',
+        title: 'Error',
+        message: 'Could not complete task. Please try again.'
+      });
+    } finally {
+      setCompletingTaskId(null);
+    }
+  };
+
   const currencySymbol = data?.organization.currency === 'INR' ? '₹' : '$';
 
   const formatCurrency = (val: number) => {
@@ -62,6 +106,11 @@ export const DashboardPage: React.FC = () => {
     day: 'numeric',
     year: 'numeric'
   });
+
+  const myTasksList = data?.myTasks ?? (user ? (data?.tasks || []).filter((t) => t.assignedTo?.id === user.id) : []);
+  const allTasksList = data?.tasks || [];
+  const currentTasks = taskTab === 'my' ? myTasksList : allTasksList;
+  const myOverdueCount = data?.metrics.myOverdueTasks ?? myTasksList.filter((t) => t.isOverdue).length;
 
   return (
     <div className="space-y-6 select-none">
@@ -184,7 +233,9 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.openTasks}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">To finish</span>
+              <span className="text-[10px] text-vynexa-text-muted font-mono truncate block">
+                {myTasksList.length} assigned to you
+              </span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -206,7 +257,9 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.overdueTasks}
               </div>
-              <span className="text-[10px] text-vynexa-status-danger font-mono font-medium">Needs attention</span>
+              <span className={`text-[10px] font-mono font-medium truncate block ${myOverdueCount > 0 ? 'text-vynexa-status-danger' : 'text-vynexa-text-muted'}`}>
+                {myOverdueCount > 0 ? `${myOverdueCount} of yours overdue` : 'None of yours overdue'}
+              </span>
             </Card>
           </div>
 
@@ -261,64 +314,190 @@ export const DashboardPage: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* TASKS OVERVIEW */}
+              {/* TASKS OVERVIEW WITH MY TASKS & ALL TASKS TOGGLE */}
               <Card className="bg-vynexa-surface border-vynexa-border">
                 <CardHeader className="pb-3 border-b border-vynexa-border">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <CardTitle className="text-sm font-semibold">Tasks</CardTitle>
-                      <CardDescription className="text-xs">Things you and your team need to do.</CardDescription>
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-sm font-semibold">
+                          {taskTab === 'my' ? 'My tasks' : 'Team tasks'}
+                        </CardTitle>
+                        <Badge variant="outline" className="text-[10px] font-mono px-1.5 py-0.2">
+                          {currentTasks.length}
+                        </Badge>
+                        {taskTab === 'my' && myOverdueCount > 0 && (
+                          <Badge variant="red" className="text-[10px] font-mono">
+                            {myOverdueCount} overdue
+                          </Badge>
+                        )}
+                        {taskTab === 'all' && (data.metrics.overdueTasks || 0) > 0 && (
+                          <Badge variant="red" className="text-[10px] font-mono">
+                            {data.metrics.overdueTasks} overdue
+                          </Badge>
+                        )}
+                      </div>
+                      <CardDescription className="text-xs mt-0.5">
+                        {taskTab === 'my'
+                          ? 'Tasks assigned to you that need your attention.'
+                          : 'Tasks across your organization.'}
+                      </CardDescription>
                     </div>
-                    {data.metrics.overdueTasks > 0 && (
-                      <Badge variant="red" className="text-[10px] font-mono">
-                        {data.metrics.overdueTasks} overdue
-                      </Badge>
-                    )}
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                      {/* Segmented Control */}
+                      <div className="flex items-center rounded-lg bg-vynexa-surface-secondary p-0.5 border border-vynexa-border text-xs">
+                        <button
+                          type="button"
+                          onClick={() => setTaskTab('my')}
+                          className={`px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 ${
+                            taskTab === 'my'
+                              ? 'bg-vynexa-surface text-vynexa-text-primary shadow-sm'
+                              : 'text-vynexa-text-muted hover:text-vynexa-text-secondary'
+                          }`}
+                        >
+                          <UserCheck className="h-3 w-3" />
+                          <span>My tasks</span>
+                          {myTasksList.length > 0 && (
+                            <span className="px-1 rounded-full text-[10px] bg-vynexa-surface-elevated font-mono">
+                              {myTasksList.length}
+                            </span>
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTaskTab('all')}
+                          className={`px-2.5 py-1 rounded-md transition-all font-medium flex items-center gap-1.5 ${
+                            taskTab === 'all'
+                              ? 'bg-vynexa-surface text-vynexa-text-primary shadow-sm'
+                              : 'text-vynexa-text-muted hover:text-vynexa-text-secondary'
+                          }`}
+                        >
+                          <CheckSquare className="h-3 w-3" />
+                          <span>All tasks</span>
+                        </button>
+                      </div>
+
+                      <Link to={taskTab === 'my' && user ? `/app/tasks?assignedToId=${user.id}` : '/app/tasks'}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs font-mono h-7 px-2"
+                          rightIcon={<ArrowUpRight className="h-3.5 w-3.5" />}
+                        >
+                          View all
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </CardHeader>
+
                 <CardContent className="pt-3">
-                  {data.tasks.length === 0 ? (
-                    <div className="py-8 text-center text-xs text-vynexa-text-muted space-y-1">
+                  {currentTasks.length === 0 ? (
+                    <div className="py-8 text-center text-xs text-vynexa-text-muted space-y-2">
                       <CheckCircle2 className="h-6 w-6 text-vynexa-text-muted mx-auto" />
-                      <p className="font-medium text-vynexa-text-primary">You're all caught up</p>
-                      <p className="text-[11px]">No tasks need attention right now.</p>
+                      <div>
+                        <p className="font-medium text-vynexa-text-primary">
+                          {taskTab === 'my' ? 'No tasks assigned to you' : "You're all caught up"}
+                        </p>
+                        <p className="text-[11px] text-vynexa-text-muted mt-0.5">
+                          {taskTab === 'my'
+                            ? 'You have finished all tasks assigned to you. Great job!'
+                            : 'No open tasks need attention across the team right now.'}
+                        </p>
+                      </div>
+                      {taskTab === 'my' && (
+                        <Link to="/app/tasks?action=create">
+                          <Button variant="outline" size="sm" className="text-xs h-7 mt-2" leftIcon={<Plus className="h-3 w-3" />}>
+                            Create task
+                          </Button>
+                        </Link>
+                      )}
                     </div>
                   ) : (
                     <div className="divide-y divide-vynexa-border/40">
-                      {data.tasks.map((task) => (
-                        <div key={task.id} className="py-2.5 flex items-center justify-between gap-3 text-xs">
-                          <div className="flex items-center gap-2.5 overflow-hidden">
-                            <div
-                              className={`h-2 w-2 rounded-full shrink-0 ${
-                                task.isOverdue
-                                  ? 'bg-vynexa-status-danger'
-                                  : task.priority === 'HIGH' || task.priority === 'URGENT'
-                                  ? 'bg-vynexa-status-warning'
-                                  : 'bg-vynexa-status-info'
-                              }`}
-                            />
-                            <div className="truncate">
-                              <p className={`font-semibold truncate ${task.isOverdue ? 'text-vynexa-status-danger' : 'text-vynexa-text-primary'}`}>
-                                {task.title}
-                              </p>
-                              {task.relatedEntityName && (
-                                <p className="text-[11px] text-vynexa-text-muted truncate">{task.relatedEntityName}</p>
+                      {currentTasks.map((task) => {
+                        const isCompleting = completingTaskId === task.id;
+                        return (
+                          <div
+                            key={task.id}
+                            className="py-2.5 flex items-center justify-between gap-3 text-xs group hover:bg-vynexa-surface-secondary/20 -mx-2 px-2 rounded transition-colors"
+                          >
+                            <div className="flex items-center gap-2.5 overflow-hidden flex-1 min-w-0">
+                              {/* Quick Complete Toggle Checkbox */}
+                              <button
+                                type="button"
+                                onClick={(e) => handleQuickComplete(task.id, e)}
+                                disabled={isCompleting}
+                                className="text-vynexa-text-muted hover:text-vynexa-status-success shrink-0 transition-colors p-0.5 rounded focus:outline-none"
+                                title="Mark task as completed"
+                              >
+                                {isCompleting ? (
+                                  <RefreshCw className="h-3.5 w-3.5 animate-spin text-vynexa-text-muted" />
+                                ) : (
+                                  <Circle className="h-3.5 w-3.5 group-hover:hidden" />
+                                )}
+                                {!isCompleting && (
+                                  <CheckCircle2 className="h-3.5 w-3.5 hidden group-hover:inline text-vynexa-status-success" />
+                                )}
+                              </button>
+
+                              <div className="truncate flex-1 min-w-0">
+                                <Link
+                                  to="/app/tasks"
+                                  className={`font-semibold truncate block hover:underline ${
+                                    task.isOverdue ? 'text-vynexa-status-danger' : 'text-vynexa-text-primary'
+                                  }`}
+                                >
+                                  {task.title}
+                                </Link>
+                                <div className="flex items-center gap-2 text-[11px] text-vynexa-text-muted truncate mt-0.5">
+                                  {task.relatedEntityName && (
+                                    <span className="truncate">{task.relatedEntityName}</span>
+                                  )}
+                                  {taskTab === 'all' && task.assignedTo && (
+                                    <>
+                                      {task.relatedEntityName && <span>•</span>}
+                                      <span className="truncate text-vynexa-text-secondary font-medium">
+                                        {task.assignedTo.name || task.assignedTo.email}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
+                              {task.dueDate && (
+                                <span
+                                  className={
+                                    task.isOverdue
+                                      ? 'text-vynexa-status-danger font-semibold'
+                                      : 'text-vynexa-text-muted'
+                                  }
+                                >
+                                  {new Date(task.dueDate).toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric'
+                                  })}
+                                </span>
                               )}
+                              <Badge
+                                variant={
+                                  task.priority === 'URGENT'
+                                    ? 'red'
+                                    : task.priority === 'HIGH'
+                                    ? 'amber'
+                                    : 'outline'
+                                }
+                                className="text-[9px] px-1.5 py-0.2"
+                              >
+                                {task.priority}
+                              </Badge>
                             </div>
                           </div>
-
-                          <div className="flex items-center gap-2 shrink-0 font-mono text-[11px]">
-                            {task.dueDate && (
-                              <span className={task.isOverdue ? 'text-vynexa-status-danger font-semibold' : 'text-vynexa-text-muted'}>
-                                {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                              </span>
-                            )}
-                            <Badge variant={task.priority === 'URGENT' ? 'red' : 'outline'} className="text-[9px] px-1.5 py-0.2">
-                              {task.priority}
-                            </Badge>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>

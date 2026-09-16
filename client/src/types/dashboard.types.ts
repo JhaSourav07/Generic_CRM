@@ -5,6 +5,8 @@ export interface DashboardMetrics {
   openTasks: number;
   wonOpportunities: number;
   overdueTasks: number;
+  myOpenTasks?: number;
+  myOverdueTasks?: number;
 }
 
 export interface PipelineStageOverview {
@@ -69,6 +71,7 @@ export interface DashboardOverviewData {
   pipeline: PipelineStageOverview[];
   recentActivities: RecentActivityItem[];
   tasks: TaskOverviewItem[];
+  myTasks?: TaskOverviewItem[];
   notifications: {
     unreadCount: number;
     items: NotificationItem[];

@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Dropdown, DropdownItem } from '@/components/ui/dropdown';
+import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown';
 import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/toast';
 
@@ -25,6 +25,7 @@ import {
   Users,
   Building2,
   MoreVertical,
+  MoreHorizontal,
   Edit2,
   Trash2,
   ChevronLeft,
@@ -294,8 +295,8 @@ export const ContactsPage: React.FC = () => {
                       <TableCell className="text-right">
                         <Dropdown
                           trigger={
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <MoreVertical className="h-4 w-4 text-vynexa-text-secondary" />
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary" title="Contact actions">
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           }
                         >
@@ -311,6 +312,7 @@ export const ContactsPage: React.FC = () => {
                           >
                             Edit contact
                           </DropdownItem>
+                          <DropdownSeparator />
                           <DropdownItem
                             icon={<Trash2 className="h-3.5 w-3.5" />}
                             danger

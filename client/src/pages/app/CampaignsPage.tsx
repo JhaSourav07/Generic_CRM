@@ -20,7 +20,6 @@ import {
   DollarSign,
   Users,
   Calendar,
-  MoreHorizontal,
   Trash2,
   Edit2,
   Eye

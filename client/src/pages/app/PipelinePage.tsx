@@ -25,7 +25,6 @@ import {
   XCircle,
   Building2,
   Calendar,
-  MoreVertical,
   ArrowRightLeft,
   Eye,
   CheckCircle2

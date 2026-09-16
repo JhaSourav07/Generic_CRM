@@ -8,6 +8,8 @@ export interface DashboardMetrics {
   openTasks: number;
   wonOpportunities: number;
   overdueTasks: number;
+  myOpenTasks?: number;
+  myOverdueTasks?: number;
 }
 
 export interface PipelineStageOverview {
@@ -72,6 +74,7 @@ export interface DashboardOverviewData {
   pipeline: PipelineStageOverview[];
   recentActivities: RecentActivityItem[];
   tasks: TaskOverviewItem[];
+  myTasks: TaskOverviewItem[];
   notifications: {
     unreadCount: number;
     items: NotificationItem[];
@@ -97,6 +100,9 @@ export class DashboardService {
       pipelineStages,
       recentActivitiesRaw,
       tasksRaw,
+      myTasksRaw,
+      myOpenTasks,
+      myOverdueTasks,
       notificationsRaw,
       unreadCount
     ] = await Promise.all([
@@ -165,7 +171,7 @@ export class DashboardService {
         }
       }),
 
-      // 5. Tasks Overview
+      // 5. Tasks Overview (All open tasks in organization)
       prisma.task.findMany({
         where: {
           organizationId,
@@ -173,13 +179,52 @@ export class DashboardService {
           status: { in: ['TODO', 'IN_PROGRESS'] },
           ...(role === 'SALES_REPRESENTATIVE' ? { assignedToId: userId } : {})
         },
-        take: 5,
+        take: 8,
         orderBy: { dueDate: 'asc' },
         include: {
           assignedTo: { select: { id: true, name: true, email: true } },
           lead: { select: { id: true, firstName: true, lastName: true } },
           account: { select: { id: true, name: true } },
           opportunity: { select: { id: true, name: true } }
+        }
+      }),
+
+      // 5b. My Tasks (Strictly assigned to current user)
+      prisma.task.findMany({
+        where: {
+          organizationId,
+          assignedToId: userId,
+          deletedAt: null,
+          status: { in: ['TODO', 'IN_PROGRESS'] }
+        },
+        take: 8,
+        orderBy: { dueDate: 'asc' },
+        include: {
+          assignedTo: { select: { id: true, name: true, email: true } },
+          lead: { select: { id: true, firstName: true, lastName: true } },
+          account: { select: { id: true, name: true } },
+          opportunity: { select: { id: true, name: true } }
+        }
+      }),
+
+      // 5c. My Open Tasks Count
+      prisma.task.count({
+        where: {
+          organizationId,
+          assignedToId: userId,
+          status: { in: ['TODO', 'IN_PROGRESS'] },
+          deletedAt: null
+        }
+      }),
+
+      // 5d. My Overdue Tasks Count
+      prisma.task.count({
+        where: {
+          organizationId,
+          assignedToId: userId,
+          status: { in: ['TODO', 'IN_PROGRESS'] },
+          dueDate: { lt: now },
+          deletedAt: null
         }
       }),
 
@@ -242,8 +287,8 @@ export class DashboardService {
       };
     });
 
-    // Format Tasks
-    const tasks: TaskOverviewItem[] = tasksRaw.map((t) => {
+    // Format Task Helper
+    const formatTask = (t: any): TaskOverviewItem => {
       let relatedEntityName: string | null = null;
       if (t.account) relatedEntityName = t.account.name;
       else if (t.lead) relatedEntityName = `${t.lead.firstName} ${t.lead.lastName}`;
@@ -261,7 +306,11 @@ export class DashboardService {
         assignedTo: t.assignedTo,
         relatedEntityName
       };
-    });
+    };
+
+    // Format Tasks
+    const tasks: TaskOverviewItem[] = tasksRaw.map(formatTask);
+    const myTasks: TaskOverviewItem[] = myTasksRaw.map(formatTask);
 
     // Format Notifications
     const notificationsList: NotificationItem[] = notificationsRaw.map((n) => ({
@@ -293,11 +342,14 @@ export class DashboardService {
         pipelineValue: totalPipelineValue,
         openTasks,
         wonOpportunities,
-        overdueTasks
+        overdueTasks,
+        myOpenTasks,
+        myOverdueTasks
       },
       pipeline,
       recentActivities,
       tasks,
+      myTasks,
       notifications: {
         unreadCount,
         items: notificationsList

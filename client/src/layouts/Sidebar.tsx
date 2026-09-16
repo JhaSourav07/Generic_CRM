@@ -110,9 +110,22 @@ export interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('vynexa_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const handleToggleCollapse = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    try {
+      localStorage.setItem('vynexa_sidebar_collapsed', String(collapsed));
+    } catch {}
+  };
 
   const handleNavClick = (e: React.MouseEvent, item: NavItemConfig) => {
     if (onMobileClose) onMobileClose();
@@ -138,30 +151,56 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       )}
     >
       {/* Brand Header */}
-      <div className="flex h-14 items-center justify-between px-4 border-b border-vynexa-border shrink-0">
-        <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="h-7 w-7 rounded-md bg-vynexa-text-primary text-vynexa-bg flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-subtle font-mono">
-            V
-          </div>
-          {!isCollapsed && (
-            <div className="flex flex-col select-none">
-              <span className="text-xs font-bold tracking-wider text-vynexa-text-primary leading-tight font-mono">
-                VYNEXA
-              </span>
-              <span className="text-[10px] text-vynexa-text-muted font-medium tracking-widest font-mono">
-                CRM
-              </span>
+      <div
+        className={cn(
+          'flex h-14 items-center border-b border-vynexa-border shrink-0 transition-all',
+          isCollapsed ? 'justify-center px-2' : 'justify-between px-3.5'
+        )}
+      >
+        {isCollapsed ? (
+          <button
+            type="button"
+            onClick={() => handleToggleCollapse(false)}
+            className="group relative flex h-9 w-9 items-center justify-center rounded-md hover:bg-vynexa-surface-secondary text-vynexa-text-primary transition-colors focus:outline-none"
+            title="Expand sidebar"
+            aria-label="Expand sidebar"
+          >
+            {/* Default state: Crisp, centered brand mark */}
+            <div className="h-7 w-7 rounded-md bg-vynexa-text-primary text-vynexa-bg flex items-center justify-center font-bold text-xs font-mono shadow-subtle group-hover:hidden transition-all">
+              V
             </div>
-          )}
-        </div>
+            {/* Hover state: Expand chevron */}
+            <div className="hidden h-7 w-7 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-vynexa-text-primary group-hover:flex items-center justify-center transition-all shadow-subtle">
+              <ChevronRight className="h-4 w-4" />
+            </div>
+          </button>
+        ) : (
+          <>
+            <div className="flex items-center gap-2.5 overflow-hidden">
+              <div className="h-7 w-7 rounded-md bg-vynexa-text-primary text-vynexa-bg flex items-center justify-center font-bold text-xs shrink-0 select-none shadow-subtle font-mono">
+                V
+              </div>
+              <div className="flex flex-col select-none">
+                <span className="text-xs font-bold tracking-wider text-vynexa-text-primary leading-tight font-mono">
+                  VYNEXA
+                </span>
+                <span className="text-[10px] text-vynexa-text-muted font-medium tracking-widest font-mono">
+                  CRM
+                </span>
+              </div>
+            </div>
 
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden md:flex h-6 w-6 items-center justify-center rounded border border-vynexa-border text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
-        </button>
+            <button
+              type="button"
+              onClick={() => handleToggleCollapse(true)}
+              className="hidden md:flex h-6 w-6 items-center justify-center rounded border border-vynexa-border text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
+              title="Collapse sidebar"
+              aria-label="Collapse sidebar"
+            >
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </button>
+          </>
+        )}
       </div>
 
       {/* Navigation Sections */}
@@ -183,7 +222,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                     onClick={(e) => handleNavClick(e, item)}
                     className={({ isActive }) =>
                       cn(
-                        'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors group relative',
+                        'flex items-center rounded-md text-xs font-medium transition-colors group relative',
+                        isCollapsed ? 'justify-center px-0 py-2' : 'gap-2.5 px-2.5 py-1.5',
                         isActive && item.isImplemented
                           ? 'bg-vynexa-surface-secondary text-vynexa-text-primary font-semibold border border-vynexa-border/60 shadow-subtle'
                           : 'text-vynexa-text-secondary hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary/60'
@@ -211,8 +251,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       </div>
 
       {/* Organization Status Footer */}
-      {!isCollapsed && (
-        <div className="p-3 border-t border-vynexa-border shrink-0 bg-vynexa-surface-secondary/40">
+      <div
+        className={cn(
+          'border-t border-vynexa-border shrink-0 bg-vynexa-surface-secondary/40 transition-all',
+          isCollapsed ? 'p-2 flex justify-center' : 'p-3'
+        )}
+      >
+        {isCollapsed ? (
+          <div
+            className="h-7 w-7 flex items-center justify-center text-vynexa-text-muted hover:text-vynexa-text-primary transition-colors"
+            title="Vynexa CRM • Connected & secure"
+          >
+            <Sparkles className="h-4 w-4" />
+          </div>
+        ) : (
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-vynexa-text-muted shrink-0" />
             <div className="flex flex-col overflow-hidden">
@@ -220,8 +272,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
               <span className="text-[10px] font-mono text-vynexa-text-muted truncate">Connected &amp; secure</span>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 };

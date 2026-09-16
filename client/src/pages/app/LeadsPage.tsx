@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Dropdown, DropdownItem } from '@/components/ui/dropdown';
+import { Dropdown, DropdownItem, DropdownSeparator } from '@/components/ui/dropdown';
 import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/toast';
 
@@ -25,6 +25,7 @@ import {
   Search,
   UserCheck,
   MoreVertical,
+  MoreHorizontal,
   Edit2,
   UserPlus,
   Trash2,
@@ -313,8 +314,13 @@ export const LeadsPage: React.FC = () => {
                     <TableCell className="text-right">
                       <Dropdown
                         trigger={
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="h-4 w-4" />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary"
+                            title="Actions"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         }
                       >
@@ -334,6 +340,7 @@ export const LeadsPage: React.FC = () => {
                         >
                           Turn into customer
                         </DropdownItem>
+                        <DropdownSeparator />
                         <DropdownItem
                           icon={<Trash2 className="h-3.5 w-3.5 text-rose-400" />}
                           danger
