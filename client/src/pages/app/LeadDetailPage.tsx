@@ -9,11 +9,12 @@ import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/toast';
 
 import { leadsService } from '@/services/leads.service';
-import { Lead, LeadStatus } from '@/types/leads.types';
+import { Lead, LeadStatus, LeadScoreBreakdown } from '@/types/leads.types';
 
 import { EditLeadModal } from '@/components/leads/EditLeadModal';
 import { AssignLeadModal } from '@/components/leads/AssignLeadModal';
 import { ConvertLeadDialog } from '@/components/leads/ConvertLeadDialog';
+import { LeadScoreModal } from '@/components/leads/LeadScoreModal';
 import { ActivityTimeline } from '@/components/activities/ActivityTimeline';
 import { EntityTasksCard } from '@/components/tasks/EntityTasksCard';
 import { EntityDocumentsCard } from '@/components/documents/EntityDocumentsCard';
@@ -49,6 +50,11 @@ export const LeadDetailPage: React.FC = () => {
   const [isConvertOpen, setIsConvertOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // Score breakdown state
+  const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
+  const [scoreBreakdown, setScoreBreakdown] = useState<LeadScoreBreakdown | null>(null);
+  const [loadingScore, setLoadingScore] = useState(false);
 
   const fetchLead = useCallback(async () => {
     if (!id) return;
@@ -106,6 +112,40 @@ export const LeadDetailPage: React.FC = () => {
         return <Badge variant="red">Lost</Badge>;
       default:
         return <Badge variant="slate">{status}</Badge>;
+    }
+  };
+
+  const getScoreCategoryBadge = (category?: string | null, score?: number) => {
+    const cat = category || (score !== undefined ? (score >= 80 ? 'HOT' : score >= 60 ? 'WARM' : score >= 30 ? 'COOL' : 'COLD') : 'COLD');
+    switch (cat) {
+      case 'HOT':
+        return <Badge variant="emerald">Hot</Badge>;
+      case 'WARM':
+        return <Badge variant="blue">Warm</Badge>;
+      case 'COOL':
+        return <Badge variant="slate" className="text-slate-300">Cool</Badge>;
+      case 'COLD':
+      default:
+        return <Badge variant="slate" className="text-vynexa-text-muted">Cold</Badge>;
+    }
+  };
+
+  const handleOpenScoreModal = async () => {
+    setIsScoreModalOpen(true);
+    if (!scoreBreakdown && lead) {
+      try {
+        setLoadingScore(true);
+        const data = await leadsService.getLeadScore(lead.id);
+        setScoreBreakdown(data);
+      } catch (err: any) {
+        toast({
+          type: 'error',
+          title: 'Could not load score breakdown',
+          message: err.message || 'Failed to retrieve score data.'
+        });
+      } finally {
+        setLoadingScore(false);
+      }
     }
   };
 
@@ -309,11 +349,25 @@ export const LeadDetailPage: React.FC = () => {
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div>
-                <span className="text-xs text-vynexa-text-muted">Lead score</span>
-                <div className="mt-1 flex items-baseline gap-2">
-                  <span className="text-2xl font-bold font-mono text-vynexa-text-primary">{lead.score}</span>
-                  <span className="text-xs text-vynexa-text-muted">/ 100</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-vynexa-text-muted">Lead Score</span>
+                  {getScoreCategoryBadge(lead.scoreCategory, lead.score)}
                 </div>
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="text-3xl font-bold font-mono text-vynexa-text-primary">{lead.score}</span>
+                  <span className="text-xs text-vynexa-text-muted font-mono">/ 100</span>
+                </div>
+                <p className="text-xs text-vynexa-text-muted mt-1 leading-relaxed">
+                  Based on the information and activity in your CRM.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-3 w-full text-xs"
+                  onClick={handleOpenScoreModal}
+                >
+                  Why this score?
+                </Button>
               </div>
 
               <div className="pt-3 border-t border-vynexa-border">
@@ -374,22 +428,34 @@ export const LeadDetailPage: React.FC = () => {
         onSuccess={fetchLead}
       />
 
+      {/* Delete Confirmation Modal */}
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         title="Delete lead"
-        description="Are you sure you want to delete this lead? This cannot be undone."
-        maxWidth="sm"
       >
-        <div className="flex justify-end gap-3 pt-4">
-          <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={deleting}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete} isLoading={deleting}>
-            Delete lead
-          </Button>
+        <div className="space-y-4">
+          <p className="text-sm text-vynexa-text-secondary">
+            Are you sure you want to delete <span className="font-semibold text-vynexa-text-primary">{lead.firstName} {lead.lastName}</span>? This action can be audited and reversed by an administrator.
+          </p>
+          <div className="flex justify-end gap-3 pt-4 border-t border-vynexa-border">
+            <Button variant="outline" size="sm" onClick={() => setIsDeleteOpen(false)} disabled={deleting}>
+              Cancel
+            </Button>
+            <Button variant="danger" size="sm" onClick={handleDelete} isLoading={deleting}>
+              Delete lead
+            </Button>
+          </div>
         </div>
       </Dialog>
+
+      {/* Lead Score Breakdown Modal */}
+      <LeadScoreModal
+        isOpen={isScoreModalOpen}
+        onClose={() => setIsScoreModalOpen(false)}
+        breakdown={scoreBreakdown}
+        loading={loadingScore}
+      />
     </div>
   );
 };

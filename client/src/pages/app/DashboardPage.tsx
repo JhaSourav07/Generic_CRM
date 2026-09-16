@@ -200,7 +200,13 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.totalLeads}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">All leads</span>
+              <div className="flex items-center gap-1 mt-1 text-[10px] font-mono">
+                <span className="text-emerald-400" title="Hot leads">{data.metrics.leadScores?.hot || 0} hot</span>
+                <span className="text-vynexa-text-muted">·</span>
+                <span className="text-blue-400" title="Warm leads">{data.metrics.leadScores?.warm || 0} warm</span>
+                <span className="text-vynexa-text-muted">·</span>
+                <span className="text-vynexa-text-muted" title="Cool / Cold leads">{(data.metrics.leadScores?.cool || 0) + (data.metrics.leadScores?.cold || 0)} cool</span>
+              </div>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">

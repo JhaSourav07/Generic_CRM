@@ -8,6 +8,7 @@ import {
 } from './activities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { AuthContext, assertResourceOwnership } from '../../utils/auth-helpers.js';
+import { leadScoringService } from '../leads/lead-scoring.service.js';
 
 
 export class ActivitiesService {
@@ -267,6 +268,11 @@ export class ActivitiesService {
         }
       });
 
+      // Recalculate lead score if linked to a lead
+      if (activity.leadId) {
+        await leadScoringService.calculateAndPersistLeadScore(context.organizationId, activity.leadId, tx);
+      }
+
       return activity;
     });
   }
@@ -355,6 +361,14 @@ export class ActivitiesService {
         }
       });
 
+      // Recalculate lead score for any affected leads
+      const leadsToRecalculate = new Set<string>();
+      if (existing.leadId) leadsToRecalculate.add(existing.leadId);
+      if (updated.leadId) leadsToRecalculate.add(updated.leadId);
+      for (const leadId of leadsToRecalculate) {
+        await leadScoringService.calculateAndPersistLeadScore(context.organizationId, leadId, tx);
+      }
+
       return updated;
     });
   }
@@ -403,6 +417,11 @@ export class ActivitiesService {
           }
         }
       });
+
+      // Recalculate lead score if activity was linked to a lead
+      if (existing.leadId) {
+        await leadScoringService.calculateAndPersistLeadScore(context.organizationId, existing.leadId, tx);
+      }
 
       return { id, success: true };
     });

@@ -24,6 +24,29 @@ export interface ConvertedContact {
   jobTitle?: string | null;
 }
 
+export type LeadScoreCategory = 'COLD' | 'COOL' | 'WARM' | 'HOT';
+
+export interface LeadScoreBreakdownDetails {
+  fit: number;
+  fitMax: number;
+  contactQuality: number;
+  contactQualityMax: number;
+  engagement: number;
+  engagementMax: number;
+  opportunity: number;
+  opportunityMax: number;
+  recency: number;
+  recencyMax: number;
+  negativeSignals: number;
+}
+
+export interface LeadScoreBreakdown {
+  score: number;
+  category: LeadScoreCategory;
+  breakdown: LeadScoreBreakdownDetails;
+  reasons: string[];
+}
+
 export interface Lead {
   id: string;
   organizationId: string;
@@ -37,6 +60,9 @@ export interface Lead {
   source?: string | null;
   status: LeadStatus;
   score: number;
+  scoreCategory?: LeadScoreCategory | null;
+  scoreUpdatedAt?: string | null;
+  scoreAlgorithmVersion?: string | null;
   notes?: string | null;
   convertedAccountId?: string | null;
   convertedContactId?: string | null;
@@ -55,6 +81,7 @@ export interface GetLeadsQuery {
   status?: LeadStatus;
   source?: string;
   ownerId?: string;
+  scoreCategory?: LeadScoreCategory;
   minScore?: number;
   maxScore?: number;
   sortBy?: 'createdAt' | 'updatedAt' | 'firstName' | 'lastName' | 'company' | 'score' | 'status';

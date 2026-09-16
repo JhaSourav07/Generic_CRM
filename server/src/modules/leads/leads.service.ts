@@ -3,6 +3,7 @@ import { prisma } from '../../config/prisma.js';
 import { GetLeadsQuery, CreateLeadInput, UpdateLeadInput, ConvertLeadInput } from './leads.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { notificationsService } from '../notifications/notifications.service.js';
+import { leadScoringService } from './lead-scoring.service.js';
 import {
   AuthContext,
   assertResourceOwnership,
@@ -49,6 +50,10 @@ export class LeadsService {
 
     if (query.ownerId) {
       whereClause.ownerId = query.ownerId;
+    }
+
+    if (query.scoreCategory) {
+      whereClause.scoreCategory = query.scoreCategory;
     }
 
     if (query.minScore !== undefined || query.maxScore !== undefined) {
@@ -242,7 +247,7 @@ export class LeadsService {
         jobTitle: input.jobTitle || null,
         source: input.source || null,
         status: input.status || LeadStatus.NEW,
-        score: input.score ?? 0,
+        score: 0,
         notes: input.notes || null
       },
       include: {
@@ -251,6 +256,18 @@ export class LeadsService {
         }
       }
     });
+
+    // Calculate and persist initial score
+    await leadScoringService.calculateAndPersistLeadScore(organizationId, lead.id);
+
+    const refreshedLead = await prisma.lead.findUnique({
+      where: { id: lead.id },
+      include: {
+        owner: {
+          select: { id: true, name: true, email: true }
+        }
+      }
+    }) || lead;
 
     // 4. Record Audit Event
     await prisma.auditLog.create({
@@ -271,7 +288,7 @@ export class LeadsService {
       }
     });
 
-    return lead;
+    return refreshedLead;
   }
 
   /**
@@ -310,7 +327,6 @@ export class LeadsService {
         ...(input.jobTitle !== undefined ? { jobTitle: input.jobTitle || null } : {}),
         ...(input.source !== undefined ? { source: input.source || null } : {}),
         ...(input.status !== undefined ? { status: input.status } : {}),
-        ...(input.score !== undefined ? { score: input.score } : {}),
         ...(input.notes !== undefined ? { notes: input.notes || null } : {}),
         ...(input.ownerId !== undefined ? { ownerId: input.ownerId || null } : {})
       },
@@ -320,6 +336,18 @@ export class LeadsService {
         convertedContact: { select: { id: true, firstName: true, lastName: true } }
       }
     });
+
+    // Recalculate score after lead update
+    await leadScoringService.calculateAndPersistLeadScore(context.organizationId, leadId);
+
+    const refreshedUpdated = await prisma.lead.findUnique({
+      where: { id: leadId },
+      include: {
+        owner: { select: { id: true, name: true, email: true } },
+        convertedAccount: { select: { id: true, name: true } },
+        convertedContact: { select: { id: true, firstName: true, lastName: true } }
+      }
+    }) || updated;
 
     await prisma.auditLog.create({
       data: {
@@ -333,7 +361,7 @@ export class LeadsService {
       }
     });
 
-    return updated;
+    return refreshedUpdated;
   }
 
   /**
@@ -407,7 +435,15 @@ export class LeadsService {
       message: `Lead ${lead.firstName} ${lead.lastName} has been assigned to you.`
     });
 
-    return updated;
+    // Recalculate score after assignment (awards fit points)
+    await leadScoringService.calculateAndPersistLeadScore(context.organizationId, leadId);
+
+    return (await prisma.lead.findUnique({
+      where: { id: leadId },
+      include: {
+        owner: { select: { id: true, name: true, email: true } }
+      }
+    })) || updated;
   }
 
   /**
@@ -448,7 +484,15 @@ export class LeadsService {
       }
     });
 
-    return updated;
+    // Recalculate score after status change
+    await leadScoringService.calculateAndPersistLeadScore(context.organizationId, leadId);
+
+    return (await prisma.lead.findUnique({
+      where: { id: leadId },
+      include: {
+        owner: { select: { id: true, name: true, email: true } }
+      }
+    })) || updated;
   }
 
   /**
@@ -690,6 +734,7 @@ export class LeadsService {
             organizationId,
             accountId,
             contactId,
+            leadId: lead.id,
             ownerId: lead.ownerId || currentUserId,
             pipelineId,
             stageId,
@@ -717,6 +762,9 @@ export class LeadsService {
         }
       });
 
+      // Recalculate score in transaction after conversion
+      await leadScoringService.calculateAndPersistLeadScore(organizationId, leadId, tx);
+
       // 7. Audit Log
       await tx.auditLog.create({
         data: {
@@ -741,6 +789,14 @@ export class LeadsService {
         opportunityId
       };
     });
+  }
+
+  /**
+   * Calculate and retrieve detailed explainable lead score breakdown.
+   */
+  public async getLeadScore(organizationId: string, leadId: string) {
+    const lead = await this.getLeadById(organizationId, leadId);
+    return await leadScoringService.calculateLeadScore(organizationId, lead.id);
   }
 }
 

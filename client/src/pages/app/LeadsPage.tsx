@@ -13,7 +13,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/toast';
 
 import { leadsService } from '@/services/leads.service';
-import { Lead, LeadStatus, GetLeadsQuery } from '@/types/leads.types';
+import { Lead, LeadStatus, LeadScoreCategory, GetLeadsQuery } from '@/types/leads.types';
 
 import { CreateLeadModal } from '@/components/leads/CreateLeadModal';
 import { EditLeadModal } from '@/components/leads/EditLeadModal';
@@ -48,6 +48,7 @@ export const LeadsPage: React.FC = () => {
   // Filter state
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [scoreCategoryFilter, setScoreCategoryFilter] = useState<string>('');
   const [sortBy, setSortBy] = useState<'createdAt' | 'score' | 'company' | 'firstName'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(1);
@@ -78,6 +79,7 @@ export const LeadsPage: React.FC = () => {
         limit: 10,
         search: search.trim() || undefined,
         status: statusFilter ? (statusFilter as LeadStatus) : undefined,
+        scoreCategory: scoreCategoryFilter ? (scoreCategoryFilter as LeadScoreCategory) : undefined,
         sortBy,
         sortOrder
       };
@@ -90,7 +92,7 @@ export const LeadsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, search, statusFilter, sortBy, sortOrder]);
+  }, [page, search, statusFilter, scoreCategoryFilter, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchLeads();
@@ -135,6 +137,21 @@ export const LeadsPage: React.FC = () => {
         return <Badge variant="red">Lost</Badge>;
       default:
         return <Badge variant="slate">{status}</Badge>;
+    }
+  };
+
+  const getScoreCategoryBadge = (category?: string | null, score?: number) => {
+    const cat = category || (score !== undefined ? (score >= 80 ? 'HOT' : score >= 60 ? 'WARM' : score >= 30 ? 'COOL' : 'COLD') : 'COLD');
+    switch (cat) {
+      case 'HOT':
+        return <Badge variant="emerald" className="text-[10px] px-1.5 py-0 font-medium">Hot</Badge>;
+      case 'WARM':
+        return <Badge variant="blue" className="text-[10px] px-1.5 py-0 font-medium">Warm</Badge>;
+      case 'COOL':
+        return <Badge variant="slate" className="text-[10px] px-1.5 py-0 font-medium text-slate-300">Cool</Badge>;
+      case 'COLD':
+      default:
+        return <Badge variant="slate" className="text-[10px] px-1.5 py-0 font-medium text-vynexa-text-muted">Cold</Badge>;
     }
   };
 
@@ -194,6 +211,23 @@ export const LeadsPage: React.FC = () => {
                   { value: 'ASSIGNED', label: 'Assigned' },
                   { value: 'CONVERTED', label: 'Converted' },
                   { value: 'LOST', label: 'Lost' }
+                ]}
+              />
+            </div>
+
+            <div className="w-36 shrink-0">
+              <Select
+                value={scoreCategoryFilter}
+                onChange={(e) => {
+                  setScoreCategoryFilter(e.target.value);
+                  setPage(1);
+                }}
+                options={[
+                  { value: '', label: 'All scores' },
+                  { value: 'HOT', label: 'Hot (80–100)' },
+                  { value: 'WARM', label: 'Warm (60–79)' },
+                  { value: 'COOL', label: 'Cool (30–59)' },
+                  { value: 'COLD', label: 'Cold (0–29)' }
                 ]}
               />
             </div>
@@ -260,7 +294,25 @@ export const LeadsPage: React.FC = () => {
                   <TableHead>Lead name</TableHead>
                   <TableHead>Company &amp; title</TableHead>
                   <TableHead>Source</TableHead>
-                  <TableHead>Score</TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:text-white transition-colors select-none"
+                    onClick={() => {
+                      if (sortBy === 'score') {
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                      } else {
+                        setSortBy('score');
+                        setSortOrder('desc');
+                      }
+                    }}
+                    title="Click to sort by score"
+                  >
+                    <div className="flex items-center gap-1">
+                      Lead score
+                      {sortBy === 'score' && (
+                        <span className="text-xs">{sortOrder === 'asc' ? '↑' : '↓'}</span>
+                      )}
+                    </div>
+                  </TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Assigned to</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
@@ -297,9 +349,12 @@ export const LeadsPage: React.FC = () => {
 
                     {/* Score */}
                     <TableCell>
-                      <span className="font-mono text-xs font-semibold text-vynexa-text-primary">
-                        {lead.score}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-semibold text-vynexa-text-primary">
+                          {lead.score}
+                        </span>
+                        {getScoreCategoryBadge(lead.scoreCategory, lead.score)}
+                      </div>
                     </TableCell>
 
                     {/* Status */}

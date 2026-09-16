@@ -57,6 +57,7 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
   defaultType = 'CALL'
 }) => {
   const [loading, setLoading] = useState(false);
+  const [loadingEntities, setLoadingEntities] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -110,14 +111,17 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
 
     const loadData = async () => {
       try {
+        setLoadingEntities(true);
         const [accRes, leadRes] = await Promise.all([
           customersService.getCustomers({ limit: 100 }),
-          leadsService.getLeads({ limit: 100, status: 'QUALIFIED' })
+          leadsService.getLeads({ limit: 100 })
         ]);
         setCustomers(accRes.customers || []);
         setLeads(leadRes.leads || []);
       } catch (err) {
         console.error('Failed to load entity dropdowns', err);
+      } finally {
+        setLoadingEntities(false);
       }
     };
     loadData();
@@ -303,10 +307,16 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
             </label>
             <Select
               {...register('leadId')}
-              disabled={Boolean(initialLeadId)}
+              disabled={Boolean(initialLeadId) || loadingEntities}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
             >
-              <option value="">Select a lead...</option>
+              <option value="">
+                {loadingEntities
+                  ? 'Loading leads...'
+                  : leads.length === 0
+                  ? 'No leads available'
+                  : 'Select a lead...'}
+              </option>
               {leads.map((l) => (
                 <option key={l.id} value={l.id}>
                   {l.firstName} {l.lastName} {l.company ? `(${l.company})` : ''}

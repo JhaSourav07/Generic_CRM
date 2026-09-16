@@ -10,6 +10,12 @@ export interface DashboardMetrics {
   overdueTasks: number;
   myOpenTasks?: number;
   myOverdueTasks?: number;
+  leadScores?: {
+    hot: number;
+    warm: number;
+    cool: number;
+    cold: number;
+  };
 }
 
 export interface PipelineStageOverview {
@@ -92,6 +98,10 @@ export class DashboardService {
     const [
       org,
       totalLeads,
+      hotLeads,
+      warmLeads,
+      coolLeads,
+      coldLeads,
       activeOpportunities,
       pipelineValueAgg,
       openTasks,
@@ -115,6 +125,19 @@ export class DashboardService {
       // 2. Metric Counts
       prisma.lead.count({
         where: { organizationId, deletedAt: null }
+      }),
+
+      prisma.lead.count({
+        where: { organizationId, scoreCategory: 'HOT', deletedAt: null }
+      }),
+      prisma.lead.count({
+        where: { organizationId, scoreCategory: 'WARM', deletedAt: null }
+      }),
+      prisma.lead.count({
+        where: { organizationId, scoreCategory: 'COOL', deletedAt: null }
+      }),
+      prisma.lead.count({
+        where: { organizationId, scoreCategory: 'COLD', deletedAt: null }
       }),
 
       prisma.opportunity.count({
@@ -344,7 +367,13 @@ export class DashboardService {
         wonOpportunities,
         overdueTasks,
         myOpenTasks,
-        myOverdueTasks
+        myOverdueTasks,
+        leadScores: {
+          hot: hotLeads,
+          warm: warmLeads,
+          cool: coolLeads,
+          cold: coldLeads
+        }
       },
       pipeline,
       recentActivities,

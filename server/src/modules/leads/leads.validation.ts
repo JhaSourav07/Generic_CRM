@@ -3,6 +3,8 @@ import { LeadStatus } from '@prisma/client';
 
 export const leadStatusEnum = z.nativeEnum(LeadStatus);
 
+export const leadScoreCategoryEnum = z.enum(['COLD', 'COOL', 'WARM', 'HOT']);
+
 export const getLeadsQuerySchema = z.object({
   page: z.string().optional().transform((val) => (val ? Math.max(1, parseInt(val, 10)) : 1)),
   limit: z.string().optional().transform((val) => (val ? Math.min(100, Math.max(1, parseInt(val, 10))) : 10)),
@@ -10,6 +12,7 @@ export const getLeadsQuerySchema = z.object({
   status: leadStatusEnum.optional(),
   source: z.string().optional(),
   ownerId: z.string().optional(),
+  scoreCategory: leadScoreCategoryEnum.optional(),
   minScore: z.string().optional().transform((val) => (val ? parseInt(val, 10) : undefined)),
   maxScore: z.string().optional().transform((val) => (val ? parseInt(val, 10) : undefined)),
   sortBy: z.enum(['createdAt', 'updatedAt', 'firstName', 'lastName', 'company', 'score', 'status']).optional().default('createdAt'),
@@ -25,7 +28,7 @@ export const createLeadSchema = z.object({
   jobTitle: z.string().trim().optional(),
   source: z.string().trim().optional(),
   status: leadStatusEnum.optional().default(LeadStatus.NEW),
-  score: z.number().int().min(0).max(100).optional().default(0),
+  score: z.number().int().min(0, 'Score must be at least 0').max(100, 'Score cannot exceed 100').optional(),
   notes: z.string().optional(),
   ownerId: z.string().uuid('Invalid owner ID').optional()
 });

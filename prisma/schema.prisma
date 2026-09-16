@@ -230,14 +230,17 @@ model Lead {
   jobTitle           String?
   source             String?
   status             LeadStatus @default(NEW)
-  score              Int        @default(0)
-  notes              String?
-  convertedAccountId String?
-  convertedContactId String?
-  convertedAt        DateTime?
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
-  deletedAt          DateTime?
+  score                  Int        @default(0)
+  scoreCategory          String?
+  scoreUpdatedAt         DateTime?
+  scoreAlgorithmVersion  String?    @default("v1")
+  notes                  String?
+  convertedAccountId     String?
+  convertedContactId     String?
+  convertedAt            DateTime?
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+  deletedAt              DateTime?
 
   organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   owner            User?        @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
@@ -245,6 +248,7 @@ model Lead {
   convertedContact Contact?     @relation("LeadConvertedContact", fields: [convertedContactId], references: [id], onDelete: SetNull)
 
   activities    Activity[]
+  opportunities Opportunity[]
   tasks         Task[]
   documents     Document[]
   campaignLeads CampaignLead[]
@@ -252,6 +256,8 @@ model Lead {
   @@index([organizationId, status])
   @@index([organizationId, createdAt])
   @@index([organizationId, email])
+  @@index([organizationId, score])
+  @@index([organizationId, scoreCategory])
   @@index([ownerId])
   @@map("leads")
 }
@@ -374,6 +380,7 @@ model Opportunity {
   organizationId    String
   accountId         String?
   contactId         String?
+  leadId            String?
   ownerId           String?
   pipelineId        String
   stageId           String
@@ -392,6 +399,7 @@ model Opportunity {
   organization Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   account      Account?      @relation(fields: [accountId], references: [id], onDelete: SetNull)
   contact      Contact?      @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  lead         Lead?         @relation(fields: [leadId], references: [id], onDelete: SetNull)
   owner        User?         @relation("OpportunityOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   pipeline     Pipeline      @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
   stage        PipelineStage @relation(fields: [stageId], references: [id], onDelete: Restrict)
@@ -407,6 +415,7 @@ model Opportunity {
   @@index([organizationId, pipelineId])
   @@index([organizationId, createdAt])
   @@index([organizationId, expectedCloseDate])
+  @@index([organizationId, leadId])
   @@index([accountId])
   @@index([ownerId])
   @@index([contactId])

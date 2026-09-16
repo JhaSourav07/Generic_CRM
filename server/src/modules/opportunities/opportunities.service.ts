@@ -8,6 +8,7 @@ import {
 } from './opportunities.validation.js';
 import { AppError } from '../../middleware/errorHandler.js';
 import { AuthContext, assertCanModifyOpportunity } from '../../utils/auth-helpers.js';
+import { leadScoringService } from '../leads/lead-scoring.service.js';
 
 
 export class OpportunitiesService {
@@ -242,6 +243,14 @@ export class OpportunitiesService {
             probability: true
           }
         },
+        lead: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            company: true
+          }
+        },
         activities: {
           take: 10,
           orderBy: { activityDate: 'desc' },
@@ -415,6 +424,7 @@ export class OpportunitiesService {
           organizationId,
           accountId: input.accountId || null,
           contactId: input.contactId || null,
+          leadId: input.leadId || null,
           ownerId: input.ownerId || currentUserId,
           pipelineId: input.pipelineId,
           stageId: input.stageId,
@@ -453,6 +463,9 @@ export class OpportunitiesService {
           }
         }
       });
+
+      // Recalculate lead scores for linked leads
+      await leadScoringService.recalculateForOpportunity(organizationId, opportunity, tx);
 
       return this.formatOpportunity(opportunity);
     });
@@ -528,8 +541,9 @@ export class OpportunitiesService {
           name: input.name !== undefined ? input.name.trim() : undefined,
           description: input.description !== undefined ? (input.description ? input.description.trim() : null) : undefined,
           accountId: input.accountId !== undefined ? input.accountId : undefined,
-          contactId: input.contactId !== undefined ? input.contactId : undefined,
-          pipelineId: input.pipelineId !== undefined ? input.pipelineId : undefined,
+          ...(input.contactId !== undefined ? { contactId: input.contactId || null } : {}),
+          ...(input.leadId !== undefined ? { leadId: input.leadId || null } : {}),
+          ...(input.pipelineId !== undefined ? { pipelineId: input.pipelineId } : {}),
           stageId: input.stageId !== undefined ? input.stageId : undefined,
           ownerId: input.ownerId !== undefined ? input.ownerId : undefined,
           value: input.value !== undefined ? new Prisma.Decimal(input.value) : undefined,
@@ -569,6 +583,9 @@ export class OpportunitiesService {
           }
         }
       });
+
+      // Recalculate lead scores for linked leads
+      await leadScoringService.recalculateForOpportunity(context.organizationId, updated, tx);
 
       return this.formatOpportunity(updated);
     });
@@ -692,6 +709,9 @@ export class OpportunitiesService {
           }
         }
       });
+
+      // Recalculate lead scores for linked leads
+      await leadScoringService.recalculateForOpportunity(organizationId, updated, tx);
 
       return this.formatOpportunity(updated);
     });
@@ -900,6 +920,10 @@ export class OpportunitiesService {
         }
       });
 
+      if (updated) {
+        await leadScoringService.recalculateForOpportunity(organizationId, updated, tx);
+      }
+
       return this.formatOpportunity(updated);
     });
   }
@@ -1030,6 +1054,10 @@ export class OpportunitiesService {
         }
       });
 
+      if (updated) {
+        await leadScoringService.recalculateForOpportunity(organizationId, updated, tx);
+      }
+
       return this.formatOpportunity(updated);
     });
   }
@@ -1098,6 +1126,8 @@ export class OpportunitiesService {
         oldValue: { name: opportunity.name, value: Number(opportunity.value) }
       }
     });
+
+    await leadScoringService.recalculateForOpportunity(organizationId, opportunity);
 
     return { success: true, message: 'Opportunity successfully deleted' };
   }

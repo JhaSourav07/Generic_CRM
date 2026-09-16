@@ -1,4 +1,4 @@
-import { request } from './api';
+import { request, API_BASE_URL } from './api';
 import {
   Lead,
   GetLeadsQuery,
@@ -7,7 +7,8 @@ import {
   UpdateLeadInput,
   ConvertLeadInput,
   ConvertLeadResult,
-  LeadStatus
+  LeadStatus,
+  LeadScoreBreakdown
 } from '../types/leads.types';
 
 export class LeadsService {
@@ -19,6 +20,7 @@ export class LeadsService {
     if (query.status) params.append('status', query.status);
     if (query.source) params.append('source', query.source);
     if (query.ownerId) params.append('ownerId', query.ownerId);
+    if (query.scoreCategory) params.append('scoreCategory', query.scoreCategory);
     if (query.minScore !== undefined) params.append('minScore', query.minScore.toString());
     if (query.maxScore !== undefined) params.append('maxScore', query.maxScore.toString());
     if (query.sortBy) params.append('sortBy', query.sortBy);
@@ -29,7 +31,7 @@ export class LeadsService {
     // Note: the backend envelope returns data: leads array and meta object
     // request<Lead[]> returns response.data
     // Let's call endpoint and fetch raw response envelope or standard request
-    const response = await fetch(`http://localhost:5000/api/leads${queryString}`, {
+    const response = await fetch(`${API_BASE_URL}/leads${queryString}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -88,6 +90,10 @@ export class LeadsService {
       method: 'POST',
       data: input
     });
+  }
+
+  public async getLeadScore(id: string): Promise<LeadScoreBreakdown> {
+    return request<LeadScoreBreakdown>(`/leads/${id}/score`);
   }
 }
 

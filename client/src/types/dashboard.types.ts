@@ -7,6 +7,12 @@ export interface DashboardMetrics {
   overdueTasks: number;
   myOpenTasks?: number;
   myOverdueTasks?: number;
+  leadScores?: {
+    hot: number;
+    warm: number;
+    cool: number;
+    cold: number;
+  };
 }
 
 export interface PipelineStageOverview {

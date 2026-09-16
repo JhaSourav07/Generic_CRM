@@ -209,6 +209,29 @@ export class LeadsController {
       next(err);
     }
   }
+
+  public async getLeadScore(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        const error: AppError = new Error('Authentication required');
+        error.statusCode = 401;
+        error.code = 'UNAUTHORIZED';
+        return next(error);
+      }
+
+      const { organizationId } = req.user;
+      const { id } = req.params;
+      const scoreData = await leadsService.getLeadScore(organizationId, id);
+
+      res.status(200).json({
+        success: true,
+        data: scoreData,
+        error: null
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export const leadsController = new LeadsController();

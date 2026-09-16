@@ -398,10 +398,18 @@ export const OpportunityDetailPage: React.FC = () => {
           />
 
           {/* Interaction Stream & Timeline */}
-          <ActivityTimeline opportunityId={opportunity.id} />
+          <ActivityTimeline
+            opportunityId={opportunity.id}
+            accountId={opportunity.account?.id}
+            leadId={(opportunity as any).leadId || (opportunity as any).lead?.id}
+          />
 
           {/* Scheduled Tasks & Follow-ups */}
-          <EntityTasksCard opportunityId={opportunity.id} />
+          <EntityTasksCard
+            opportunityId={opportunity.id}
+            accountId={opportunity.account?.id}
+            leadId={(opportunity as any).leadId || (opportunity as any).lead?.id}
+          />
         </div>
 
         {/* Right Column (1 Col): Ownership & Metadata */}

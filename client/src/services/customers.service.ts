@@ -1,4 +1,4 @@
-import { request } from './api';
+import { request, API_BASE_URL } from './api';
 import {
   Customer,
   GetCustomersQuery,
@@ -21,7 +21,7 @@ export class CustomersService {
 
     const queryString = params.toString() ? `?${params.toString()}` : '';
 
-    const response = await fetch(`http://localhost:5000/api/customers${queryString}`, {
+    const response = await fetch(`${API_BASE_URL}/customers${queryString}`, {
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' }
     });
