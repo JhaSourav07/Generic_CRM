@@ -16,7 +16,8 @@
     "test:api": "vitest run tests/api",
     "test:security": "vitest run tests/security",
     "test:db": "vitest run tests/database",
-    "backfill:lead-scores": "tsx src/scripts/backfill-lead-scores.ts"
+    "backfill:lead-scores": "tsx src/scripts/backfill-lead-scores.ts",
+    "seed:enterprise": "tsx src/scripts/seed-enterprise-data.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
