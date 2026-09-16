@@ -301,10 +301,26 @@ export class ReportsService {
     const convertedCount = statusCounts.CONVERTED || 0;
     const conversionRate = totalLeads > 0 ? Number(((convertedCount / totalLeads) * 100).toFixed(1)) : 0;
 
+    const byStatus = Object.entries(statusCounts).map(([status, count]) => ({
+      status,
+      count,
+      percentage: totalLeads > 0 ? Number(((count / totalLeads) * 100).toFixed(1)) : 0
+    }));
+
+    const trend = timelineTrend.map((t) => ({
+      date: t.period,
+      count: t.count
+    }));
+
     return {
       totalLeads,
       conversionRate,
       statusBreakdown: statusCounts,
+      byStatus,
+      bySource: sourceBreakdown,
+      sources: sourceBreakdown,
+      trend,
+      timelineTrend,
       funnel: [
         { stage: 'Total Captured', count: totalLeads, rate: 100 },
         {
@@ -322,9 +338,7 @@ export class ReportsService {
           count: convertedCount,
           rate: conversionRate
         }
-      ],
-      sources: sourceBreakdown,
-      timelineTrend
+      ]
     };
   }
 
@@ -431,11 +445,24 @@ export class ReportsService {
       winRate: r.totalDeals > 0 ? Number(((r.wonDeals / r.totalDeals) * 100).toFixed(1)) : 0
     }));
 
+    const byRep = salesByRep.map((r) => ({
+      userId: r.id,
+      userName: r.name,
+      userEmail: r.email,
+      totalDeals: r.totalDeals,
+      wonDeals: r.wonDeals,
+      wonRevenue: r.wonValue,
+      winRate: r.winRate
+    }));
+
     return {
       totalOpportunities: totalCount,
       openOpportunities: openCount,
       wonOpportunities: wonCount,
       lostOpportunities: lostCount,
+      openCount,
+      wonCount,
+      lostCount,
       winRate,
       pipelineValue,
       wonRevenue,
@@ -444,7 +471,8 @@ export class ReportsService {
         totalOrders: ordersAgg._count,
         totalRevenue: Number(ordersAgg._sum.total || 0)
       },
-      salesByRep
+      salesByRep,
+      byRep
     };
   }
 
@@ -498,8 +526,9 @@ export class ReportsService {
         for (const opp of stage.opportunities) {
           const val = Number(opp.value || 0);
           const prob = typeof opp.probability === 'number' ? opp.probability : stage.probability;
+          const probFraction = prob > 1 ? prob / 100 : prob;
           stageValue += val;
-          weightedValue += val * (prob / 100);
+          weightedValue += val * probFraction;
           dealCount += 1;
         }
 
@@ -507,13 +536,16 @@ export class ReportsService {
         grandWeightedValue += weightedValue;
         grandDealCount += dealCount;
 
+        const normalizedProbability = stage.probability <= 1 ? Math.round(stage.probability * 100) : Math.round(stage.probability);
+
         stagesBreakdown.push({
           pipelineId: pipeline.id,
           pipelineName: pipeline.name,
           stageId: stage.id,
           stageName: stage.name,
           order: stage.order,
-          probability: stage.probability,
+          stageOrder: stage.order,
+          probability: normalizedProbability,
           dealCount,
           totalValue: Number(stageValue.toFixed(2)),
           weightedValue: Number(weightedValue.toFixed(2))
@@ -521,7 +553,10 @@ export class ReportsService {
       }
     }
 
+    const primaryPipeline = pipelines.length > 0 ? { id: pipelines[0].id, name: pipelines[0].name } : null;
+
     return {
+      pipeline: primaryPipeline,
       totalPipelineValue: Number(grandPipelineValue.toFixed(2)),
       totalWeightedValue: Number(grandWeightedValue.toFixed(2)),
       totalDeals: grandDealCount,
@@ -596,10 +631,26 @@ export class ReportsService {
       timelineMap.set(dateKey, (timelineMap.get(dateKey) || 0) + 1);
     }
 
+    const byTypeArray = Object.entries(typeBreakdown).map(([type, count]) => ({
+      type,
+      count,
+      percentage: totalActivities > 0 ? Number(((count / totalActivities) * 100).toFixed(1)) : 0
+    }));
+
+    const byUserArray = Array.from(userMap.values()).map((u) => ({
+      userId: u.id,
+      userName: u.name,
+      userEmail: u.email,
+      count: u.count
+    }));
+
     return {
       totalActivities,
       byType: typeBreakdown,
-      byUser: Array.from(userMap.values()),
+      byTypeArray,
+      types: byTypeArray,
+      typeBreakdown,
+      byUser: byUserArray,
       timelineTrend: Array.from(timelineMap.entries()).map(([date, count]) => ({
         date,
         count
@@ -692,13 +743,25 @@ export class ReportsService {
       userMap.set(uKey, u);
     }
 
+    const byStatusArray = Object.entries(statusCounts).map(([status, count]) => ({
+      status,
+      count
+    }));
+
+    const byPriorityArray = Object.entries(priorityCounts).map(([priority, count]) => ({
+      priority,
+      count
+    }));
+
     return {
       totalTasks,
       completedTasks: completed,
       overdueTasks: overdueCount,
       completionRate,
-      byStatus: statusCounts,
-      byPriority: priorityCounts,
+      byStatus: byStatusArray,
+      byPriority: byPriorityArray,
+      statusBreakdown: statusCounts,
+      priorityBreakdown: priorityCounts,
       byAssignee: Array.from(userMap.values())
     };
   }
@@ -796,14 +859,26 @@ export class ReportsService {
 
     const avgResolutionHours = resolvedCasesCount > 0 ? Number((totalResolutionHours / resolvedCasesCount).toFixed(1)) : null;
 
+    const byStatusArray = Object.entries(statusCounts).map(([status, count]) => ({
+      status,
+      count
+    }));
+
+    const byPriorityArray = Object.entries(priorityCounts).map(([priority, count]) => ({
+      priority,
+      count
+    }));
+
     return {
       totalCases,
       resolvedCases: resolved,
       openCases: (statusCounts.OPEN || 0) + (statusCounts.IN_PROGRESS || 0),
       resolutionRate,
       averageResolutionHours: avgResolutionHours,
-      byStatus: statusCounts,
-      byPriority: priorityCounts,
+      byStatus: byStatusArray,
+      byPriority: byPriorityArray,
+      statusBreakdown: statusCounts,
+      priorityBreakdown: priorityCounts,
       byAssignee: Array.from(assigneeMap.values())
     };
   }
@@ -833,7 +908,15 @@ export class ReportsService {
               select: {
                 id: true,
                 status: true,
-                convertedAccountId: true
+                convertedAccountId: true,
+                opportunities: {
+                  where: { deletedAt: null },
+                  select: {
+                    id: true,
+                    status: true,
+                    value: true
+                  }
+                }
               }
             }
           }
@@ -845,6 +928,7 @@ export class ReportsService {
     let totalBudget = 0;
     let totalLeads = 0;
     let totalConverted = 0;
+    let totalAttributableRevenue = 0;
 
     const campaignSummaries = campaigns.map((c) => {
       const budget = c.budget ? Number(c.budget) : 0;
@@ -858,6 +942,26 @@ export class ReportsService {
 
       const convRate = leadsCount > 0 ? Number(((converted / leadsCount) * 100).toFixed(1)) : 0;
 
+      let pipelineValue = 0;
+      let wonRevenue = 0;
+
+      for (const cl of c.campaignLeads) {
+        if (cl.lead.opportunities) {
+          for (const opp of cl.lead.opportunities) {
+            const oppVal = Number(opp.value || 0);
+            if (opp.status === 'OPEN') {
+              pipelineValue += oppVal;
+            } else if (opp.status === 'WON') {
+              wonRevenue += oppVal;
+            }
+          }
+        }
+      }
+
+      totalAttributableRevenue += wonRevenue;
+
+      const roi = budget > 0 ? Math.round(((wonRevenue - budget) / budget) * 100) : null;
+
       return {
         id: c.id,
         name: c.name,
@@ -866,18 +970,26 @@ export class ReportsService {
         budget,
         startDate: c.startDate,
         endDate: c.endDate,
+        leadCount: leadsCount,
         leadsCount,
+        convertedLeadCount: converted,
         convertedLeadsCount: converted,
         conversionRate: convRate,
+        pipelineValue: Number(pipelineValue.toFixed(2)),
+        wonRevenue: Number(wonRevenue.toFixed(2)),
+        roi,
         createdBy: c.createdBy
       };
     });
 
+    const activeCampaigns = campaigns.filter((c) => c.status === 'ACTIVE').length;
     const overallConversionRate = totalLeads > 0 ? Number(((totalConverted / totalLeads) * 100).toFixed(1)) : 0;
 
     return {
       totalCampaigns: campaigns.length,
+      activeCampaigns,
       totalBudget: Number(totalBudget.toFixed(2)),
+      totalAttributableRevenue: Number(totalAttributableRevenue.toFixed(2)),
       totalLeads,
       totalConvertedLeads: totalConverted,
       overallConversionRate,

@@ -166,15 +166,15 @@ export class DashboardService {
         }
       }),
 
-      // 3. Pipeline Stages & Opportunities
+      // 3. Pipeline Stages & Opportunities (retrieve deals for each stage including won/lost)
       prisma.pipelineStage.findMany({
         where: {
           pipeline: { organizationId }
         },
         include: {
           opportunities: {
-            where: { organizationId, deletedAt: null, status: 'OPEN' },
-            select: { id: true, value: true }
+            where: { organizationId, deletedAt: null },
+            select: { id: true, value: true, status: true }
           }
         },
         orderBy: { order: 'asc' }
@@ -265,11 +265,15 @@ export class DashboardService {
     ]);
 
     const totalPipelineValue = Number(pipelineValueAgg._sum.value || 0);
+    const grandTotalValue = pipelineStages.reduce(
+      (sum, stage) => sum + stage.opportunities.reduce((acc, opp) => acc + Number(opp.value), 0),
+      0
+    );
 
     // Format Pipeline Stages Overview
     const pipeline: PipelineStageOverview[] = pipelineStages.map((stage) => {
       const stageTotal = stage.opportunities.reduce((acc, opp) => acc + Number(opp.value), 0);
-      const percentage = totalPipelineValue > 0 ? Math.round((stageTotal / totalPipelineValue) * 100) : 0;
+      const percentage = grandTotalValue > 0 ? Math.round((stageTotal / grandTotalValue) * 100) : 0;
 
       return {
         id: stage.id,

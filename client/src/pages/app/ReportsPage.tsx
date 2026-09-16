@@ -243,22 +243,22 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <MetricStatCard
                   title="Total leads"
-                  value={leadData.totalLeads}
+                  value={leadData.totalLeads ?? 0}
                   subtitle="All captured leads"
                   variant="default"
                   icon={Users}
                 />
                 <MetricStatCard
                   title="Conversion rate"
-                  value={`${leadData.conversionRate}%`}
+                  value={`${leadData.conversionRate ?? 0}%`}
                   subtitle="Converted to customers and deals"
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Lead statuses"
-                  value={leadData.byStatus.length}
-                  subtitle="Active status categories"
+                  title="Converted leads"
+                  value={(leadData.byStatus || []).find((s) => s.status === 'CONVERTED')?.count ?? 0}
+                  subtitle="Converted into accounts & deals"
                   variant="blue"
                   icon={Target}
                 />
@@ -267,27 +267,27 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
                   title="Leads by status"
-                  segments={leadData.byStatus.map((s) => ({
+                  segments={(leadData.byStatus || []).map((s) => ({
                     label: s.status,
                     count: s.count,
                     percentage: s.percentage
                   }))}
-                  totalCount={leadData.totalLeads}
+                  totalCount={leadData.totalLeads ?? 0}
                 />
 
                 <DistributionBar
                   title="Leads by source"
-                  segments={leadData.bySource.map((s) => ({
+                  segments={(leadData.bySource || []).map((s) => ({
                     label: s.source,
                     count: s.count,
                     percentage: s.percentage
                   }))}
-                  totalCount={leadData.totalLeads}
+                  totalCount={leadData.totalLeads ?? 0}
                 />
               </div>
 
               {/* Timeline Trend Table */}
-              {leadData.trend && leadData.trend.length > 0 && (
+              {(leadData.trend || []).length > 0 && (
                 <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                   <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
                     Daily new leads
@@ -301,7 +301,7 @@ export const ReportsPage: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-vynexa-border/40 font-mono">
-                        {leadData.trend.map((row) => (
+                        {(leadData.trend || []).map((row) => (
                           <tr key={row.date} className="hover:bg-vynexa-surface-secondary/30">
                             <td className="py-1.5 px-3 text-vynexa-text-primary">{row.date}</td>
                             <td className="py-1.5 px-3 text-right text-emerald-400 font-medium">
@@ -323,28 +323,28 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
                   title="Won revenue"
-                  value={`$${salesData.wonRevenue.toLocaleString()}`}
-                  subtitle={`${salesData.wonCount} won deals`}
+                  value={`$${(salesData.wonRevenue ?? 0).toLocaleString()}`}
+                  subtitle={`${salesData.wonCount ?? 0} won deals`}
                   variant="emerald"
                   icon={DollarSign}
                 />
                 <MetricStatCard
                   title="Open pipeline value"
-                  value={`$${salesData.pipelineValue.toLocaleString()}`}
-                  subtitle={`${salesData.openCount} open deals`}
+                  value={`$${(salesData.pipelineValue ?? 0).toLocaleString()}`}
+                  subtitle={`${salesData.openCount ?? 0} open deals`}
                   variant="blue"
                   icon={Briefcase}
                 />
                 <MetricStatCard
                   title="Win rate"
-                  value={`${salesData.winRate}%`}
-                  subtitle={`${salesData.wonCount} won / ${salesData.lostCount} lost`}
+                  value={`${salesData.winRate ?? 0}%`}
+                  subtitle={`${salesData.wonCount ?? 0} won / ${salesData.lostCount ?? 0} lost`}
                   variant="emerald"
                   icon={Percent}
                 />
                 <MetricStatCard
                   title="Average deal size"
-                  value={`$${salesData.averageDealSize.toLocaleString()}`}
+                  value={`$${(salesData.averageDealSize ?? 0).toLocaleString()}`}
                   subtitle="For won deals"
                   variant="default"
                   icon={Target}
@@ -368,14 +368,14 @@ export const ReportsPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-vynexa-border/60">
-                      {salesData.byRep.length === 0 ? (
+                      {(salesData.byRep || []).length === 0 ? (
                         <tr>
                           <td colSpan={5} className="py-6 text-center text-vynexa-text-muted">
                             No sales data found for this date range.
                           </td>
                         </tr>
                       ) : (
-                        salesData.byRep.map((rep) => {
+                        (salesData.byRep || []).map((rep) => {
                           const repWinRate =
                             rep.totalDeals > 0
                               ? Number(((rep.wonDeals / rep.totalDeals) * 100).toFixed(1))
@@ -397,7 +397,7 @@ export const ReportsPage: React.FC = () => {
                                 {rep.wonDeals}
                               </td>
                               <td className="py-2.5 px-3 text-right font-mono font-medium text-vynexa-text-primary">
-                                ${rep.wonRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                ${(rep.wonRevenue ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                               </td>
                               <td className="py-2.5 px-3 text-right font-mono text-emerald-400">
                                 {repWinRate}%
@@ -419,21 +419,21 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <MetricStatCard
                   title="Open deals"
-                  value={pipelineData.totalDeals}
+                  value={pipelineData.totalDeals ?? 0}
                   subtitle={pipelineData.pipeline?.name || 'Sales pipeline'}
                   variant="default"
                   icon={Briefcase}
                 />
                 <MetricStatCard
                   title="Pipeline value"
-                  value={`$${pipelineData.totalPipelineValue.toLocaleString()}`}
+                  value={`$${(pipelineData.totalPipelineValue ?? 0).toLocaleString()}`}
                   subtitle="Total value of open deals"
                   variant="blue"
                   icon={DollarSign}
                 />
                 <MetricStatCard
                   title="Expected sales"
-                  value={`$${pipelineData.totalWeightedValue.toLocaleString()}`}
+                  value={`$${(pipelineData.totalWeightedValue ?? 0).toLocaleString()}`}
                   subtitle="Estimated sales based on deal probabilities"
                   variant="emerald"
                   icon={TrendingUp}
@@ -457,7 +457,7 @@ export const ReportsPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-vynexa-border/60">
-                      {pipelineData.stages.map((stage) => (
+                      {(pipelineData.stages || []).map((stage) => (
                         <tr key={stage.stageId} className="hover:bg-vynexa-surface-secondary/30">
                           <td className="py-2.5 px-3 font-medium text-vynexa-text-primary">
                             {stage.stageName}
@@ -469,10 +469,10 @@ export const ReportsPage: React.FC = () => {
                             {stage.probability}%
                           </td>
                           <td className="py-2.5 px-3 text-right font-mono text-vynexa-text-primary">
-                            ${stage.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            ${(stage.totalValue ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                           </td>
                           <td className="py-2.5 px-3 text-right font-mono font-medium text-emerald-400">
-                            ${stage.weightedValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            ${(stage.weightedValue ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                           </td>
                         </tr>
                       ))}
@@ -489,14 +489,14 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <MetricStatCard
                   title="Total activities"
-                  value={activityData.totalActivities}
+                  value={activityData.totalActivities ?? 0}
                   subtitle="Calls, meetings, emails, and notes"
                   variant="default"
                   icon={PhoneCall}
                 />
                 <MetricStatCard
                   title="Team members"
-                  value={activityData.byUser.length}
+                  value={(activityData.byUser || []).length}
                   subtitle="With logged activities"
                   variant="blue"
                   icon={Users}
@@ -506,12 +506,24 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
                   title="Activities by type"
-                  segments={activityData.byType.map((t) => ({
+                  segments={(
+                    Array.isArray(activityData.byType)
+                      ? activityData.byType
+                      : Array.isArray(activityData.byTypeArray)
+                      ? activityData.byTypeArray
+                      : Object.entries((activityData.typeBreakdown || activityData.byType || {}) as Record<string, number>).map(
+                          ([type, count]) => ({
+                            type,
+                            count,
+                            percentage: activityData.totalActivities ? Math.round((count / activityData.totalActivities) * 100) : 0
+                          })
+                        )
+                  ).map((t) => ({
                     label: t.type,
                     count: t.count,
                     percentage: t.percentage
                   }))}
-                  totalCount={activityData.totalActivities}
+                  totalCount={activityData.totalActivities ?? 0}
                 />
 
                 <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
@@ -527,15 +539,15 @@ export const ReportsPage: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-vynexa-border/40">
-                        {activityData.byUser.map((u) => (
+                        {(activityData.byUser || []).map((u) => (
                           <tr key={u.userId} className="hover:bg-vynexa-surface-secondary/30">
-                            <td className="py-2 px-3 font-medium text-vynexa-text-primary">
+                            <td className="py-2.5 px-3 font-medium text-vynexa-text-primary">
                               {u.userName}
                               <span className="text-vynexa-text-muted font-normal ml-1.5">
                                 ({u.userEmail})
                               </span>
                             </td>
-                            <td className="py-2 px-3 text-right font-mono font-medium text-emerald-400">
+                            <td className="py-2.5 px-3 text-right font-mono font-medium text-emerald-400">
                               {u.count}
                             </td>
                           </tr>
@@ -554,28 +566,28 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
                   title="Total tasks"
-                  value={taskData.totalTasks}
+                  value={taskData.totalTasks ?? 0}
                   subtitle="All created tasks"
                   variant="default"
                   icon={CheckSquare}
                 />
                 <MetricStatCard
                   title="Completed tasks"
-                  value={taskData.completedTasks}
-                  subtitle={`${taskData.completionRate}% completion rate`}
+                  value={taskData.completedTasks ?? 0}
+                  subtitle={`${taskData.completionRate ?? 0}% completion rate`}
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
                   title="Overdue tasks"
-                  value={taskData.overdueTasks}
+                  value={taskData.overdueTasks ?? 0}
                   subtitle="Past due date"
-                  variant={taskData.overdueTasks > 0 ? 'red' : 'default'}
+                  variant={(taskData.overdueTasks ?? 0) > 0 ? 'red' : 'default'}
                   icon={Clock}
                 />
                 <MetricStatCard
                   title="Completion rate"
-                  value={`${taskData.completionRate}%`}
+                  value={`${taskData.completionRate ?? 0}%`}
                   subtitle="Percentage of tasks finished"
                   variant="emerald"
                   icon={Percent}
@@ -585,20 +597,20 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
                   title="Tasks by status"
-                  segments={taskData.byStatus.map((s) => ({
+                  segments={(taskData.byStatus || []).map((s) => ({
                     label: s.status,
                     count: s.count
                   }))}
-                  totalCount={taskData.totalTasks}
+                  totalCount={taskData.totalTasks ?? 0}
                 />
 
                 <DistributionBar
                   title="Tasks by priority"
-                  segments={taskData.byPriority.map((p) => ({
+                  segments={(taskData.byPriority || []).map((p) => ({
                     label: p.priority,
                     count: p.count
                   }))}
-                  totalCount={taskData.totalTasks}
+                  totalCount={taskData.totalTasks ?? 0}
                 />
               </div>
             </div>
@@ -610,29 +622,29 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
                   title="Total requests"
-                  value={supportData.totalCases}
+                  value={supportData.totalCases ?? 0}
                   subtitle="All support requests"
                   variant="default"
                   icon={LifeBuoy}
                 />
                 <MetricStatCard
                   title="Open requests"
-                  value={supportData.openCases}
+                  value={supportData.openCases ?? 0}
                   subtitle="In progress or awaiting response"
                   variant="blue"
                   icon={Clock}
                 />
                 <MetricStatCard
                   title="Resolved requests"
-                  value={supportData.resolvedCases}
-                  subtitle={`${supportData.resolutionRate}% resolution rate`}
+                  value={supportData.resolvedCases ?? 0}
+                  subtitle={`${supportData.resolutionRate ?? 0}% resolution rate`}
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
                   title="Average resolution time"
                   value={
-                    supportData.averageResolutionHours !== null
+                    supportData.averageResolutionHours !== null && supportData.averageResolutionHours !== undefined
                       ? `${supportData.averageResolutionHours} hrs`
                       : 'N/A'
                   }
@@ -645,20 +657,20 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
                   title="Requests by status"
-                  segments={supportData.byStatus.map((s) => ({
+                  segments={(supportData.byStatus || []).map((s) => ({
                     label: s.status,
                     count: s.count
                   }))}
-                  totalCount={supportData.totalCases}
+                  totalCount={supportData.totalCases ?? 0}
                 />
 
                 <DistributionBar
                   title="Requests by priority"
-                  segments={supportData.byPriority.map((p) => ({
+                  segments={(supportData.byPriority || []).map((p) => ({
                     label: p.priority,
                     count: p.count
                   }))}
-                  totalCount={supportData.totalCases}
+                  totalCount={supportData.totalCases ?? 0}
                 />
               </div>
             </div>
@@ -670,38 +682,45 @@ export const ReportsPage: React.FC = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
                   title="Total campaigns"
-                  value={campaignData.totalCampaigns}
-                  subtitle={`${campaignData.activeCampaigns} currently active`}
+                  value={campaignData.totalCampaigns ?? 0}
+                  subtitle={`${campaignData.activeCampaigns ?? 0} currently active`}
                   variant="default"
                   icon={Megaphone}
                 />
                 <MetricStatCard
                   title="Total budget"
-                  value={`$${campaignData.totalBudget.toLocaleString()}`}
+                  value={`$${(campaignData.totalBudget ?? 0).toLocaleString()}`}
                   subtitle="Across all campaigns"
                   variant="default"
                   icon={DollarSign}
                 />
                 <MetricStatCard
                   title="Revenue generated"
-                  value={`$${campaignData.totalAttributableRevenue.toLocaleString()}`}
+                  value={`$${(campaignData.totalAttributableRevenue ?? 0).toLocaleString()}`}
                   subtitle="From campaign leads"
-                  variant="emerald"
+                  variant={(campaignData.totalAttributableRevenue ?? 0) > 0 ? 'emerald' : 'default'}
                   icon={TrendingUp}
                 />
                 <MetricStatCard
                   title="Return on investment"
                   value={
-                    campaignData.totalBudget > 0
+                    (campaignData.totalBudget ?? 0) > 0
                       ? `${Math.round(
-                          ((campaignData.totalAttributableRevenue - campaignData.totalBudget) /
-                            campaignData.totalBudget) *
+                          (((campaignData.totalAttributableRevenue ?? 0) - (campaignData.totalBudget ?? 0)) /
+                            (campaignData.totalBudget ?? 1)) *
                             100
                         )}%`
                       : 'N/A'
                   }
                   subtitle="Based on campaign budget"
-                  variant="emerald"
+                  variant={
+                    (campaignData.totalBudget ?? 0) > 0 &&
+                    (campaignData.totalAttributableRevenue ?? 0) >= (campaignData.totalBudget ?? 0)
+                      ? 'emerald'
+                      : (campaignData.totalAttributableRevenue ?? 0) === 0
+                      ? 'default'
+                      : 'red'
+                  }
                   icon={Percent}
                 />
               </div>
@@ -726,14 +745,14 @@ export const ReportsPage: React.FC = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-vynexa-border/60">
-                      {campaignData.campaigns.length === 0 ? (
+                      {(campaignData.campaigns || []).length === 0 ? (
                         <tr>
                           <td colSpan={8} className="py-6 text-center text-vynexa-text-muted">
                             No campaign records found for this date range.
                           </td>
                         </tr>
                       ) : (
-                        campaignData.campaigns.map((c) => (
+                        (campaignData.campaigns || []).map((c) => (
                           <tr key={c.id} className="hover:bg-vynexa-surface-secondary/30">
                             <td className="py-2.5 px-3">
                               <div className="font-medium text-vynexa-text-primary">{c.name}</div>
@@ -745,22 +764,22 @@ export const ReportsPage: React.FC = () => {
                               <Badge variant="outline">{c.status}</Badge>
                             </td>
                             <td className="py-2.5 px-3 text-right font-mono text-vynexa-text-secondary">
-                              {c.budget !== null ? `$${c.budget.toLocaleString()}` : '—'}
+                              {c.budget !== null && c.budget !== undefined ? `$${Number(c.budget).toLocaleString()}` : '—'}
                             </td>
                             <td className="py-2.5 px-3 text-center font-mono text-vynexa-text-secondary">
-                              {c.leadCount}
+                              {c.leadCount ?? 0}
                             </td>
                             <td className="py-2.5 px-3 text-center font-mono text-emerald-400">
-                              {c.convertedLeadCount} ({c.conversionRate}%)
+                              {c.convertedLeadCount ?? 0} ({c.conversionRate ?? 0}%)
                             </td>
                             <td className="py-2.5 px-3 text-right font-mono text-vynexa-text-primary">
-                              ${c.pipelineValue.toLocaleString()}
+                              ${(c.pipelineValue ?? 0).toLocaleString()}
                             </td>
                             <td className="py-2.5 px-3 text-right font-mono text-emerald-400 font-medium">
-                              ${c.wonRevenue.toLocaleString()}
+                              ${(c.wonRevenue ?? 0).toLocaleString()}
                             </td>
                             <td className="py-2.5 px-3 text-right font-mono font-medium">
-                              {c.roi !== null ? (
+                              {c.roi !== null && c.roi !== undefined ? (
                                 <span className={c.roi >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
                                   {c.roi > 0 ? `+${c.roi}%` : `${c.roi}%`}
                                 </span>

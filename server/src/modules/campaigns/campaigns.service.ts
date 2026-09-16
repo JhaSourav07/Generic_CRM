@@ -172,10 +172,12 @@ export class CampaignsService {
 
     const convertedAccountIds: string[] = [];
     const convertedContactIds: string[] = [];
+    const leadIds: string[] = [];
 
     for (const cl of campaignLeads) {
       const s = cl.lead.status;
       leadsByStatus[s] = (leadsByStatus[s] || 0) + 1;
+      leadIds.push(cl.lead.id);
       if (cl.lead.convertedAccountId) convertedAccountIds.push(cl.lead.convertedAccountId);
       if (cl.lead.convertedContactId) convertedContactIds.push(cl.lead.convertedContactId);
     }
@@ -199,10 +201,11 @@ export class CampaignsService {
     const uniqueAccountIds = [...new Set(convertedAccountIds)];
     const uniqueContactIds = [...new Set(convertedContactIds)];
 
-    if (uniqueAccountIds.length > 0 || uniqueContactIds.length > 0) {
+    if (uniqueAccountIds.length > 0 || uniqueContactIds.length > 0 || leadIds.length > 0) {
       const orConditions: Prisma.OpportunityWhereInput[] = [];
       if (uniqueAccountIds.length > 0) orConditions.push({ accountId: { in: uniqueAccountIds } });
       if (uniqueContactIds.length > 0) orConditions.push({ contactId: { in: uniqueContactIds } });
+      if (leadIds.length > 0) orConditions.push({ leadId: { in: leadIds } });
 
       const opportunities = await prisma.opportunity.findMany({
         where: {
@@ -246,7 +249,7 @@ export class CampaignsService {
 
     const budget = campaign.budget ? Number(campaign.budget) : 0;
     const roi =
-      budget > 0 && wonValue > 0
+      budget > 0
         ? Number((((wonValue - budget) / budget) * 100).toFixed(1))
         : null;
 
@@ -715,7 +718,11 @@ export class CampaignsService {
     return {
       leads: campaignLeads.map((cl) => ({
         ...cl.lead,
-        addedToCampaignAt: cl.createdAt
+        leadId: cl.lead.id,
+        campaignId: cl.campaignId,
+        addedAt: cl.createdAt.toISOString(),
+        addedToCampaignAt: cl.createdAt.toISOString(),
+        lead: cl.lead
       })),
       pagination: {
         page,

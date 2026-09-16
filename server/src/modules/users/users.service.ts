@@ -335,6 +335,14 @@ export class UsersService {
       throw error;
     }
 
+    // Self-deactivation prevention rule
+    if (targetUserId === currentUserId && !isActive) {
+      const error: AppError = new Error('You cannot deactivate your own account.');
+      error.statusCode = 400;
+      error.code = 'CANNOT_DEACTIVATE_SELF';
+      throw error;
+    }
+
     // Last Admin Safety Rule: If deactivating an admin user, verify organization has another active admin
     if (!isActive && existingUser.isActive) {
       const isAdminRole = ['SUPER_ADMIN', 'SALES_MANAGER'].includes(existingUser.role.name);

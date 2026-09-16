@@ -279,7 +279,7 @@ export const DashboardPage: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-sm font-semibold">Sales pipeline</CardTitle>
-                      <CardDescription className="text-xs">Active deals by stage.</CardDescription>
+                      <CardDescription className="text-xs">Deals by stage.</CardDescription>
                     </div>
                     <Link to="/app/pipeline">
                       <Button variant="ghost" size="sm" className="text-xs font-mono" rightIcon={<ArrowUpRight className="h-3.5 w-3.5" />}>

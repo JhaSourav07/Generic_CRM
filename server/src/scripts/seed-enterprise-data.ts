@@ -204,7 +204,11 @@ export async function seedEnterpriseData() {
       { firstName: 'Morgan', lastName: 'Reed', company: 'Cobalt Media Archives', title: 'Archivist', email: 'mreed@cobaltmedia.net', phone: null, source: 'Cold Outbound', status: LeadStatus.NEW, notes: 'Old lead from April.', owner: null },
       { firstName: 'Deshawn', lastName: 'Washington', company: 'Apex Consulting Group', title: null, email: 'deshawn.w@gmail.com', phone: null, source: 'Website', status: LeadStatus.NEW, notes: 'Minimal contact info submitted.', owner: null },
       { firstName: 'Anja', lastName: 'Lindt', company: 'Nordic Woodcraft', title: 'Store Owner', email: 'malformed-email-address', phone: '123', source: 'Unknown', status: LeadStatus.NEW, notes: 'Bounced outreach.', owner: null },
-      { firstName: 'Bradley', lastName: 'Cooper', company: 'Legacy Retail POS', title: 'Former Director', email: 'b.cooper@legacyretail.biz', phone: '+1 (555) 019-9999', source: 'Cold Outbound', status: LeadStatus.LOST, notes: 'Company selected competitor. Do not contact until 2027.', owner: defaultRep }
+      { firstName: 'Bradley', lastName: 'Cooper', company: 'Legacy Retail POS', title: 'Former Director', email: 'b.cooper@legacyretail.biz', phone: '+1 (555) 019-9999', source: 'Cold Outbound', status: LeadStatus.LOST, notes: 'Company selected competitor. Do not contact until 2027.', owner: defaultRep },
+
+      // CONVERTED LEADS TIED TO WON ENTERPRISE ACCOUNTS
+      { firstName: 'Hiroshi', lastName: 'Tanaka', company: 'Krypton Robotics & Automation', title: 'Chief Technology Officer', email: 'tanaka.lead@kryptonrobotics.ai', phone: '+1 (408) 552-8801', source: 'Q3 Enterprise Cloud Summit', status: LeadStatus.CONVERTED, notes: 'Met at Cloud Summit. Converted into enterprise customer account.', owner: secondRep, convertedAccIdx: 5 },
+      { firstName: 'Dominic', lastName: 'Cobb', company: 'Lumina Media Group', title: 'VP of Digital Monetization', email: 'dcobb.lead@luminamedia.com', phone: '+1 (212) 555-0191', source: 'Executive ABM', status: LeadStatus.CONVERTED, notes: 'Executive ABM outreach led to signed commercial agreement.', owner: defaultRep, convertedAccIdx: 6 }
     ];
 
     const seededLeads = [];
@@ -212,6 +216,7 @@ export async function seedEnterpriseData() {
       let existing = await prisma.lead.findFirst({
         where: { organizationId: org.id, email: ld.email, deletedAt: null }
       });
+      const convAccId = (ld as any).convertedAccIdx !== undefined ? seededAccounts[(ld as any).convertedAccIdx]?.id : null;
       if (!existing) {
         existing = await prisma.lead.create({
           data: {
@@ -226,13 +231,24 @@ export async function seedEnterpriseData() {
             source: ld.source,
             status: ld.status,
             notes: ld.notes,
+            convertedAccountId: convAccId,
+            convertedAt: convAccId ? new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) : null,
             score: 0
+          }
+        });
+      } else if (convAccId && !existing.convertedAccountId) {
+        existing = await prisma.lead.update({
+          where: { id: existing.id },
+          data: {
+            convertedAccountId: convAccId,
+            convertedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000),
+            status: LeadStatus.CONVERTED
           }
         });
       }
       seededLeads.push(existing);
     }
-    console.log(`   ✓ ${seededLeads.length} Prospective Leads ready`);
+    console.log(`   ✓ ${seededLeads.length} Prospective & Converted Leads ready`);
 
     // -------------------------------------------------------------
     // 6. SEED PIPELINE OPPORTUNITIES (12 Full Commercial Deals)
@@ -254,8 +270,8 @@ export async function seedEnterpriseData() {
       { name: 'NexaPay Global — Cross-Border Commercial CRM', accIdx: 8, contactIdx: 15, stage: negStage, value: 112000.00, prob: 0.70, status: OpportunityStatus.OPEN, closeDays: 25, desc: 'Multi-currency sales quote and order automation module.' },
 
       // Closed Won Stage
-      { name: 'Krypton Robotics — Global Sales & Field Service Rollout', accIdx: 5, contactIdx: 10, stage: wonStage, value: 210000.00, prob: 1.00, status: OpportunityStatus.WON, closeDays: -10, desc: 'Contract fully executed. 3-year enterprise commitment with upfront annual prepayment.' },
-      { name: 'Lumina Media — Enterprise Streaming Sales Stack', accIdx: 6, contactIdx: 12, stage: wonStage, value: 64000.00, prob: 1.00, status: OpportunityStatus.WON, closeDays: -25, desc: 'Annual agreement signed. Professional onboarding kicked off.' },
+      { name: 'Krypton Robotics — Global Sales & Field Service Rollout', leadIdx: 16, accIdx: 5, contactIdx: 10, stage: wonStage, value: 210000.00, prob: 1.00, status: OpportunityStatus.WON, closeDays: -10, desc: 'Contract fully executed. 3-year enterprise commitment with upfront annual prepayment.' },
+      { name: 'Lumina Media — Enterprise Streaming Sales Stack', leadIdx: 17, accIdx: 6, contactIdx: 12, stage: wonStage, value: 64000.00, prob: 1.00, status: OpportunityStatus.WON, closeDays: -25, desc: 'Annual agreement signed. Professional onboarding kicked off.' },
       { name: 'Starlight Enterprise SaaS Deal', accIdx: 11, contactIdx: 19, stage: wonStage, value: 16500.00, prob: 1.00, status: OpportunityStatus.WON, closeDays: -40, desc: 'Initial starter enterprise license agreement successfully renewed.' },
 
       // Closed Lost Stage
@@ -629,13 +645,18 @@ export async function seedEnterpriseData() {
 
     // Link Leads to Campaigns
     if (seededCampaigns.length > 0 && seededLeads.length > 0) {
-      const c1 = seededCampaigns[0];
-      const c2 = seededCampaigns[1];
+      const c1 = seededCampaigns[0]; // Summit
+      const c2 = seededCampaigns[1]; // Webinar
+      const c3 = seededCampaigns[2]; // ABM
+      const c4 = seededCampaigns[3]; // Roundtable
       const linkPairs = [
-        { c: c1, l: seededLeads[3] },
-        { c: c2, l: seededLeads[4] },
-        { c: c2, l: seededLeads[5] },
-        { c: c1, l: seededLeads[0] }
+        { c: c1, l: seededLeads[16] }, // Hiroshi Tanaka (Converted -> Won $210k)
+        { c: c1, l: seededLeads[3] },  // Tariq Al-Mansoor
+        { c: c2, l: seededLeads[4] },  // Beatrice Castillo
+        { c: c2, l: seededLeads[10] }, // Camila Santos
+        { c: c3, l: seededLeads[17] }, // Dominic Cobb (Converted -> Won $64k)
+        { c: c3, l: seededLeads[0] },  // Gillian Anderson
+        { c: c4, l: seededLeads[5] }   // Siddharth Nair
       ];
       for (const pair of linkPairs) {
         if (pair.l) {

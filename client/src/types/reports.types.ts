@@ -103,7 +103,10 @@ export interface PipelineReportData {
 
 export interface ActivityReportData {
   totalActivities: number;
-  byType: Array<{ type: string; count: number; percentage: number }>;
+  byType?: Array<{ type: string; count: number; percentage?: number }> | Record<string, number>;
+  byTypeArray?: Array<{ type: string; count: number; percentage?: number }>;
+  types?: Array<{ type: string; count: number; percentage?: number }>;
+  typeBreakdown?: Record<string, number>;
   byUser: Array<{
     userId: string;
     userName: string;

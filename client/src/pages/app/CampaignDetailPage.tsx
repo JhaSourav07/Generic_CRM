@@ -113,16 +113,19 @@ export const CampaignDetailPage: React.FC = () => {
 
   const handleRemoveLead = async (leadItem: CampaignLeadItem) => {
     if (!id) return;
+    const lead = leadItem.lead || (leadItem as any);
+    const leadId = leadItem.leadId || lead?.id || leadItem.id;
+    const leadName = `${lead?.firstName || ''} ${lead?.lastName || ''}`.trim() || 'this lead';
     if (
       !window.confirm(
-        `Remove lead "${leadItem.lead.firstName} ${leadItem.lead.lastName}" from this campaign?`
+        `Remove lead "${leadName}" from this campaign?`
       )
     ) {
       return;
     }
 
     try {
-      await campaignsService.removeLead(id, leadItem.leadId);
+      await campaignsService.removeLead(id, leadId);
       toast({
         title: 'Lead Removed',
         message: 'The lead has been detached from this campaign.',
@@ -445,44 +448,49 @@ export const CampaignDetailPage: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                leads.map((item) => (
-                  <tr key={item.id} className="hover:bg-vynexa-surface-secondary/40 transition-colors">
-                    <td className="py-2.5 px-3 font-medium text-vynexa-text-primary">
-                      {item.lead.firstName} {item.lead.lastName}
-                      {item.lead.email && (
-                        <div className="text-[11px] text-vynexa-text-muted font-normal">
-                          {item.lead.email}
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-2.5 px-3 text-vynexa-text-secondary">
-                      {item.lead.company || '—'}
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <Badge variant="outline">{item.lead.status}</Badge>
-                    </td>
-                    <td className="py-2.5 px-3 text-center font-mono text-vynexa-text-secondary">
-                      {item.lead.score}
-                    </td>
-                    <td className="py-2.5 px-3 text-vynexa-text-secondary">
-                      {item.lead.owner ? item.lead.owner.name || item.lead.owner.email : 'Unassigned'}
-                    </td>
-                    <td className="py-2.5 px-3 font-mono text-[11px] text-vynexa-text-muted">
-                      {item.addedAt ? item.addedAt.split('T')[0] : '—'}
-                    </td>
-                    <td className="py-2.5 px-3 text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveLead(item)}
-                        className="h-6 w-6 p-0 text-vynexa-text-muted hover:text-vynexa-status-danger"
-                        title="Remove lead from campaign"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))
+                leads.map((item) => {
+                  const lead = item.lead || (item as any);
+                  const leadId = item.leadId || lead?.id || item.id;
+                  const addedDate = item.addedAt || (item as any).addedToCampaignAt;
+                  return (
+                    <tr key={leadId} className="hover:bg-vynexa-surface-secondary/40 transition-colors">
+                      <td className="py-2.5 px-3 font-medium text-vynexa-text-primary">
+                        {lead?.firstName} {lead?.lastName}
+                        {lead?.email && (
+                          <div className="text-[11px] text-vynexa-text-muted font-normal">
+                            {lead.email}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-3 text-vynexa-text-secondary">
+                        {lead?.company || '—'}
+                      </td>
+                      <td className="py-2.5 px-3">
+                        <Badge variant="outline">{lead?.status || 'NEW'}</Badge>
+                      </td>
+                      <td className="py-2.5 px-3 text-center font-mono text-vynexa-text-secondary">
+                        {lead?.score ?? 0}
+                      </td>
+                      <td className="py-2.5 px-3 text-vynexa-text-secondary">
+                        {lead?.owner ? lead.owner.name || lead.owner.email : 'Unassigned'}
+                      </td>
+                      <td className="py-2.5 px-3 font-mono text-[11px] text-vynexa-text-muted">
+                        {addedDate ? addedDate.split('T')[0] : '—'}
+                      </td>
+                      <td className="py-2.5 px-3 text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveLead(item)}
+                          className="h-6 w-6 p-0 text-vynexa-text-muted hover:text-vynexa-status-danger"
+                          title="Remove lead from campaign"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
@@ -532,7 +540,7 @@ export const CampaignDetailPage: React.FC = () => {
         isOpen={isAddLeadsOpen}
         onClose={() => setIsAddLeadsOpen(false)}
         campaignId={campaign.id}
-        existingLeadIds={leads.map((l) => l.leadId)}
+        existingLeadIds={leads.map((l) => l.leadId || (l as any).id)}
         onSuccess={() => {
           fetchLeads();
           fetchCampaign();
