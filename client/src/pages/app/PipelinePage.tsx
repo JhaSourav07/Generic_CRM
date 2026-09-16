@@ -246,7 +246,7 @@ export const PipelinePage: React.FC = () => {
       {/* Page Header with Pipeline Selector and Actions */}
       <PageHeader
         title="Sales Pipeline"
-        description="Visual Kanban deal progression, probability stages, and commercial workspace."
+        description="See where each potential sale stands and move deals forward."
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Sales' },
@@ -276,7 +276,7 @@ export const PipelinePage: React.FC = () => {
               size="sm"
               onClick={() => navigate('/app/opportunities')}
             >
-              Table View
+              Table view
             </Button>
 
             <Button
@@ -285,7 +285,7 @@ export const PipelinePage: React.FC = () => {
               leftIcon={<Plus className="h-3.5 w-3.5" />}
               onClick={() => setIsCreateOpen(true)}
             >
-              New Opportunity
+              Add opportunity
             </Button>
           </div>
         }
@@ -294,35 +294,35 @@ export const PipelinePage: React.FC = () => {
       {/* Pipeline Aggregate Metrics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Card className="bg-vynexa-surface border-vynexa-border p-3">
-          <div className="text-[11px] text-vynexa-text-muted">Open Deals</div>
+          <div className="text-[11px] text-vynexa-text-muted">Open deals</div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {totals.openCount}
           </div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3">
-          <div className="text-[11px] text-vynexa-text-muted">Total Pipeline Value</div>
+          <div className="text-[11px] text-vynexa-text-muted">Pipeline value</div>
           <div className="text-xl font-bold font-mono text-vynexa-blue mt-1">
             {formatCurrency(totals.openValue)}
           </div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3">
-          <div className="text-[11px] text-vynexa-text-muted">Weighted Value</div>
+          <div className="text-[11px] text-vynexa-text-muted">Expected sales</div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {formatCurrency(totals.weightedValue)}
           </div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3">
-          <div className="text-[11px] text-vynexa-text-muted">Closed Won Revenue</div>
+          <div className="text-[11px] text-vynexa-text-muted">Won deals</div>
           <div className="text-xl font-bold font-mono text-vynexa-emerald mt-1">
             {formatCurrency(totals.wonValue)}
           </div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3">
-          <div className="text-[11px] text-vynexa-text-muted">Closed Lost</div>
+          <div className="text-[11px] text-vynexa-text-muted">Lost deals</div>
           <div className="text-xl font-bold font-mono text-vynexa-danger mt-1">
             {formatCurrency(totals.lostValue)}
           </div>
@@ -380,7 +380,7 @@ export const PipelinePage: React.FC = () => {
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-mono text-vynexa-text-muted">
-                    <span>{Math.round(stage.probability * 100)}% prob</span>
+                    <span>{Math.round(stage.probability * 100)}% chance</span>
                     <span className="text-vynexa-text-secondary font-semibold">
                       {formatCurrency(stage.totalValue)}
                     </span>
@@ -446,7 +446,7 @@ export const PipelinePage: React.FC = () => {
                                   setSelectedOppForWon(opp);
                                 }}
                                 className="p-1 rounded hover:bg-vynexa-emerald/20 text-vynexa-text-muted hover:text-vynexa-emerald transition-colors"
-                                title="Mark as Won"
+                                title="Mark as won"
                               >
                                 <Trophy className="h-3 w-3" />
                               </button>
@@ -460,7 +460,7 @@ export const PipelinePage: React.FC = () => {
                                   setSelectedOppForLost(opp);
                                 }}
                                 className="p-1 rounded hover:bg-vynexa-danger/20 text-vynexa-text-muted hover:text-vynexa-danger transition-colors"
-                                title="Mark as Lost"
+                                title="Mark as lost"
                               >
                                 <XCircle className="h-3 w-3" />
                               </button>
@@ -473,7 +473,7 @@ export const PipelinePage: React.FC = () => {
                                 setSelectedOppForStage(opp);
                               }}
                               className="p-1 rounded hover:bg-vynexa-surface text-vynexa-text-muted hover:text-vynexa-text-primary transition-colors"
-                              title="Change Stage"
+                              title="Change stage"
                             >
                               <ArrowRightLeft className="h-3 w-3" />
                             </button>

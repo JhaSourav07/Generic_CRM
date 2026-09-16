@@ -155,11 +155,18 @@ export const NotificationsPage: React.FC = () => {
     return <AlertCircle className="h-4 w-4 text-vynexa-text-secondary" />;
   };
 
+  const formatNotificationType = (type: string) => {
+    return type
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/^\w/, (c) => c.toUpperCase());
+  };
+
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Notifications"
-        description="Real-time alerts, cross-module assignments, and workflow status events"
+        description="Updates on your leads, deals, tasks, and team activity."
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -199,7 +206,7 @@ export const NotificationsPage: React.FC = () => {
                 : 'text-vynexa-text-secondary hover:text-vynexa-text-primary hover:bg-vynexa-surface'
             }`}
           >
-            All Notifications
+            All
           </button>
           <button
             onClick={() => {
@@ -244,8 +251,8 @@ export const NotificationsPage: React.FC = () => {
               </p>
               <p className="text-xs text-vynexa-text-secondary mt-1">
                 {tab === 'unread'
-                  ? 'You are all caught up on pending items.'
-                  : 'System and workflow alerts will appear here as activity occurs.'}
+                  ? 'You are all caught up.'
+                  : 'Updates about your leads, tasks, and deals will appear here.'}
               </p>
             </div>
           </div>
@@ -270,8 +277,8 @@ export const NotificationsPage: React.FC = () => {
                     {!item.isRead && (
                       <span className="h-1.5 w-1.5 rounded-full bg-blue-400 inline-block" />
                     )}
-                    <span className="text-[10px] font-mono text-vynexa-text-muted px-1.5 py-0.5 rounded bg-vynexa-surface-secondary border border-vynexa-border/60">
-                      {item.type}
+                    <span className="text-[10px] text-vynexa-text-muted px-1.5 py-0.5 rounded bg-vynexa-surface-secondary border border-vynexa-border/60">
+                      {formatNotificationType(item.type)}
                     </span>
                   </div>
 
@@ -292,7 +299,7 @@ export const NotificationsPage: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleNavigateContext(item)}
-                  title="View linked item"
+                  title="View details"
                   className="h-8 w-8 p-0"
                 >
                   <ExternalLink className="h-3.5 w-3.5 text-vynexa-text-secondary hover:text-vynexa-text-primary" />
@@ -314,7 +321,7 @@ export const NotificationsPage: React.FC = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDelete(item.id)}
-                  title="Delete notification"
+                  title="Delete"
                   className="h-8 w-8 p-0 hover:text-rose-400"
                 >
                   <Trash2 className="h-3.5 w-3.5 text-vynexa-text-muted hover:text-rose-400" />

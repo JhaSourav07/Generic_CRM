@@ -203,7 +203,7 @@ export const QuoteDetailPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title={`Quote #${quote.quoteNumber}`}
-        description={`Commercial Proposal • Issued ${new Date(quote.createdAt).toLocaleDateString()}`}
+        description={`Issued on ${new Date(quote.createdAt).toLocaleDateString()}`}
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Quotes', href: '/app/quotes' },
@@ -229,7 +229,7 @@ export const QuoteDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <Edit2 className="h-3.5 w-3.5" />
-                <span>Edit</span>
+                <span>Edit quote</span>
               </Button>
             )}
 
@@ -280,7 +280,7 @@ export const QuoteDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <ShoppingBag className="h-3.5 w-3.5" />
-                <span>{hasOrders ? 'Converted to Order' : 'Convert to Order'}</span>
+                <span>{hasOrders ? 'Converted to order' : 'Create order'}</span>
               </Button>
             )}
 
@@ -293,7 +293,7 @@ export const QuoteDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                <span>Delete</span>
+                <span>Delete quote</span>
               </Button>
             )}
           </div>
@@ -304,7 +304,7 @@ export const QuoteDetailPage: React.FC = () => {
         <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-950/30 border border-emerald-800/40 text-xs text-emerald-300">
           <Lock className="h-4 w-4 shrink-0" />
           <span>
-            <strong>Approved Commercial Proposal:</strong> Financial terms and line items are strictly immutable to maintain legal and auditing integrity.
+            <strong>Approved quote:</strong> Items and prices can no longer be changed.
           </span>
         </div>
       )}
@@ -318,7 +318,7 @@ export const QuoteDetailPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-vynexa-text-primary flex items-center gap-2">
                   <FileText className="h-4 w-4 text-vynexa-text-muted" />
-                  Proposal Overview
+                  Quote details
                 </CardTitle>
                 {getStatusBadge(quote.status)}
               </div>
@@ -329,7 +329,7 @@ export const QuoteDetailPage: React.FC = () => {
                   Customer
                 </span>
                 <span className="font-semibold text-vynexa-text-primary">
-                  {quote.account?.name || 'No account attached'}
+                  {quote.account?.name || 'No customer linked'}
                 </span>
               </div>
               <div>
@@ -342,7 +342,7 @@ export const QuoteDetailPage: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Valid Until
+                  Valid until
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {quote.validUntil ? new Date(quote.validUntil).toLocaleDateString() : 'No expiry'}
@@ -350,7 +350,7 @@ export const QuoteDetailPage: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Created By
+                  Created by
                 </span>
                 <span className="text-vynexa-text-primary">
                   {quote.createdBy?.name || 'System'}
@@ -363,20 +363,20 @@ export const QuoteDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border overflow-hidden">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-sm font-semibold text-vynexa-text-primary">
-                Line Items & Commercial Deliverables
+                Items in this quote
               </CardTitle>
             </CardHeader>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-muted uppercase tracking-wider font-mono text-[10px]">
-                    <th className="py-2.5 px-4">Item & Description</th>
-                    <th className="py-2.5 px-4">Catalog SKU</th>
+                    <th className="py-2.5 px-4">Item & description</th>
+                    <th className="py-2.5 px-4">SKU</th>
                     <th className="py-2.5 px-3 text-right">Qty</th>
-                    <th className="py-2.5 px-3 text-right">Unit Price</th>
+                    <th className="py-2.5 px-3 text-right">Unit price</th>
                     <th className="py-2.5 px-3 text-right">Discount</th>
                     <th className="py-2.5 px-3 text-right">Tax</th>
-                    <th className="py-2.5 px-4 text-right">Line Total</th>
+                    <th className="py-2.5 px-4 text-right">Total</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-vynexa-border/60">
@@ -422,7 +422,7 @@ export const QuoteDetailPage: React.FC = () => {
             <Card className="bg-vynexa-surface border-vynexa-border">
               <CardHeader className="border-b border-vynexa-border pb-3">
                 <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                  Commercial Terms & Notes
+                  Terms & notes
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-3">
@@ -440,7 +440,7 @@ export const QuoteDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                Financial Summary
+                Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-3 font-mono text-xs">
@@ -449,15 +449,15 @@ export const QuoteDetailPage: React.FC = () => {
                 <span className="font-semibold text-vynexa-text-primary">{formatAmount(quote.subtotal)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Total Discount:</span>
+                <span>Discount:</span>
                 <span className="text-amber-400">-{formatAmount(quote.discount)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Applicable Tax:</span>
+                <span>Tax:</span>
                 <span className="text-vynexa-text-primary">+{formatAmount(quote.tax)}</span>
               </div>
               <div className="flex justify-between text-base font-bold text-vynexa-text-primary pt-3 border-t border-vynexa-border">
-                <span>Final Proposal:</span>
+                <span>Total:</span>
                 <span className="text-primary">{formatAmount(quote.total)}</span>
               </div>
               <span className="text-[10px] text-vynexa-text-muted block pt-1 italic text-right">
@@ -472,7 +472,7 @@ export const QuoteDetailPage: React.FC = () => {
               <CardHeader className="border-b border-vynexa-border pb-3">
                 <CardTitle className="text-xs font-mono uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
                   <ShoppingBag className="h-3.5 w-3.5" />
-                  <span>Associated Orders</span>
+                  <span>Orders</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-3 space-y-2">
@@ -517,12 +517,12 @@ export const QuoteDetailPage: React.FC = () => {
       <Dialog
         isOpen={isRejectOpen}
         onClose={() => setIsRejectOpen(false)}
-        title="Reject Quote Proposal"
+        title="Reject quote"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary">
-            Provide an optional reason for rejecting proposal <strong>#{quote.quoteNumber}</strong>.
+            Enter an optional reason for rejecting quote <strong>#{quote.quoteNumber}</strong>.
           </p>
           <Textarea
             rows={3}
@@ -545,7 +545,7 @@ export const QuoteDetailPage: React.FC = () => {
               onClick={handleReject}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Rejecting...' : 'Reject Quote'}
+              {actionLoading ? 'Rejecting...' : 'Reject quote'}
             </Button>
           </div>
         </div>
@@ -555,12 +555,12 @@ export const QuoteDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Delete Quote Proposal"
+        title="Delete quote"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary">
-            Are you sure you want to delete draft Quote <strong>#{quote.quoteNumber}</strong>? This action cannot be undone.
+            Are you sure you want to delete draft quote <strong>#{quote.quoteNumber}</strong>? This cannot be undone.
           </p>
           <div className="flex justify-end gap-3 pt-2">
             <Button
@@ -577,7 +577,7 @@ export const QuoteDetailPage: React.FC = () => {
               onClick={handleDelete}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Deleting...' : 'Confirm Delete'}
+              {actionLoading ? 'Deleting...' : 'Delete quote'}
             </Button>
           </div>
         </div>
@@ -587,12 +587,12 @@ export const QuoteDetailPage: React.FC = () => {
       <Dialog
         isOpen={isConvertOpen}
         onClose={() => setIsConvertOpen(false)}
-        title="Convert Quote to Official Order"
+        title="Turn quote into order"
         maxWidth="md"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
-            Convert approved Quote <strong className="text-vynexa-text-primary">#{quote.quoteNumber}</strong> into a commercial Order.
+            Turn approved quote <strong className="text-vynexa-text-primary">#{quote.quoteNumber}</strong> into a customer order.
           </p>
           <div className="p-3 bg-vynexa-surface-secondary/60 rounded border border-vynexa-border/60 font-mono text-xs space-y-1">
             <div className="flex justify-between">
@@ -600,7 +600,7 @@ export const QuoteDetailPage: React.FC = () => {
               <span className="text-vynexa-text-primary font-semibold">{quote.account?.name || 'N/A'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-vynexa-text-muted">Order Total:</span>
+              <span className="text-vynexa-text-muted">Order total:</span>
               <span className="text-primary font-bold">{formatAmount(quote.total)}</span>
             </div>
           </div>
@@ -619,7 +619,7 @@ export const QuoteDetailPage: React.FC = () => {
               onClick={handleConvertToOrder}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Generating Order...' : 'Generate Order'}
+              {actionLoading ? 'Creating order...' : 'Create order'}
             </Button>
           </div>
         </div>

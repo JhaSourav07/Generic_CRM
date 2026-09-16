@@ -35,8 +35,8 @@ export const AssignLeadModal: React.FC<AssignLeadModalProps> = ({ isOpen, lead, 
     if (!selectedOwnerId) {
       toast({
         type: 'warning',
-        title: 'Selection Required',
-        message: 'Please select an owner to assign this lead.'
+        title: 'Select team member',
+        message: 'Please select a team member to assign this lead.'
       });
       return;
     }
@@ -46,7 +46,7 @@ export const AssignLeadModal: React.FC<AssignLeadModalProps> = ({ isOpen, lead, 
       await leadsService.assignLead(lead.id, selectedOwnerId);
       toast({
         type: 'success',
-        title: 'Lead Assigned',
+        title: 'Lead assigned',
         message: 'Lead assigned successfully.'
       });
       onSuccess();
@@ -54,7 +54,7 @@ export const AssignLeadModal: React.FC<AssignLeadModalProps> = ({ isOpen, lead, 
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Assignment Failed',
+        title: 'Could not assign lead',
         message: err.message || 'Failed to assign lead.'
       });
     } finally {
@@ -66,17 +66,17 @@ export const AssignLeadModal: React.FC<AssignLeadModalProps> = ({ isOpen, lead, 
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Assign Lead Owner"
-      description={`Reassign ownership for lead '${lead.firstName} ${lead.lastName}'`}
+      title="Assign lead"
+      description={`Assign ${lead.firstName} ${lead.lastName} to a team member.`}
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <Select
-          label="Select New Owner"
+          label="Assigned to"
           value={selectedOwnerId}
           onChange={(e) => setSelectedOwnerId(e.target.value)}
           options={[
-            { value: '', label: 'Select a user...' },
+            { value: '', label: 'Select a team member...' },
             ...users.map(u => ({ value: u.id, label: `${u.name} (${u.role.name})` }))
           ]}
         />
@@ -86,7 +86,7 @@ export const AssignLeadModal: React.FC<AssignLeadModalProps> = ({ isOpen, lead, 
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Assign Owner
+            Assign lead
           </Button>
         </div>
       </form>

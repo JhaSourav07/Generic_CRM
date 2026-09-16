@@ -137,8 +137,8 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Opportunity Updated',
-        message: `Opportunity '${data.name}' updated successfully.`
+        title: 'Deal updated',
+        message: `Deal '${data.name}' updated successfully.`
       });
 
       onSuccess();
@@ -146,8 +146,8 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Update Failed',
-        message: err.message || 'Failed to update opportunity.'
+        title: 'Update failed',
+        message: err.message || 'Failed to update deal.'
       });
     } finally {
       setLoading(false);
@@ -155,11 +155,11 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Edit Opportunity" maxWidth="lg">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Edit deal" maxWidth="lg">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Opportunity Name <span className="text-vynexa-danger">*</span>
+            Deal name <span className="text-vynexa-danger">*</span>
           </label>
           <Input
             {...register('name')}
@@ -171,10 +171,10 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Customer Account
+              Customer
             </label>
             <Select {...register('accountId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
-              <option value="">Select Account (Optional)</option>
+              <option value="">Select customer (optional)</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -185,10 +185,10 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Primary Contact
+              Contact person
             </label>
             <Select {...register('contactId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
-              <option value="">Select Contact (Optional)</option>
+              <option value="">Select contact (optional)</option>
               {filteredContacts.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.firstName} {c.lastName} {c.email ? `(${c.email})` : ''}
@@ -201,7 +201,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Sales Pipeline
+              Pipeline
             </label>
             <Select
               value={selectedPipelineId}
@@ -218,7 +218,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Pipeline Stage
+              Stage
             </label>
             <Select {...register('stageId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
               {currentStages.map((s) => (
@@ -246,7 +246,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Probability (%)
+              Win probability (%)
             </label>
             <Input
               type="number"
@@ -261,7 +261,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Expected Close Date
+              Target close date
             </label>
             <Input
               type="date"
@@ -272,7 +272,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Owner
+              Assigned to
             </label>
             <Select {...register('ownerId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
               <option value="">Unassigned</option>
@@ -287,7 +287,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
 
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Description
+            Notes
           </label>
           <Textarea
             {...register('description')}
@@ -301,7 +301,7 @@ export const EditOpportunityModal: React.FC<EditOpportunityModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-            Save Changes
+            Save changes
           </Button>
         </div>
       </form>

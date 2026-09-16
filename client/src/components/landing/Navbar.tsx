@@ -20,23 +20,23 @@ export const Navbar: React.FC = () => {
               VYNEXA
             </span>
             <span className="text-[9px] text-vynexa-text-muted font-medium tracking-widest font-mono">
-              ENTERPRISE CRM
+              CRM
             </span>
           </div>
         </Link>
 
         {/* Center: Desktop Navigation Links */}
         <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-vynexa-text-secondary select-none">
-          <a href="#product" className="hover:text-vynexa-text-primary transition-colors">Product</a>
-          <a href="#solutions" className="hover:text-vynexa-text-primary transition-colors">Solutions</a>
-          <a href="#workflow" className="hover:text-vynexa-text-primary transition-colors">Workflow</a>
-          <a href="#insights" className="hover:text-vynexa-text-primary transition-colors">Insights</a>
+          <a href="#product" className="hover:text-vynexa-text-primary transition-colors">Overview</a>
+          <a href="#solutions" className="hover:text-vynexa-text-primary transition-colors">Features</a>
+          <a href="#workflow" className="hover:text-vynexa-text-primary transition-colors">How it works</a>
+          <a href="#insights" className="hover:text-vynexa-text-primary transition-colors">Reports</a>
         </nav>
 
         {/* Right: Actions */}
         <div className="hidden md:flex items-center gap-3">
           <Link to="/login">
-            <Button variant="ghost" size="sm">Log in</Button>
+            <Button variant="ghost" size="sm">Sign in</Button>
           </Link>
           <Link to="/signup">
             <Button variant="primary" size="sm" rightIcon={<ArrowRight className="h-3.5 w-3.5" />}>
@@ -64,34 +64,34 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="py-1 hover:text-vynexa-text-primary transition-colors"
             >
-              Product
+              Overview
             </a>
             <a
               href="#solutions"
               onClick={() => setMobileMenuOpen(false)}
               className="py-1 hover:text-vynexa-text-primary transition-colors"
             >
-              Solutions
+              Features
             </a>
             <a
               href="#workflow"
               onClick={() => setMobileMenuOpen(false)}
               className="py-1 hover:text-vynexa-text-primary transition-colors"
             >
-              Workflow
+              How it works
             </a>
             <a
               href="#insights"
               onClick={() => setMobileMenuOpen(false)}
               className="py-1 hover:text-vynexa-text-primary transition-colors"
             >
-              Insights
+              Reports
             </a>
           </nav>
 
           <div className="pt-3 border-t border-vynexa-border flex flex-col gap-2">
             <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="outline" size="sm" className="w-full justify-center">Log in</Button>
+              <Button variant="outline" size="sm" className="w-full justify-center">Sign in</Button>
             </Link>
             <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
               <Button variant="primary" size="sm" className="w-full justify-center" rightIcon={<ArrowRight className="h-3.5 w-3.5" />}>

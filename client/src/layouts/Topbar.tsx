@@ -74,15 +74,15 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
       await logout();
       toast({
         type: 'info',
-        title: 'Signed Out',
-        message: 'You have successfully signed out of your workspace.'
+        title: 'Signed out',
+        message: 'You have signed out of your workspace.'
       });
       navigate('/login', { replace: true });
     } catch (_err) {
       toast({
         type: 'error',
-        title: 'Sign Out Error',
-        message: 'An error occurred while signing out.'
+        title: 'Sign out failed',
+        message: 'Could not sign out. Please try again.'
       });
     }
   };
@@ -99,67 +99,67 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
   if (currentPath.includes('/dashboard')) {
     sectionName = 'Overview';
-    pageTitle = 'Executive Dashboard';
+    pageTitle = 'Dashboard';
   } else if (currentPath.includes('/leads')) {
     sectionName = 'CRM';
-    pageTitle = currentPath.split('/leads/')[1] ? 'Lead Details' : 'Leads Directory';
+    pageTitle = currentPath.split('/leads/')[1] ? 'Lead details' : 'Leads';
   } else if (currentPath.includes('/customers')) {
     sectionName = 'CRM';
-    pageTitle = currentPath.split('/customers/')[1] ? 'Customer Account' : 'Customer Accounts';
+    pageTitle = currentPath.split('/customers/')[1] ? 'Customer details' : 'Customers';
   } else if (currentPath.includes('/contacts')) {
     sectionName = 'CRM';
-    pageTitle = currentPath.split('/contacts/')[1] ? 'Contact Details' : 'Contacts Directory';
+    pageTitle = currentPath.split('/contacts/')[1] ? 'Contact details' : 'Contacts';
   } else if (currentPath.includes('/pipeline')) {
     sectionName = 'Sales';
-    pageTitle = 'Pipeline (Kanban)';
+    pageTitle = 'Sales Pipeline';
   } else if (currentPath.includes('/opportunities')) {
     sectionName = 'Sales';
-    pageTitle = currentPath.split('/opportunities/')[1] ? 'Opportunity Details' : 'Opportunities';
+    pageTitle = currentPath.split('/opportunities/')[1] ? 'Opportunity details' : 'Opportunities';
   } else if (currentPath.includes('/quotes')) {
     sectionName = 'Sales';
-    pageTitle = currentPath.split('/quotes/')[1] ? 'Quote Details' : 'Quotes & Proposals';
+    pageTitle = currentPath.split('/quotes/')[1] ? 'Quote details' : 'Quotes';
   } else if (currentPath.includes('/orders')) {
     sectionName = 'Sales';
-    pageTitle = currentPath.split('/orders/')[1] ? 'Order Details' : 'Commercial Orders';
+    pageTitle = currentPath.split('/orders/')[1] ? 'Order details' : 'Orders';
   } else if (currentPath.includes('/products')) {
     sectionName = 'Sales';
-    pageTitle = currentPath.split('/products/')[1] ? 'Product Details' : 'Products & Services';
+    pageTitle = currentPath.split('/products/')[1] ? 'Product details' : 'Products';
   } else if (currentPath.includes('/tasks')) {
     sectionName = 'Workspace';
-    pageTitle = 'Tasks & Actions';
+    pageTitle = 'Tasks';
   } else if (currentPath.includes('/activities')) {
     sectionName = 'Workspace';
-    pageTitle = 'Interaction Logs';
+    pageTitle = 'Activities';
   } else if (currentPath.includes('/follow-ups')) {
     sectionName = 'Workspace';
-    pageTitle = 'Follow-up Reminders';
+    pageTitle = 'Follow-ups';
   } else if (currentPath.includes('/documents')) {
     sectionName = 'Workspace';
-    pageTitle = currentPath.split('/documents/')[1] ? 'Document Details' : 'Document Management';
+    pageTitle = currentPath.split('/documents/')[1] ? 'Document details' : 'Documents';
   } else if (currentPath.includes('/notifications')) {
     sectionName = 'Workspace';
     pageTitle = 'Notifications';
   } else if (currentPath.includes('/support')) {
     sectionName = 'Support';
-    pageTitle = currentPath.includes('/support-cases/') ? 'Support Case Details' : 'Support Cases';
+    pageTitle = currentPath.includes('/support-cases/') ? 'Support request details' : 'Support';
   } else if (currentPath.includes('/campaigns')) {
     sectionName = 'Marketing';
-    pageTitle = currentPath.split('/campaigns/')[1] ? 'Campaign Details' : 'Marketing Campaigns';
+    pageTitle = currentPath.split('/campaigns/')[1] ? 'Campaign details' : 'Campaigns';
   } else if (currentPath.includes('/reports')) {
     sectionName = 'Insights';
-    pageTitle = 'Reports & Analytics';
+    pageTitle = 'Reports';
   } else if (currentPath.includes('/users')) {
     sectionName = 'Admin';
-    pageTitle = 'Team Members & Users';
+    pageTitle = 'Users';
   } else if (currentPath.includes('/roles')) {
     sectionName = 'Admin';
-    pageTitle = 'Roles & RBAC Permissions';
+    pageTitle = 'Roles & Permissions';
   } else if (currentPath.includes('/settings')) {
     sectionName = 'Admin';
-    pageTitle = 'Organization Settings';
+    pageTitle = 'Settings';
   } else if (currentPath.includes('/audit-logs')) {
     sectionName = 'Admin';
-    pageTitle = 'System Audit Logs';
+    pageTitle = 'Audit Log';
   }
 
   return (
@@ -170,8 +170,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           <button
             onClick={onMenuToggle}
             className="md:hidden text-vynexa-text-muted hover:text-vynexa-text-primary transition-colors p-1 shrink-0"
-            title="Toggle Sidebar"
-            aria-label="Toggle Sidebar"
+            title="Toggle sidebar"
+            aria-label="Toggle sidebar"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -193,11 +193,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           <button
             onClick={() => setIsSearchOpen(true)}
             className="w-full h-8 pl-3 pr-2.5 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-xs text-vynexa-text-muted hover:text-vynexa-text-primary hover:border-vynexa-border/80 flex items-center justify-between transition-colors cursor-pointer"
-            aria-label="Open Command Palette"
+            aria-label="Open search"
           >
             <div className="flex items-center gap-2 truncate">
               <Search className="h-3.5 w-3.5 text-vynexa-text-muted shrink-0" />
-              <span className="truncate">Search leads, customers, deals, quotes...</span>
+              <span className="truncate">Search customers, leads, contacts, and more...</span>
             </div>
             <kbd className="inline-flex h-4 items-center gap-0.5 rounded border border-vynexa-border bg-vynexa-surface px-1 font-mono text-[10px] font-medium text-vynexa-text-muted shrink-0">
               <Command className="h-2.5 w-2.5" /> K
@@ -212,8 +212,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             trigger={
               <button
                 className="flex items-center gap-1 px-2.5 py-1 rounded-md border border-vynexa-border bg-vynexa-surface-secondary text-xs font-medium text-vynexa-text-primary hover:bg-vynexa-surface-secondary/80 hover:border-vynexa-border/80 transition-colors"
-                title="Create CRM Record"
-                aria-label="Create CRM Record"
+                title="Create record"
+                aria-label="Create record"
               >
                 <Plus className="h-3.5 w-3.5 text-vynexa-text-muted" />
                 <span className="hidden sm:inline">Create</span>
@@ -221,68 +221,68 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             }
           >
             <div className="px-3 py-1 text-[10px] font-mono font-semibold text-vynexa-text-muted uppercase border-b border-vynexa-border select-none">
-              Quick Create
+              Quick create
             </div>
             <DropdownItem onClick={() => navigate('/app/leads?action=create')}>
               <div className="flex items-center gap-2">
                 <UserCheck className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Lead</span>
+                <span>Add lead</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/customers?action=create')}>
               <div className="flex items-center gap-2">
                 <Building2 className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Customer</span>
+                <span>Add customer</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/contacts?action=create')}>
               <div className="flex items-center gap-2">
                 <Contact className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Contact</span>
+                <span>Add contact</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/opportunities?action=create')}>
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Opportunity</span>
+                <span>Add opportunity</span>
               </div>
             </DropdownItem>
             <DropdownSeparator />
             <DropdownItem onClick={() => navigate('/app/quotes?action=create')}>
               <div className="flex items-center gap-2">
                 <FileText className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Quote</span>
+                <span>Create quote</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/orders?action=create')}>
               <div className="flex items-center gap-2">
                 <ShoppingBag className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Order</span>
+                <span>Create order</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/products?action=create')}>
               <div className="flex items-center gap-2">
                 <Package className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Product</span>
+                <span>Add product</span>
               </div>
             </DropdownItem>
             <DropdownSeparator />
             <DropdownItem onClick={() => navigate('/app/tasks?action=create')}>
               <div className="flex items-center gap-2">
                 <CheckSquare className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Task</span>
+                <span>Add task</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/activities?action=create')}>
               <div className="flex items-center gap-2">
                 <Calendar className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>Log Activity</span>
+                <span>Log activity</span>
               </div>
             </DropdownItem>
             <DropdownItem onClick={() => navigate('/app/support?action=create')}>
               <div className="flex items-center gap-2">
                 <LifeBuoy className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                <span>New Support Case</span>
+                <span>New support request</span>
               </div>
             </DropdownItem>
           </Dropdown>
@@ -335,10 +335,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
                 <span>{orgName} • {roleName}</span>
               </div>
             </div>
-            <DropdownItem onClick={() => navigate('/app/settings')}>Profile &amp; Account</DropdownItem>
-            <DropdownItem onClick={() => navigate('/app/settings')}>Organization Preferences</DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/settings')}>Profile &amp; account</DropdownItem>
+            <DropdownItem onClick={() => navigate('/app/settings')}>Company settings</DropdownItem>
             <DropdownSeparator />
-            <DropdownItem danger onClick={handleSignOut}>Sign Out</DropdownItem>
+            <DropdownItem danger onClick={handleSignOut}>Sign out</DropdownItem>
           </Dropdown>
         </div>
       </header>

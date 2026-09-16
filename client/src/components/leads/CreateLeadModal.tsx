@@ -88,8 +88,8 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
 
       toast({
         type: 'success',
-        title: 'Lead Created',
-        message: `Lead '${data.firstName} ${data.lastName}' created successfully.`
+        title: 'Lead added',
+        message: `Lead '${data.firstName} ${data.lastName}' added.`
       });
 
       onSuccess();
@@ -97,7 +97,7 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Failed to Create Lead',
+        title: 'Could not add lead',
         message: err.message || 'An unexpected error occurred.'
       });
     } finally {
@@ -109,20 +109,20 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Lead"
-      description="Capture a new sales lead record into your organization pipeline."
+      title="Add lead"
+      description="Enter details to add a new lead."
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="First Name *"
+            label="First name *"
             placeholder="e.g. Sarah"
             {...register('firstName')}
             error={errors.firstName?.message}
           />
           <Input
-            label="Last Name *"
+            label="Last name *"
             placeholder="e.g. Connor"
             {...register('lastName')}
             error={errors.lastName?.message}
@@ -131,14 +131,14 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Email Address"
+            label="Email address"
             type="email"
             placeholder="sarah@acme.com"
             {...register('email')}
             error={errors.email?.message}
           />
           <Input
-            label="Phone Number"
+            label="Phone number"
             placeholder="+1 (555) 019-2834"
             {...register('phone')}
             error={errors.phone?.message}
@@ -147,13 +147,13 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Company Name"
+            label="Company name"
             placeholder="Acme Corporation"
             {...register('company')}
             error={errors.company?.message}
           />
           <Input
-            label="Job Title"
+            label="Job title"
             placeholder="VP of Procurement"
             {...register('jobTitle')}
             error={errors.jobTitle?.message}
@@ -162,13 +162,13 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
 
         <div className="grid grid-cols-3 gap-4">
           <Input
-            label="Lead Source"
+            label="Lead source"
             placeholder="e.g. Website, Referral"
             {...register('source')}
             error={errors.source?.message}
           />
           <Select
-            label="Initial Status"
+            label="Status"
             options={[
               { value: 'NEW', label: 'New' },
               { value: 'QUALIFIED', label: 'Qualified' },
@@ -179,7 +179,7 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
             error={errors.status?.message}
           />
           <Input
-            label="Lead Score (0-100)"
+            label="Lead score (0-100)"
             type="number"
             min={0}
             max={100}
@@ -189,9 +189,9 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
         </div>
 
         <Select
-          label="Assigned Owner"
+          label="Assigned to"
           options={[
-            { value: '', label: 'Unassigned (No Owner)' },
+            { value: '', label: 'Unassigned' },
             ...users.map(u => ({ value: u.id, label: `${u.name} (${u.role.name})` }))
           ]}
           {...register('ownerId')}
@@ -199,8 +199,8 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
         />
 
         <Textarea
-          label="Notes / Context"
-          placeholder="Add background information, qualification notes, or context..."
+          label="Notes"
+          placeholder="Add any background notes or context..."
           rows={3}
           {...register('notes')}
           error={errors.notes?.message}
@@ -211,7 +211,7 @@ export const CreateLeadModal: React.FC<CreateLeadModalProps> = ({ isOpen, onClos
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Create Lead
+            Add lead
           </Button>
         </div>
       </form>

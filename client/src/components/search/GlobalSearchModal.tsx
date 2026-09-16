@@ -42,29 +42,29 @@ interface QuickAction {
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
-  { id: 'new-lead', label: 'Create New Lead', category: 'CRM', path: '/app/leads?action=create', icon: Plus },
-  { id: 'new-customer', label: 'Create Customer Account', category: 'CRM', path: '/app/customers?action=create', icon: Plus },
-  { id: 'new-contact', label: 'Create Contact', category: 'CRM', path: '/app/contacts?action=create', icon: Plus },
-  { id: 'new-opp', label: 'Create Opportunity', category: 'Sales', path: '/app/opportunities?action=create', icon: Plus },
-  { id: 'new-task', label: 'Create Task', category: 'Workspace', path: '/app/tasks?action=create', icon: Plus },
-  { id: 'new-quote', label: 'Create Quote Proposal', category: 'Sales', path: '/app/quotes?action=create', icon: Plus }
+  { id: 'new-lead', label: 'Add lead', category: 'CRM', path: '/app/leads?action=create', icon: Plus },
+  { id: 'new-customer', label: 'Add customer', category: 'CRM', path: '/app/customers?action=create', icon: Plus },
+  { id: 'new-contact', label: 'Add contact', category: 'CRM', path: '/app/contacts?action=create', icon: Plus },
+  { id: 'new-opp', label: 'Add opportunity', category: 'Sales', path: '/app/opportunities?action=create', icon: Plus },
+  { id: 'new-task', label: 'Add task', category: 'Workspace', path: '/app/tasks?action=create', icon: Plus },
+  { id: 'new-quote', label: 'Create quote', category: 'Sales', path: '/app/quotes?action=create', icon: Plus }
 ];
 
 const NAVIGATION_SHORTCUTS: QuickAction[] = [
-  { id: 'nav-dash', label: 'Executive Dashboard', category: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
-  { id: 'nav-leads', label: 'Leads Directory', category: 'CRM', path: '/app/leads', icon: UserCheck },
-  { id: 'nav-cust', label: 'Customer Accounts', category: 'CRM', path: '/app/customers', icon: Building2 },
-  { id: 'nav-pipe', label: 'Sales Pipeline (Kanban)', category: 'Sales', path: '/app/pipeline', icon: Kanban },
+  { id: 'nav-dash', label: 'Dashboard', category: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
+  { id: 'nav-leads', label: 'Leads', category: 'CRM', path: '/app/leads', icon: UserCheck },
+  { id: 'nav-cust', label: 'Customers', category: 'CRM', path: '/app/customers', icon: Building2 },
+  { id: 'nav-pipe', label: 'Sales Pipeline', category: 'Sales', path: '/app/pipeline', icon: Kanban },
   { id: 'nav-opps', label: 'Opportunities', category: 'Sales', path: '/app/opportunities', icon: TrendingUp },
-  { id: 'nav-quotes', label: 'Quotes & Proposals', category: 'Sales', path: '/app/quotes', icon: FileText },
-  { id: 'nav-orders', label: 'Commercial Orders', category: 'Sales', path: '/app/orders', icon: ShoppingBag },
-  { id: 'nav-prods', label: 'Product Catalog', category: 'Sales', path: '/app/products', icon: Package },
-  { id: 'nav-tasks', label: 'Tasks & Follow-ups', category: 'Workspace', path: '/app/tasks', icon: CheckSquare },
-  { id: 'nav-support', label: 'Support Cases', category: 'Support', path: '/app/support', icon: LifeBuoy },
-  { id: 'nav-camps', label: 'Marketing Campaigns', category: 'Marketing', path: '/app/campaigns', icon: Megaphone },
-  { id: 'nav-reports', label: 'Reports & Analytics', category: 'Insights', path: '/app/reports', icon: BarChart3 },
-  { id: 'nav-audits', label: 'System Audit Logs', category: 'Admin', path: '/app/audit-logs', icon: History },
-  { id: 'nav-settings', label: 'Organization Settings', category: 'Admin', path: '/app/settings', icon: Settings }
+  { id: 'nav-quotes', label: 'Quotes', category: 'Sales', path: '/app/quotes', icon: FileText },
+  { id: 'nav-orders', label: 'Orders', category: 'Sales', path: '/app/orders', icon: ShoppingBag },
+  { id: 'nav-prods', label: 'Products', category: 'Sales', path: '/app/products', icon: Package },
+  { id: 'nav-tasks', label: 'Tasks', category: 'Workspace', path: '/app/tasks', icon: CheckSquare },
+  { id: 'nav-support', label: 'Support', category: 'Support', path: '/app/support', icon: LifeBuoy },
+  { id: 'nav-camps', label: 'Campaigns', category: 'Marketing', path: '/app/campaigns', icon: Megaphone },
+  { id: 'nav-reports', label: 'Reports', category: 'Insights', path: '/app/reports', icon: BarChart3 },
+  { id: 'nav-audits', label: 'Audit Log', category: 'Admin', path: '/app/audit-logs', icon: History },
+  { id: 'nav-settings', label: 'Settings', category: 'Admin', path: '/app/settings', icon: Settings }
 ];
 
 const ENTITY_ICONS: Record<SearchEntityType, React.ComponentType<{ className?: string }>> = {
@@ -90,7 +90,7 @@ const ENTITY_LABELS: Record<SearchEntityType, string> = {
   activity: 'Activity',
   quote: 'Quote',
   order: 'Order',
-  support_case: 'Support Case',
+  support_case: 'Support Request',
   campaign: 'Campaign',
   product: 'Product'
 };
@@ -255,9 +255,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search leads, accounts, opportunities, quotes, tasks..."
+            placeholder="Search customers, leads, contacts, and more..."
             className="w-full bg-transparent text-sm text-vynexa-text-primary placeholder:text-vynexa-text-muted focus:outline-none"
-            aria-label="Search CRM records"
+            aria-label="Search"
           />
           {isLoading && (
             <Loader2 className="h-4 w-4 text-vynexa-text-muted animate-spin mr-2 shrink-0" />
@@ -286,15 +286,15 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
             results.length === 0 && !isLoading ? (
               <div className="py-12 text-center text-xs text-vynexa-text-muted select-none">
                 <Search className="h-6 w-6 text-vynexa-text-muted/40 mx-auto mb-2" />
-                <p>No matching CRM records found for "{query}".</p>
+                <p>No results found for "{query}".</p>
                 <p className="mt-1 text-[11px] text-vynexa-text-muted/70">
-                  Try searching by customer name, lead contact, quote number, or deal title.
+                  Try searching with different keywords or check your spelling.
                 </p>
               </div>
             ) : (
               <div className="space-y-1">
                 <div className="px-2 py-1 text-[10px] font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">
-                  CRM Matches ({results.length})
+                  Results ({results.length})
                 </div>
                 {results.map((item, index) => {
                   const Icon = ENTITY_ICONS[item.entityType] || Building2;
@@ -348,7 +348,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
                 <div className="space-y-1">
                   <div className="flex items-center justify-between px-2 py-1">
                     <span className="text-[10px] font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase flex items-center gap-1.5">
-                      <Clock className="h-3 w-3" /> Recent Items
+                      <Clock className="h-3 w-3" /> Recent searches
                     </span>
                     <button
                       onClick={clearRecent}
@@ -387,7 +387,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
               {/* Quick Actions */}
               <div className="space-y-1">
                 <div className="px-2 py-1 text-[10px] font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">
-                  Quick Actions
+                  Quick actions
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                   {QUICK_ACTIONS.map((action, aIdx) => {
@@ -462,7 +462,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
             <span>ESC Close</span>
           </div>
           <div className="flex items-center gap-1">
-            <Command className="h-3 w-3" /> Vynexa Command Palette
+            <Command className="h-3 w-3" /> Quick search
           </div>
         </div>
       </div>

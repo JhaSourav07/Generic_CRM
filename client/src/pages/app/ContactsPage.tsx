@@ -83,7 +83,7 @@ export const ContactsPage: React.FC = () => {
       setContacts(res.contacts);
       setMeta(res.meta);
     } catch (err: any) {
-      setError(err.message || 'Failed to load contact directory');
+      setError(err.message || 'Could not load contacts. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -100,16 +100,16 @@ export const ContactsPage: React.FC = () => {
       await contactsService.deleteContact(selectedContactForDelete.id);
       toast({
         type: 'success',
-        title: 'Contact Deleted',
-        message: `Contact '${selectedContactForDelete.firstName} ${selectedContactForDelete.lastName}' soft-deleted.`
+        title: 'Contact deleted',
+        message: `${selectedContactForDelete.firstName} ${selectedContactForDelete.lastName} has been removed.`
       });
       setSelectedContactForDelete(null);
       fetchContacts();
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Deletion Failed',
-        message: err.message || 'Failed to delete contact.'
+        title: 'Could not delete contact',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -119,10 +119,10 @@ export const ContactsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Contact Directory"
-        description="Individual person records associated with customer companies and deal workflows."
+        title="Contacts"
+        description="Keep all your customer contacts in one place."
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'CRM' },
           { label: 'Contacts' }
         ]}
@@ -133,7 +133,7 @@ export const ContactsPage: React.FC = () => {
             leftIcon={<Plus className="h-3.5 w-3.5" />}
             onClick={() => setIsCreateOpen(true)}
           >
-            Add Contact
+            Add contact
           </Button>
         }
       />
@@ -160,13 +160,13 @@ export const ContactsPage: React.FC = () => {
               setPage(1);
             }}
             options={[
-              { value: '', label: 'All Customer Accounts' },
+              { value: '', label: 'All customers' },
               ...customers.map(c => ({ value: c.id, label: c.name }))
             ]}
           />
 
           <Input
-            placeholder="Filter by job title..."
+            placeholder="Filter by title..."
             value={jobTitleFilter}
             onChange={(e) => {
               setJobTitleFilter(e.target.value);
@@ -184,7 +184,7 @@ export const ContactsPage: React.FC = () => {
             <div className="p-8 text-center text-vynexa-danger">
               <p className="font-medium">{error}</p>
               <Button variant="outline" size="sm" className="mt-3" onClick={() => fetchContacts()}>
-                Retry Loading
+                Try again
               </Button>
             </div>
           ) : loading ? (
@@ -203,11 +203,11 @@ export const ContactsPage: React.FC = () => {
           ) : contacts.length === 0 ? (
             <div className="p-12 text-center">
               <Users className="h-10 w-10 text-vynexa-text-muted mx-auto mb-3" />
-              <h3 className="text-base font-semibold text-vynexa-text-primary">No Contacts Found</h3>
+              <h3 className="text-base font-semibold text-vynexa-text-primary">No contacts found</h3>
               <p className="text-sm text-vynexa-text-secondary mt-1 max-w-sm mx-auto">
                 {search || accountFilter || jobTitleFilter
-                  ? 'No contact records matched your query criteria.'
-                  : 'Add key decision makers and contacts to your CRM repository.'}
+                  ? 'No contacts match your search filters.'
+                  : 'Add your first contact to get started.'}
               </p>
               <Button
                 variant="primary"
@@ -216,7 +216,7 @@ export const ContactsPage: React.FC = () => {
                 leftIcon={<Plus className="h-3.5 w-3.5" />}
                 onClick={() => setIsCreateOpen(true)}
               >
-                Add Contact
+                Add contact
               </Button>
             </div>
           ) : (
@@ -224,11 +224,11 @@ export const ContactsPage: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>FULL NAME</TableHead>
-                    <TableHead>COMPANY ACCOUNT</TableHead>
-                    <TableHead>JOB TITLE & DEPT</TableHead>
-                    <TableHead>CONTACT DETAILS</TableHead>
-                    <TableHead className="text-right">ACTIONS</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Title &amp; department</TableHead>
+                    <TableHead>Email &amp; phone</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -264,7 +264,7 @@ export const ContactsPage: React.FC = () => {
                             {contact.account.name}
                           </button>
                         ) : (
-                          <span className="text-vynexa-text-muted">Standalone Contact</span>
+                          <span className="text-vynexa-text-muted">No company</span>
                         )}
                       </TableCell>
 
@@ -303,20 +303,20 @@ export const ContactsPage: React.FC = () => {
                             icon={<Eye className="h-3.5 w-3.5" />}
                             onClick={() => navigate(`/app/contacts/${contact.id}`)}
                           >
-                            View Contact Context
+                            View details
                           </DropdownItem>
                           <DropdownItem
                             icon={<Edit2 className="h-3.5 w-3.5" />}
                             onClick={() => setSelectedContactForEdit(contact)}
                           >
-                            Edit Contact
+                            Edit contact
                           </DropdownItem>
                           <DropdownItem
                             icon={<Trash2 className="h-3.5 w-3.5" />}
                             danger
                             onClick={() => setSelectedContactForDelete(contact)}
                           >
-                            Delete Contact
+                            Delete contact
                           </DropdownItem>
                         </Dropdown>
                       </TableCell>
@@ -380,8 +380,8 @@ export const ContactsPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedContactForDelete}
         onClose={() => setSelectedContactForDelete(null)}
-        title="Delete Contact"
-        description="Are you sure you want to soft-delete this contact record? Linked company records will retain historical audit trail."
+        title="Delete contact"
+        description="Are you sure you want to delete this contact? This cannot be undone."
       >
         <div className="space-y-4 pt-2">
           {selectedContactForDelete && (
@@ -389,8 +389,8 @@ export const ContactsPage: React.FC = () => {
               <p className="font-semibold text-vynexa-text-primary">
                 {selectedContactForDelete.firstName} {selectedContactForDelete.lastName}
               </p>
-              <p className="text-vynexa-text-secondary">Job Title: {selectedContactForDelete.jobTitle || 'N/A'}</p>
-              <p className="text-vynexa-text-secondary">Company: {selectedContactForDelete.account?.name || 'Standalone'}</p>
+              <p className="text-vynexa-text-secondary">Title: {selectedContactForDelete.jobTitle || 'N/A'}</p>
+              <p className="text-vynexa-text-secondary">Customer: {selectedContactForDelete.account?.name || 'None'}</p>
             </div>
           )}
 
@@ -407,7 +407,7 @@ export const ContactsPage: React.FC = () => {
               onClick={handleDelete}
               isLoading={deleting}
             >
-              Confirm Deletion
+              Delete contact
             </Button>
           </div>
         </div>

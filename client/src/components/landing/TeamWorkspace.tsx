@@ -48,25 +48,25 @@ export const TeamWorkspace: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Text Description Column */}
           <div className="lg:col-span-5 space-y-4">
-            <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">TEAM WORKSPACE &amp; AGENDA</h2>
+            <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">TEAM SCHEDULE &amp; TASKS</h2>
             <h3 className="text-2xl sm:text-3xl font-bold text-vynexa-text-primary tracking-tight">
-              Coordinate sales, activities, and tasks seamlessly
+              Give your team one simple place to work
             </h3>
             <p className="text-xs sm:text-sm text-vynexa-text-secondary leading-relaxed">
-              Never let an important lead or follow-up slip through. Vynexa CRM unites personal agendas, team assignments, call logs, and meeting outcomes into a synchronized stream.
+              Never let a customer or follow-up slip through. Keep your daily schedule, assigned tasks, call notes, and meeting follow-ups in one clear view.
             </p>
             <div className="pt-2 space-y-2 text-xs text-vynexa-text-secondary font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-vynexa-status-success shrink-0" />
-                <span>Centralized activity timelines tied directly to Accounts &amp; Leads</span>
+                <span>Call notes and meetings attached directly to customers</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-vynexa-status-success shrink-0" />
-                <span>Task priority assignment with due date notifications</span>
+                <span>Clear task assignments with due date reminders</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-vynexa-status-success shrink-0" />
-                <span>Immutable audit trail recording every interaction update</span>
+                <span>History of every change and interaction saved automatically</span>
               </div>
             </div>
           </div>
@@ -76,10 +76,10 @@ export const TeamWorkspace: React.FC = () => {
             <div className="rounded-xl border border-vynexa-border bg-vynexa-surface p-5 shadow-elevated space-y-4">
               <div className="flex items-center justify-between border-b border-vynexa-border pb-3">
                 <div className="flex items-center gap-2 font-mono text-xs">
-                  <span className="font-bold text-vynexa-text-primary">TODAY'S WORKSPACE AGENDA</span>
+                  <span className="font-bold text-vynexa-text-primary">TODAY'S SCHEDULE</span>
                   <span className="text-vynexa-text-muted">— 24 September 2026</span>
                 </div>
-                <Badge variant="slate" className="font-mono text-[10px]">4 ACTIVITIES</Badge>
+                <Badge variant="slate" className="font-mono text-[10px]">4 ITEMS TODAY</Badge>
               </div>
 
               <div className="space-y-3">

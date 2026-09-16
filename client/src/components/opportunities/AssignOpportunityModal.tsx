@@ -44,7 +44,7 @@ export const AssignOpportunityModal: React.FC<AssignOpportunityModalProps> = ({
       const targetUser = users.find((u) => u.id === selectedOwnerId);
       toast({
         type: 'success',
-        title: 'Deal Reassigned',
+        title: 'Deal assigned',
         message: `'${opportunity.name}' assigned to ${targetUser?.name || 'team member'}.`
       });
 
@@ -53,7 +53,7 @@ export const AssignOpportunityModal: React.FC<AssignOpportunityModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Assignment Failed',
+        title: 'Could not assign deal',
         message: err.message || 'Could not assign opportunity.'
       });
     } finally {
@@ -62,21 +62,21 @@ export const AssignOpportunityModal: React.FC<AssignOpportunityModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Assign Opportunity Owner" maxWidth="sm">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Assign deal" maxWidth="sm">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <p className="text-xs text-vynexa-text-secondary mb-3">
-            Select the team member who should own and drive deal <span className="font-semibold text-vynexa-text-primary">{opportunity?.name}</span>:
+            Assign deal <span className="font-semibold text-vynexa-text-primary">{opportunity?.name}</span> to a team member:
           </p>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Assign To
+            Assigned to
           </label>
           <Select
             value={selectedOwnerId}
             onChange={(e) => setSelectedOwnerId(e.target.value)}
             className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary"
           >
-            <option value="">Select Team Member</option>
+            <option value="">Select a team member...</option>
             {users.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.name} ({u.email})
@@ -90,7 +90,7 @@ export const AssignOpportunityModal: React.FC<AssignOpportunityModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading} disabled={!selectedOwnerId}>
-            Confirm Assignment
+            Assign deal
           </Button>
         </div>
       </form>

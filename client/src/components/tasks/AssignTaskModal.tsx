@@ -48,15 +48,15 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
       await tasksService.assignTask(task.id, selectedUserId || null);
       toast({
         type: 'success',
-        title: 'Task Assigned',
-        message: selectedUserId ? 'Task assigned to team member.' : 'Task is now unassigned.'
+        title: 'Task assigned',
+        message: selectedUserId ? 'Task assigned.' : 'Task unassigned.'
       });
       onSuccess();
       onClose();
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Assignment Failed',
+        title: 'Could not assign task',
         message: err.message || 'Could not assign task.'
       });
     } finally {
@@ -65,7 +65,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Assign Task" maxWidth="sm">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Assign task" maxWidth="sm">
       <div className="space-y-4 text-xs">
         <div>
           <p className="text-vynexa-text-secondary mb-2">
@@ -90,7 +90,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
             Cancel
           </Button>
           <Button variant="primary" size="sm" onClick={handleAssign} isLoading={loading}>
-            Save Assignment
+            Assign task
           </Button>
         </div>
       </div>

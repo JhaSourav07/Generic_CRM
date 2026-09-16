@@ -72,27 +72,27 @@ export const SupportCasesPage: React.FC = () => {
   const getPriorityBadge = (p: SupportCasePriority) => {
     switch (p) {
       case 'URGENT':
-        return <Badge variant="red">URGENT</Badge>;
+        return <Badge variant="red">Urgent</Badge>;
       case 'HIGH':
-        return <Badge variant="amber">HIGH</Badge>;
+        return <Badge variant="amber">High</Badge>;
       case 'MEDIUM':
-        return <Badge variant="blue">MEDIUM</Badge>;
+        return <Badge variant="blue">Medium</Badge>;
       case 'LOW':
       default:
-        return <Badge variant="slate">LOW</Badge>;
+        return <Badge variant="slate">Low</Badge>;
     }
   };
 
   const getStatusBadge = (s: SupportCaseStatus) => {
     switch (s) {
       case 'OPEN':
-        return <Badge variant="blue">OPEN</Badge>;
+        return <Badge variant="blue">Open</Badge>;
       case 'IN_PROGRESS':
-        return <Badge variant="amber">IN PROGRESS</Badge>;
+        return <Badge variant="amber">In progress</Badge>;
       case 'RESOLVED':
-        return <Badge variant="emerald">RESOLVED</Badge>;
+        return <Badge variant="emerald">Resolved</Badge>;
       case 'CLOSED':
-        return <Badge variant="slate">CLOSED</Badge>;
+        return <Badge variant="slate">Closed</Badge>;
       default:
         return <Badge variant="slate">{s}</Badge>;
     }
@@ -101,12 +101,12 @@ export const SupportCasesPage: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="Support Cases"
-        description="Customer inquiries, incident management, and resolution tracking"
+        title="Support"
+        description="Track and resolve customer questions and support requests."
         actions={
           <Button onClick={() => setIsCreateOpen(true)} size="sm">
             <Plus className="h-4 w-4 mr-1.5" />
-            New Case
+            Add support request
           </Button>
         }
       />
@@ -115,7 +115,7 @@ export const SupportCasesPage: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-3.5 bg-vynexa-surface border-vynexa-border">
           <div className="text-[11px] font-medium text-vynexa-text-secondary uppercase tracking-wider">
-            Total Cases
+            All requests
           </div>
           <div className="text-xl font-mono font-bold text-vynexa-text-primary mt-1">
             {totalCount}
@@ -124,7 +124,7 @@ export const SupportCasesPage: React.FC = () => {
 
         <Card className="p-3.5 bg-vynexa-surface border-vynexa-border">
           <div className="text-[11px] font-medium text-vynexa-text-secondary uppercase tracking-wider">
-            Active / Open
+            Open requests
           </div>
           <div className="text-xl font-mono font-bold text-blue-400 mt-1">
             {cases.filter((c) => c.status === 'OPEN' || c.status === 'IN_PROGRESS').length}
@@ -133,7 +133,7 @@ export const SupportCasesPage: React.FC = () => {
 
         <Card className="p-3.5 bg-vynexa-surface border-vynexa-border">
           <div className="text-[11px] font-medium text-vynexa-text-secondary uppercase tracking-wider">
-            Resolved / Closed
+            Resolved
           </div>
           <div className="text-xl font-mono font-bold text-emerald-400 mt-1">
             {cases.filter((c) => c.status === 'RESOLVED' || c.status === 'CLOSED').length}
@@ -142,7 +142,7 @@ export const SupportCasesPage: React.FC = () => {
 
         <Card className="p-3.5 bg-vynexa-surface border-vynexa-border">
           <div className="text-[11px] font-medium text-vynexa-text-secondary uppercase tracking-wider">
-            Urgent Priority
+            Urgent
           </div>
           <div className="text-xl font-mono font-bold text-rose-400 mt-1">
             {cases.filter((c) => c.priority === 'URGENT').length}
@@ -151,11 +151,11 @@ export const SupportCasesPage: React.FC = () => {
       </div>
 
       {/* Filters Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-3">
-        <div className="relative flex-1 w-full">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-vynexa-text-muted" />
           <Input
-            placeholder="Search by case #, subject, or description..."
+            placeholder="Search support requests..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -165,18 +165,18 @@ export const SupportCasesPage: React.FC = () => {
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
           <Select
             value={status}
             onChange={(e) => {
               setStatus(e.target.value);
               setPage(1);
             }}
-            className="h-9 text-xs w-36"
+            className="h-9 text-xs w-36 shrink-0"
           >
-            <option value="">All Statuses</option>
+            <option value="">All statuses</option>
             <option value="OPEN">Open</option>
-            <option value="IN_PROGRESS">In Progress</option>
+            <option value="IN_PROGRESS">In progress</option>
             <option value="RESOLVED">Resolved</option>
             <option value="CLOSED">Closed</option>
           </Select>
@@ -187,9 +187,9 @@ export const SupportCasesPage: React.FC = () => {
               setPriority(e.target.value);
               setPage(1);
             }}
-            className="h-9 text-xs w-36"
+            className="h-9 text-xs w-36 shrink-0"
           >
-            <option value="">All Priorities</option>
+            <option value="">All priorities</option>
             <option value="URGENT">Urgent</option>
             <option value="HIGH">High</option>
             <option value="MEDIUM">Medium</option>
@@ -204,13 +204,13 @@ export const SupportCasesPage: React.FC = () => {
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-[11px] font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-                <th className="py-2.5 px-4">Case #</th>
+                <th className="py-2.5 px-4">Request #</th>
                 <th className="py-2.5 px-4">Subject</th>
-                <th className="py-2.5 px-4">Account</th>
+                <th className="py-2.5 px-4">Customer</th>
                 <th className="py-2.5 px-4">Priority</th>
                 <th className="py-2.5 px-4">Status</th>
-                <th className="py-2.5 px-4">Assignee</th>
-                <th className="py-2.5 px-4">Created</th>
+                <th className="py-2.5 px-4">Assigned to</th>
+                <th className="py-2.5 px-4">Date created</th>
                 <th className="py-2.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -218,7 +218,7 @@ export const SupportCasesPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-vynexa-text-muted font-mono text-xs">
-                    Loading support cases...
+                    Loading support requests...
                   </td>
                 </tr>
               ) : cases.length === 0 ? (
@@ -226,11 +226,11 @@ export const SupportCasesPage: React.FC = () => {
                   <td colSpan={8} className="py-16 text-center">
                     <div className="space-y-2">
                       <LifeBuoy className="h-8 w-8 text-vynexa-text-muted mx-auto opacity-40" />
-                      <p className="text-sm font-semibold text-vynexa-text-primary">No cases found</p>
+                      <p className="text-sm font-semibold text-vynexa-text-primary">No support requests found</p>
                       <p className="text-xs text-vynexa-text-secondary">
                         {search || status || priority
-                          ? 'Try adjusting your search criteria or filters.'
-                          : 'Create your first support case to begin tracking customer tickets.'}
+                          ? 'Try adjusting your search or filters.'
+                          : 'Add your first support request to track customer questions.'}
                       </p>
                       {!search && !status && !priority && (
                         <Button
@@ -240,7 +240,7 @@ export const SupportCasesPage: React.FC = () => {
                           className="mt-2"
                         >
                           <Plus className="h-3.5 w-3.5 mr-1" />
-                          Create Case
+                          Add support request
                         </Button>
                       )}
                     </div>

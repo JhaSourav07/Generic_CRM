@@ -28,12 +28,12 @@ export const LoginPage: React.FC = () => {
       await login({ email, password });
       toast({
         type: 'success',
-        title: 'Authentication Successful',
-        message: 'Signed in to your workspace successfully.'
+        title: 'Welcome back',
+        message: 'Signed in successfully.'
       });
       navigate(from, { replace: true });
     } catch (err: any) {
-      setError(err.message || 'Invalid credentials or account disabled.');
+      setError(err.message || 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
@@ -53,10 +53,10 @@ export const LoginPage: React.FC = () => {
             </span>
           </Link>
           <h1 className="text-xl font-bold tracking-tight text-vynexa-text-primary">
-            Sign in to your workspace
+            Welcome back
           </h1>
           <p className="text-xs text-vynexa-text-secondary">
-            Enter your credentials to access your organization workspace
+            Sign in to your account.
           </p>
         </div>
 
@@ -71,7 +71,7 @@ export const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Work Email"
+              label="Work email"
               type="email"
               placeholder="alex.vance@acme.com"
               value={email}
@@ -105,7 +105,7 @@ export const LoginPage: React.FC = () => {
               isLoading={isLoading}
               rightIcon={<ArrowRight className="h-4 w-4" />}
             >
-              Sign In
+              Sign in
             </Button>
           </form>
 
@@ -117,8 +117,8 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center text-[11px] font-mono text-vynexa-text-muted">
-          Protected by Vynexa Enterprise Multi-Tenancy Engine
+        <div className="text-center text-[11px] text-vynexa-text-muted">
+          Your company data is kept private and secure
         </div>
       </div>
     </div>

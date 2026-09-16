@@ -171,8 +171,8 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Quote Updated',
-        message: 'Quote and recalculations saved.'
+        title: 'Quote updated',
+        message: 'Quote updated successfully.'
       });
 
       onSuccess();
@@ -180,7 +180,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Update Failed',
+        title: 'Could not update quote',
         message: err.message || 'Could not update quote.'
       });
     } finally {
@@ -189,15 +189,15 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title={`Edit Quote #${quote.quoteNumber}`} maxWidth="lg">
+    <Dialog isOpen={isOpen} onClose={onClose} title={`Edit quote #${quote.quoteNumber}`} maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Customer Account
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Customer
             </label>
             <Select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
-              <option value="">Select Account (Optional)</option>
+              <option value="">Select customer (optional)</option>
               {accounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
                   {acc.name}
@@ -207,11 +207,11 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Related Opportunity
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Deal
             </label>
             <Select value={opportunityId} onChange={(e) => setOpportunityId(e.target.value)}>
-              <option value="">Select Opportunity (Optional)</option>
+              <option value="">Select deal (optional)</option>
               {opportunities.map((opp) => (
                 <option key={opp.id} value={opp.id}>
                   {opp.name}
@@ -221,8 +221,8 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Valid Until Date
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Valid until
             </label>
             <Input
               type="date"
@@ -235,8 +235,8 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
         {/* Line Items Editor */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between border-b border-vynexa-border pb-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-              Line Items & Pricing
+            <span className="text-xs font-semibold text-vynexa-text-primary">
+              Line items
             </span>
             <Button
               type="button"
@@ -246,7 +246,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
               className="h-7 text-xs flex items-center gap-1"
             >
               <Plus className="h-3 w-3" />
-              <span>Add Item</span>
+              <span>Add item</span>
             </Button>
           </div>
 
@@ -258,13 +258,13 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
               >
                 <div className="grid grid-cols-12 gap-2 items-center">
                   <div className="col-span-12 md:col-span-4">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Catalog Item</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Product / service</label>
                     <Select
                       value={it.productId || ''}
                       onChange={(e) => handleProductSelect(idx, e.target.value)}
                       className="h-8 text-xs"
                     >
-                      <option value="">Custom Item / Service</option>
+                      <option value="">Custom item</option>
                       {products.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.name} ({p.sku || 'No SKU'}) — ${p.price}
@@ -274,9 +274,9 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
                   </div>
 
                   <div className="col-span-12 md:col-span-8">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Line Description *</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Description *</label>
                     <Input
-                      placeholder="Description of deliverables..."
+                      placeholder="Item description or service details..."
                       value={it.description}
                       onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
                       className="h-8 text-xs"
@@ -286,7 +286,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
 
                 <div className="grid grid-cols-12 gap-2 items-center">
                   <div className="col-span-6 md:col-span-2">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Qty</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Quantity</label>
                     <Input
                       type="number"
                       min="1"
@@ -297,7 +297,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
                   </div>
 
                   <div className="col-span-6 md:col-span-3">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Unit Price ($)</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Unit price ($)</label>
                     <Input
                       type="number"
                       step="0.01"
@@ -333,7 +333,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
                   </div>
 
                   <div className="col-span-10 md:col-span-2 text-right font-mono text-xs">
-                    <span className="block text-[10px] text-vynexa-text-muted">Line Total</span>
+                    <span className="block text-[10px] text-vynexa-text-muted">Total</span>
                     <span className="font-semibold text-vynexa-text-primary">
                       ${Math.max(0, it.quantity * it.unitPrice - (it.discount || 0) + (it.tax || 0)).toFixed(2)}
                     </span>
@@ -359,12 +359,12 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
         {/* Totals Preview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-vynexa-border">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Terms & Customer Notes
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Terms & notes
             </label>
             <Textarea
               rows={3}
-              placeholder="Commercial terms, payment milestones..."
+              placeholder="Payment terms, delivery details, or notes for the customer..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -377,20 +377,20 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
                 <span>${preview.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Total Discount:</span>
+                <span>Discount:</span>
                 <span>-${preview.discount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Total Tax:</span>
+                <span>Tax:</span>
                 <span>+${preview.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold text-vynexa-text-primary pt-2 border-t border-vynexa-border">
-                <span>Updated Grand Total:</span>
+                <span>Total:</span>
                 <span className="text-primary">${preview.total.toFixed(2)}</span>
               </div>
             </div>
-            <span className="text-[10px] text-vynexa-text-muted mt-2 block italic">
-              * Authoritative calculations are enforced server-side upon saving.
+            <span className="text-[10px] text-vynexa-text-muted mt-2 block">
+              * Final totals will be confirmed upon saving.
             </span>
           </div>
         </div>
@@ -400,7 +400,7 @@ export const EditQuoteModal: React.FC<EditQuoteModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Update Quote'}
+            {loading ? 'Saving...' : 'Save changes'}
           </Button>
         </div>
       </form>

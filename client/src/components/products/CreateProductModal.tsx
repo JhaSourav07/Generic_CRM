@@ -66,8 +66,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Product Created',
-        message: `Product '${data.name}' has been added to the catalog.`
+        title: 'Product added',
+        message: `'${data.name}' added to catalog.`
       });
 
       reset();
@@ -76,8 +76,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Creation Failed',
-        message: err.message || 'Could not create product.'
+        title: 'Could not add product',
+        message: err.message || 'Could not add product.'
       });
     } finally {
       setLoading(false);
@@ -85,14 +85,14 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Create Catalog Product" maxWidth="md">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Add product" maxWidth="md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-            Product Name *
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Product name *
           </label>
           <Input
-            placeholder="e.g. Enterprise Cloud License"
+            placeholder="e.g. Enterprise License"
             {...register('name')}
             error={errors.name?.message}
           />
@@ -100,8 +100,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              SKU (Stock Keeping Unit)
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              SKU
             </label>
             <Input
               placeholder="e.g. VYN-ENT-01"
@@ -111,20 +111,20 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Catalog Type *
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Type *
             </label>
             <Select {...register('type')}>
-              <option value="PRODUCT">Product (Physical/Digital Goods)</option>
-              <option value="SERVICE">Service (Implementation, Consulting)</option>
+              <option value="PRODUCT">Product</option>
+              <option value="SERVICE">Service</option>
             </Select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Unit Price *
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Price *
             </label>
             <Input
               type="number"
@@ -136,7 +136,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
               Currency
             </label>
             <Input
@@ -148,12 +148,12 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
             Description
           </label>
           <Textarea
             rows={3}
-            placeholder="Commercial terms, deliverables, and package details..."
+            placeholder="Add product details or specifications..."
             {...register('description')}
           />
         </div>
@@ -166,7 +166,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             {...register('isActive')}
           />
           <label htmlFor="isActive" className="text-xs font-medium text-vynexa-text-primary cursor-pointer">
-            Active in catalog (can be added to commercial quotes)
+            Active (available for quotes and orders)
           </label>
         </div>
 
@@ -175,7 +175,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Creating Product...' : 'Save Product'}
+            {loading ? 'Adding product...' : 'Add product'}
           </Button>
         </div>
       </form>

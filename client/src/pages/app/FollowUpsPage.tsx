@@ -274,7 +274,7 @@ export const FollowUpsPage: React.FC = () => {
               variant="ghost"
               size="sm"
               className="h-7 w-7 p-0"
-              title="Reschedule Follow-up"
+              title="Reschedule"
               onClick={() => {
                 setSelectedForReschedule(task);
                 setRescheduleDate(task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 10) : '');
@@ -286,7 +286,7 @@ export const FollowUpsPage: React.FC = () => {
               variant="ghost"
               size="sm"
               className="h-7 w-7 p-0"
-              title="Edit Task"
+              title="Edit task"
               onClick={() => setSelectedForEdit(task)}
             >
               <Edit2 className="h-3 w-3 text-vynexa-text-secondary" />
@@ -301,8 +301,8 @@ export const FollowUpsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header Bar */}
       <PageHeader
-        title="Follow-ups Workspace"
-        description="Focused agenda prioritizing overdue actions, today's commitments, and upcoming relationship touchpoints."
+        title="Follow-ups"
+        description="Stay on top of customer check-ins and scheduled reminders."
         breadcrumbs={[
           { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Follow-ups' }
@@ -314,7 +314,7 @@ export const FollowUpsPage: React.FC = () => {
               size="sm"
               onClick={() => navigate('/app/tasks')}
             >
-              All Tasks
+              All tasks
             </Button>
             <Button
               variant="primary"
@@ -325,7 +325,7 @@ export const FollowUpsPage: React.FC = () => {
                 setIsCreateOpen(true);
               }}
             >
-              Schedule Follow-up
+              Schedule follow-up
             </Button>
           </div>
         }
@@ -356,20 +356,20 @@ export const FollowUpsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 text-vynexa-danger" />
                 <CardTitle className="text-sm font-semibold text-vynexa-danger">
-                  Overdue Commitments
+                  Overdue
                 </CardTitle>
                 <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-vynexa-danger/20 text-vynexa-danger">
                   {overdueTasks.length}
                 </span>
               </div>
               <span className="text-[11px] text-vynexa-text-muted">
-                Requires immediate resolution
+                Needs attention
               </span>
             </CardHeader>
             <CardContent className="p-0 divide-y divide-vynexa-border">
               {overdueTasks.length === 0 ? (
                 <div className="p-6 text-center text-xs text-vynexa-text-muted">
-                  No overdue follow-ups. You are completely caught up!
+                  No overdue follow-ups. You are all caught up!
                 </div>
               ) : (
                 overdueTasks.map((t) => renderTaskRow(t, 'OVERDUE'))
@@ -383,20 +383,20 @@ export const FollowUpsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-amber-400" />
                 <CardTitle className="text-sm font-semibold text-amber-400">
-                  Today's Schedule
+                  Due today
                 </CardTitle>
                 <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">
                   {todayTasks.length}
                 </span>
               </div>
               <span className="text-[11px] text-vynexa-text-muted">
-                Action items scheduled for today
+                Scheduled for today
               </span>
             </CardHeader>
             <CardContent className="p-0 divide-y divide-vynexa-border">
               {todayTasks.length === 0 ? (
                 <div className="p-6 text-center text-xs text-vynexa-text-muted">
-                  No follow-ups due today. Plan ahead or schedule new touchpoints.
+                  No follow-ups scheduled for today.
                 </div>
               ) : (
                 todayTasks.map((t) => renderTaskRow(t, 'TODAY'))
@@ -410,20 +410,20 @@ export const FollowUpsPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-vynexa-blue" />
                 <CardTitle className="text-sm font-semibold text-vynexa-text-primary">
-                  Upcoming (Next 14 Days)
+                  Upcoming (next 14 days)
                 </CardTitle>
                 <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-vynexa-surface-secondary text-vynexa-text-muted border border-vynexa-border">
                   {upcomingTasks.length}
                 </span>
               </div>
               <span className="text-[11px] text-vynexa-text-muted">
-                Future pipeline check-ins and demos
+                Scheduled for the coming two weeks
               </span>
             </CardHeader>
             <CardContent className="p-0 divide-y divide-vynexa-border">
               {upcomingTasks.length === 0 ? (
                 <div className="p-6 text-center text-xs text-vynexa-text-muted">
-                  No upcoming follow-ups scheduled for the next 14 days.
+                  No follow-ups scheduled for the next 14 days.
                 </div>
               ) : (
                 upcomingTasks.map((t) => renderTaskRow(t, 'UPCOMING'))
@@ -453,12 +453,12 @@ export const FollowUpsPage: React.FC = () => {
       <Dialog
         isOpen={Boolean(selectedForReschedule)}
         onClose={() => setSelectedForReschedule(null)}
-        title="Reschedule Follow-up"
+        title="Reschedule follow-up"
         maxWidth="sm"
       >
         <div className="space-y-4 text-xs">
           <p className="text-vynexa-text-secondary">
-            Select a new target due date for <span className="font-semibold text-white">"{selectedForReschedule?.title}"</span>:
+            Choose a new date for <span className="font-semibold text-white">"{selectedForReschedule?.title}"</span>:
           </p>
 
           <Input
@@ -484,7 +484,7 @@ export const FollowUpsPage: React.FC = () => {
               isLoading={rescheduling}
               disabled={!rescheduleDate}
             >
-              Confirm Reschedule
+              Save date
             </Button>
           </div>
         </div>

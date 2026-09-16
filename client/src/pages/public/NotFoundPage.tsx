@@ -28,7 +28,7 @@ export const NotFoundPage: React.FC = () => {
             Page not found
           </h1>
           <p className="text-xs text-vynexa-text-secondary max-w-xs mx-auto leading-relaxed">
-            The page you are looking for doesn't exist, has been removed, or is temporarily unavailable.
+            We couldn't find that page. It may have moved or no longer exists.
           </p>
         </div>
 
@@ -41,7 +41,7 @@ export const NotFoundPage: React.FC = () => {
             className="w-full sm:w-auto text-xs"
           >
             <ArrowLeft className="mr-2 h-3.5 w-3.5" />
-            Go Back
+            Go back
           </Button>
           <Link to="/app/dashboard" className="w-full sm:w-auto">
             <Button
@@ -50,7 +50,7 @@ export const NotFoundPage: React.FC = () => {
               className="w-full sm:w-auto text-xs"
             >
               <LayoutDashboard className="mr-2 h-3.5 w-3.5" />
-              Back to Dashboard
+              Go to Dashboard
             </Button>
           </Link>
         </div>

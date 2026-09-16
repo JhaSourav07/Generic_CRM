@@ -45,12 +45,12 @@ export const SignupPage: React.FC = () => {
       });
       toast({
         type: 'success',
-        title: 'Workspace Initialized',
-        message: 'Your organization and admin account were created successfully.'
+        title: 'Account created',
+        message: 'Your company workspace is ready.'
       });
       navigate('/app/dashboard', { replace: true });
     } catch (err: any) {
-      setError(err.message || 'Failed to create organization account. Please try again.');
+      setError(err.message || 'Could not create your account. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -70,10 +70,10 @@ export const SignupPage: React.FC = () => {
             </span>
           </Link>
           <h1 className="text-xl font-bold tracking-tight text-vynexa-text-primary">
-            Create your organization workspace
+            Create your account
           </h1>
           <p className="text-xs text-vynexa-text-secondary">
-            Set up a multi-tenant enterprise CRM workspace for your company
+            Set up your company workspace and get started
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export const SignupPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Full Name"
+              label="Full name"
               type="text"
               placeholder="Alex Vance"
               value={name}
@@ -98,7 +98,7 @@ export const SignupPage: React.FC = () => {
             />
 
             <Input
-              label="Work Email"
+              label="Work email"
               type="email"
               placeholder="alex.vance@company.com"
               value={email}
@@ -108,7 +108,7 @@ export const SignupPage: React.FC = () => {
             />
 
             <Input
-              label="Organization Name"
+              label="Company name"
               type="text"
               placeholder="Acme Global Inc."
               value={organization}
@@ -129,7 +129,7 @@ export const SignupPage: React.FC = () => {
               />
 
               <Input
-                label="Confirm Password"
+                label="Confirm password"
                 type="password"
                 placeholder="••••••••••••"
                 value={confirmPassword}
@@ -147,7 +147,7 @@ export const SignupPage: React.FC = () => {
               isLoading={isLoading}
               rightIcon={<ArrowRight className="h-4 w-4" />}
             >
-              Create Account
+              Create account
             </Button>
           </form>
 
@@ -159,8 +159,8 @@ export const SignupPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center text-[11px] font-mono text-vynexa-text-muted">
-          Enterprise Tenant Boundaries &amp; RBAC Protocols Applied Automatically
+        <div className="text-center text-[11px] text-vynexa-text-muted">
+          Your company data is kept private and secure
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ export const Footer: React.FC = () => {
               <span className="font-bold text-sm tracking-wider text-vynexa-text-primary">VYNEXA CRM</span>
             </div>
             <p className="text-xs text-vynexa-text-secondary max-w-sm leading-relaxed">
-              Unified commercial SaaS Customer Relationship Management platform. Designed for high-density sales operations, pipelines, and customer support.
+              Simple, modern CRM for growing businesses. Keep your sales, customers, quotes, tasks, and support in one place.
             </p>
           </div>
 
@@ -23,10 +23,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-2.5">
             <p className="font-mono font-semibold text-xs text-vynexa-text-primary">PRODUCT</p>
             <ul className="space-y-1.5 text-vynexa-text-secondary font-medium">
-              <li><a href="#product" className="hover:text-vynexa-text-primary transition-colors">Pipeline Viewport</a></li>
-              <li><a href="#solutions" className="hover:text-vynexa-text-primary transition-colors">Capabilities</a></li>
-              <li><a href="#workflow" className="hover:text-vynexa-text-primary transition-colors">Customer Lifecycle</a></li>
-              <li><a href="#insights" className="hover:text-vynexa-text-primary transition-colors">Analytics Reports</a></li>
+              <li><a href="#product" className="hover:text-vynexa-text-primary transition-colors">Sales Pipeline</a></li>
+              <li><a href="#solutions" className="hover:text-vynexa-text-primary transition-colors">What it does</a></li>
+              <li><a href="#workflow" className="hover:text-vynexa-text-primary transition-colors">How it works</a></li>
+              <li><a href="#insights" className="hover:text-vynexa-text-primary transition-colors">Reports</a></li>
             </ul>
           </div>
 
@@ -34,10 +34,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-2.5">
             <p className="font-mono font-semibold text-xs text-vynexa-text-primary">SOLUTIONS</p>
             <ul className="space-y-1.5 text-vynexa-text-secondary font-medium">
-              <li><Link to="/app/leads" className="hover:text-vynexa-text-primary transition-colors">Lead Triage</Link></li>
-              <li><Link to="/app/pipeline" className="hover:text-vynexa-text-primary transition-colors">Deal Kanban</Link></li>
-              <li><Link to="/app/customers" className="hover:text-vynexa-text-primary transition-colors">Account History</Link></li>
-              <li><Link to="/app/dashboard" className="hover:text-vynexa-text-primary transition-colors">App Shell</Link></li>
+              <li><Link to="/app/leads" className="hover:text-vynexa-text-primary transition-colors">Leads</Link></li>
+              <li><Link to="/app/pipeline" className="hover:text-vynexa-text-primary transition-colors">Sales Pipeline</Link></li>
+              <li><Link to="/app/customers" className="hover:text-vynexa-text-primary transition-colors">Customers</Link></li>
+              <li><Link to="/app/dashboard" className="hover:text-vynexa-text-primary transition-colors">Dashboard</Link></li>
             </ul>
           </div>
 
@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-1.5 text-vynexa-text-secondary font-medium">
               <li><Link to="/login" className="hover:text-vynexa-text-primary transition-colors">Sign In</Link></li>
               <li><Link to="/signup" className="hover:text-vynexa-text-primary transition-colors">Create Account</Link></li>
-              <li><Link to="/app/dashboard" className="hover:text-vynexa-text-primary transition-colors">Workspace Overview</Link></li>
+              <li><Link to="/app/dashboard" className="hover:text-vynexa-text-primary transition-colors">Dashboard</Link></li>
             </ul>
           </div>
         </div>
@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
         {/* Copyright Bar */}
         <div className="pt-8 border-t border-vynexa-border flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px]">
           <span>© 2026 Vynexa Inc. All rights reserved.</span>
-          <span className="text-vynexa-text-muted">Built for Enterprise Multi-Tenancy &amp; Scale</span>
+          <span className="text-vynexa-text-muted">Simple, fast, and secure</span>
         </div>
       </div>
     </footer>

@@ -8,16 +8,16 @@ export const FinalCTA: React.FC = () => {
     <section className="py-20 px-4 sm:px-6 border-b border-vynexa-border bg-vynexa-surface/40">
       <div className="mx-auto max-w-4xl rounded-xl border border-vynexa-border bg-vynexa-surface p-8 sm:p-12 text-center space-y-6 shadow-elevated">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-vynexa-border bg-vynexa-surface-secondary text-[11px] font-mono text-vynexa-text-secondary select-none">
-          <span>READY FOR DEPLOYMENT</span>
+          <span>START IN MINUTES</span>
         </div>
 
         <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-vynexa-text-primary leading-tight">
-          Bring your customer operations <br />
-          into one connected system.
+          Keep your sales, customers, <br />
+          and team on track.
         </h2>
 
         <p className="mx-auto max-w-xl text-xs sm:text-sm text-vynexa-text-secondary leading-relaxed">
-          Start building a clearer, more connected CRM workflow with Vynexa. Manage leads, opportunities, quotes, and support in one place.
+          Give your team one simple place to work. Manage leads, sales, quotes, tasks, and customer support with complete clarity.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">

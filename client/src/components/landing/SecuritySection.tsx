@@ -8,20 +8,20 @@ export const SecuritySection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text Description */}
           <div className="lg:col-span-6 space-y-4">
-            <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">BUILT FOR CONTROL &amp; SCALE</h2>
+            <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">SAFE &amp; RELIABLE</h2>
             <h3 className="text-2xl sm:text-3xl font-bold text-vynexa-text-primary tracking-tight">
-              Multi-tenant architecture with strict boundary enforcement
+              Built to keep your company data private and safe
             </h3>
             <p className="text-xs sm:text-sm text-vynexa-text-secondary leading-relaxed">
-              Every query, action, and entity lookup is evaluated against validated server-side session contexts. Data cross-contamination between organizations is strictly prevented at the PostgreSQL relational layer.
+              Your business records are strictly separated and encrypted. Only people with permission inside your company can see your customer details and sales numbers.
             </p>
 
             <div className="pt-2 space-y-3">
               {[
-                { title: 'Row-Level Multi-Tenancy Isolation', desc: 'Every organization-owned model contains explicit organizationId foreign key boundaries.' },
-                { title: '7 System RBAC Roles', desc: 'Fine-grained permission actions (View, Create, Edit, Delete, Assign, Approve, Export).' },
-                { title: 'Immutable Audit Logging', desc: 'Automatic tracking of who changed what, when, and exact before/after deltas.' },
-                { title: 'Abstracted Object Storage', desc: 'Document metadata separated from actual binary files for S3 / cloud compatibility.' }
+                { title: 'Strict Data Separation', desc: 'Your company data is completely isolated and never shared.' },
+                { title: 'Custom Team Permissions', desc: 'Choose exactly what each team member can view, create, edit, or approve.' },
+                { title: 'Clear Audit History', desc: 'See who made changes, what changed, and when.' },
+                { title: 'Safe File Storage', desc: 'Store contracts, quotes, and customer files with strict access controls.' }
               ].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3">
                   <CheckCircle2 className="h-4 w-4 text-vynexa-status-success shrink-0 mt-0.5" />
@@ -40,30 +40,30 @@ export const SecuritySection: React.FC = () => {
               <div className="flex items-center justify-between border-b border-vynexa-border pb-3">
                 <div className="flex items-center gap-2">
                   <Lock className="h-4 w-4 text-vynexa-text-muted" />
-                  <span className="font-bold text-vynexa-text-primary">SECURITY_ENFORCEMENT.ts</span>
+                  <span className="font-bold text-vynexa-text-primary">SECURITY_CHECK.ts</span>
                 </div>
                 <span className="text-[10px] bg-vynexa-surface-secondary text-vynexa-status-success border border-vynexa-border px-2 py-0.5 rounded">PASSED</span>
               </div>
 
               <div className="space-y-2 text-[11px] text-vynexa-text-secondary leading-relaxed bg-vynexa-bg p-4 rounded border border-vynexa-border">
-                <p className="text-vynexa-text-muted">// 1. Context validation from session token</p>
-                <p><span className="text-vynexa-text-muted">const</span> tenantId = req.user.organizationId;</p>
-                <p className="pt-2 text-vynexa-text-muted">// 2. Row-level data isolation enforced</p>
+                <p className="text-vynexa-text-muted">// 1. Verify user and company session</p>
+                <p><span className="text-vynexa-text-muted">const</span> companyId = req.user.organizationId;</p>
+                <p className="pt-2 text-vynexa-text-muted">// 2. Load only your company records</p>
                 <p><span className="text-vynexa-text-muted">const</span> deals = <span className="text-vynexa-text-primary">await</span> prisma.opportunity.findMany(&#123;</p>
-                <p className="pl-4">where: &#123; organizationId: tenantId &#125;</p>
+                <p className="pl-4">where: &#123; organizationId: companyId &#125;</p>
                 <p>&#125;);</p>
-                <p className="pt-2 text-vynexa-text-muted">// 3. Audit trail record created</p>
-                <p><span className="text-vynexa-text-muted">await</span> auditLog.create(&#123; action: <span className="text-vynexa-text-primary">'OPPORTUNITY_UPDATE'</span> &#125;);</p>
+                <p className="pt-2 text-vynexa-text-muted">// 3. Record change in audit log</p>
+                <p><span className="text-vynexa-text-muted">await</span> auditLog.create(&#123; action: <span className="text-vynexa-text-primary">'DEAL_UPDATED'</span> &#125;);</p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2 text-[11px]">
                 <div className="p-2.5 rounded border border-vynexa-border bg-vynexa-surface-secondary flex items-center gap-2">
                   <Database className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                  <span>PostgreSQL ORM</span>
+                  <span>Secure Database</span>
                 </div>
                 <div className="p-2.5 rounded border border-vynexa-border bg-vynexa-surface-secondary flex items-center gap-2">
                   <FileText className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                  <span>Immutable Audits</span>
+                  <span>Audit History</span>
                 </div>
               </div>
             </div>

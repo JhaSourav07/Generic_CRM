@@ -177,11 +177,11 @@ export const UsersPage: React.FC = () => {
   return (
     <div className="space-y-6 select-none">
       <PageHeader
-        title="Users & Team Members"
-        description="Manage organization accounts, credentials, and structural access."
+        title="Users"
+        description="Manage team members, roles, and account access."
         breadcrumbs={[
-          { label: 'Workspace', href: '/app/dashboard' },
-          { label: 'User Directory' }
+          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Users' }
         ]}
         actions={
           <div className="flex items-center gap-2">
@@ -191,7 +191,7 @@ export const UsersPage: React.FC = () => {
             </Button>
             <Button variant="primary" size="sm" onClick={handleOpenCreateModal} className="h-8">
               <UserPlus className="h-3.5 w-3.5 mr-1.5" />
-              Add User
+              Add user
             </Button>
           </div>
         }
@@ -205,7 +205,7 @@ export const UsersPage: React.FC = () => {
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-vynexa-muted" />
               <Input
                 type="text"
-                placeholder="Search users by name or email..."
+                placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -232,7 +232,7 @@ export const UsersPage: React.FC = () => {
                 }}
                 className="h-9 text-xs bg-vynexa-bg border border-vynexa-border rounded-md px-3 text-vynexa-text focus:outline-none focus:border-vynexa-primary"
               >
-                <option value="">All Roles</option>
+                <option value="">All roles</option>
                 {roles.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name}
@@ -248,9 +248,9 @@ export const UsersPage: React.FC = () => {
                 }}
                 className="h-9 text-xs bg-vynexa-bg border border-vynexa-border rounded-md px-3 text-vynexa-text focus:outline-none focus:border-vynexa-primary"
               >
-                <option value="all">All Statuses</option>
-                <option value="active">Active Only</option>
-                <option value="inactive">Inactive Only</option>
+                <option value="all">All statuses</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
               </select>
             </div>
           </div>
@@ -273,10 +273,10 @@ export const UsersPage: React.FC = () => {
           <table className="w-full text-left text-xs text-vynexa-text">
             <thead className="bg-vynexa-bg/50 border-b border-vynexa-border text-vynexa-muted font-mono uppercase tracking-wider">
               <tr>
-                <th className="py-3 px-4">User</th>
+                <th className="py-3 px-4">Name</th>
                 <th className="py-3 px-4">Role</th>
                 <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4">Created Date</th>
+                <th className="py-3 px-4">Date created</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -295,8 +295,8 @@ export const UsersPage: React.FC = () => {
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-vynexa-muted">
                     <UsersIcon className="h-8 w-8 mx-auto mb-2 text-vynexa-muted/50" />
-                    <p className="font-medium text-vynexa-text">No user accounts found</p>
-                    <p className="text-xs text-vynexa-muted mt-1">Try adjusting your filters or search term.</p>
+                    <p className="font-medium text-vynexa-text">No users found</p>
+                    <p className="text-xs text-vynexa-muted mt-1">Try adjusting your search or filters.</p>
                   </td>
                 </tr>
               ) : (
@@ -347,7 +347,7 @@ export const UsersPage: React.FC = () => {
                             size="sm"
                             onClick={() => handleOpenEditModal(u)}
                             className="h-7 px-2"
-                            title="Edit User"
+                            title="Edit user"
                           >
                             <Edit2 className="h-3.5 w-3.5" />
                           </Button>
@@ -412,7 +412,7 @@ export const UsersPage: React.FC = () => {
             <div className="p-4 border-b border-vynexa-border flex items-center justify-between">
               <h3 className="font-semibold text-sm text-vynexa-text flex items-center gap-2">
                 <UserPlus className="h-4 w-4 text-vynexa-primary" />
-                {editingUser ? 'Edit Team User' : 'Add New Team Member'}
+                {editingUser ? 'Edit user' : 'Add user'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -431,7 +431,7 @@ export const UsersPage: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-vynexa-muted mb-1 font-medium">Full Name *</label>
+                <label className="block text-vynexa-muted mb-1 font-medium">Name *</label>
                 <Input
                   type="text"
                   required
@@ -443,7 +443,7 @@ export const UsersPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-vynexa-muted mb-1 font-medium">Email Address *</label>
+                <label className="block text-vynexa-muted mb-1 font-medium">Email *</label>
                 <Input
                   type="email"
                   required
@@ -455,7 +455,7 @@ export const UsersPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-vynexa-muted mb-1 font-medium">Assigned Role *</label>
+                <label className="block text-vynexa-muted mb-1 font-medium">Role *</label>
                 <select
                   required
                   value={formData.roleId}
@@ -473,7 +473,7 @@ export const UsersPage: React.FC = () => {
 
               <div>
                 <label className="block text-vynexa-muted mb-1 font-medium">
-                  {editingUser ? 'New Password (leave blank to keep existing)' : 'Account Password *'}
+                  {editingUser ? 'New password (leave blank to keep current)' : 'Password *'}
                 </label>
                 <Input
                   type="password"
@@ -500,7 +500,7 @@ export const UsersPage: React.FC = () => {
                   size="sm"
                   isLoading={submitting}
                 >
-                  {editingUser ? 'Save Changes' : 'Create User'}
+                  {editingUser ? 'Save changes' : 'Add user'}
                 </Button>
               </div>
             </form>
@@ -514,7 +514,7 @@ export const UsersPage: React.FC = () => {
           <div className="bg-vynexa-elevated border border-vynexa-border rounded-lg shadow-xl w-full max-w-md overflow-hidden p-5 space-y-4">
             <h3 className="font-semibold text-sm text-vynexa-text flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-vynexa-status-warning" />
-              Confirm User Status Change
+              {statusModalUser.isActive ? 'Deactivate user' : 'Activate user'}
             </h3>
 
             {statusError && (
@@ -524,8 +524,11 @@ export const UsersPage: React.FC = () => {
             )}
 
             <p className="text-xs text-vynexa-muted">
-              Are you sure you want to {statusModalUser.isActive ? 'deactivate' : 'activate'} user{' '}
-              <strong className="text-vynexa-text font-mono">{statusModalUser.name}</strong> ({statusModalUser.email})?
+              Are you sure you want to {statusModalUser.isActive ? 'deactivate' : 'activate'}{' '}
+              <strong className="text-vynexa-text font-mono">{statusModalUser.name}</strong> ({statusModalUser.email})?{' '}
+              {statusModalUser.isActive
+                ? 'They will no longer be able to log in.'
+                : 'They will be able to log in again.'}
             </p>
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-vynexa-border">
@@ -542,7 +545,7 @@ export const UsersPage: React.FC = () => {
                 isLoading={statusActionLoading}
                 onClick={handleToggleStatus}
               >
-                {statusModalUser.isActive ? 'Deactivate User' : 'Activate User'}
+                {statusModalUser.isActive ? 'Deactivate user' : 'Activate user'}
               </Button>
             </div>
           </div>

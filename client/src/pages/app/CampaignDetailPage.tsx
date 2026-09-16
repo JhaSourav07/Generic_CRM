@@ -197,7 +197,7 @@ export const CampaignDetailPage: React.FC = () => {
           className="text-xs text-vynexa-text-muted hover:text-vynexa-text-primary px-0"
         >
           <ArrowLeft className="h-3.5 w-3.5 mr-1" />
-          Back to Campaigns
+          Back to campaigns
         </Button>
       </div>
 
@@ -251,7 +251,7 @@ export const CampaignDetailPage: React.FC = () => {
               className="text-xs border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
             >
               <Play className="h-3 w-3 mr-1" />
-              Launch Campaign
+              Launch campaign
             </Button>
           )}
 
@@ -320,7 +320,7 @@ export const CampaignDetailPage: React.FC = () => {
             className="text-xs"
           >
             <Edit2 className="h-3.5 w-3.5 mr-1" />
-            Edit
+            Edit campaign
           </Button>
         </div>
       </div>
@@ -328,68 +328,68 @@ export const CampaignDetailPage: React.FC = () => {
       {/* Attribution & ROI Metrics Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Total Leads</span>
+          <span className="text-[11px] text-vynexa-text-muted">Total leads</span>
           <div className="mt-1 font-mono text-xl font-semibold text-vynexa-text-primary">
             {metrics.totalLeads}
           </div>
-          <span className="text-[10px] text-vynexa-text-muted">Linked Candidates</span>
+          <span className="text-[10px] text-vynexa-text-muted">All linked leads</span>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Qualified / Converted</span>
+          <span className="text-[11px] text-vynexa-text-muted">Converted</span>
           <div className="mt-1 font-mono text-xl font-semibold text-emerald-400">
             {metrics.convertedLeads}
           </div>
           <span className="text-[10px] text-vynexa-text-muted">
-            {metrics.conversionRate}% conversion
+            {metrics.conversionRate}% conversion rate
           </span>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Pipeline Deals</span>
+          <span className="text-[11px] text-vynexa-text-muted">Opportunities</span>
           <div className="mt-1 font-mono text-xl font-semibold text-blue-400">
             {metrics.linkedOpportunitiesCount}
           </div>
-          <span className="text-[10px] text-vynexa-text-muted">Active Pipeline</span>
+          <span className="text-[10px] text-vynexa-text-muted">Deals in progress</span>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Pipeline Value</span>
+          <span className="text-[11px] text-vynexa-text-muted">Pipeline value</span>
           <div className="mt-1 font-mono text-xl font-semibold text-vynexa-text-primary">
             ${metrics.pipelineValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </div>
-          <span className="text-[10px] text-vynexa-text-muted">Forecasted Deals</span>
+          <span className="text-[10px] text-vynexa-text-muted">Active deal value</span>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Attributable Revenue</span>
+          <span className="text-[11px] text-vynexa-text-muted">Revenue</span>
           <div className="mt-1 font-mono text-xl font-semibold text-emerald-400">
             ${metrics.attributableRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
           </div>
           <span className="text-[10px] text-vynexa-text-muted">
-            {metrics.attributableOrdersCount} Closed Orders
+            {metrics.attributableOrdersCount} orders placed
           </span>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-3.5">
-          <span className="text-[11px] text-vynexa-text-muted">Campaign ROI</span>
+          <span className="text-[11px] text-vynexa-text-muted">Return on investment</span>
           <div className="mt-1 font-mono text-xl font-semibold text-vynexa-text-primary">
             {metrics.roi !== null ? (
               <span className={metrics.roi >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
                 {metrics.roi > 0 ? `+${metrics.roi}%` : `${metrics.roi}%`}
               </span>
             ) : (
-              <span className="text-vynexa-text-muted text-sm font-normal">N/A (No Budget)</span>
+              <span className="text-vynexa-text-muted text-sm font-normal">N/A (No budget)</span>
             )}
           </div>
-          <span className="text-[10px] text-vynexa-text-muted">Return on Investment</span>
+          <span className="text-[10px] text-vynexa-text-muted">Based on campaign budget</span>
         </div>
       </div>
 
       {/* Lead Funnel Breakdown */}
       {statusSegments.length > 0 && (
         <DistributionBar
-          title="Campaign Lead Status Distribution"
+          title="Lead status breakdown"
           segments={statusSegments}
           totalCount={metrics.totalLeads}
         />
@@ -400,10 +400,10 @@ export const CampaignDetailPage: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-vynexa-text-primary">
-              Associated Leads ({leadsTotal})
+              Leads in this campaign ({leadsTotal})
             </h3>
             <p className="text-xs text-vynexa-text-muted">
-              Leads linked to this marketing campaign for source tracking and pipeline conversion.
+              Track leads that came from this marketing campaign.
             </p>
           </div>
           <Button
@@ -413,7 +413,7 @@ export const CampaignDetailPage: React.FC = () => {
             className="flex items-center gap-1 text-xs"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span>Add Leads</span>
+            <span>Add leads</span>
           </Button>
         </div>
 
@@ -422,12 +422,12 @@ export const CampaignDetailPage: React.FC = () => {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-secondary font-medium">
-                <th className="py-2.5 px-3">Lead Name</th>
+                <th className="py-2.5 px-3">Lead</th>
                 <th className="py-2.5 px-3">Company</th>
                 <th className="py-2.5 px-3">Status</th>
                 <th className="py-2.5 px-3 text-center">Score</th>
-                <th className="py-2.5 px-3">Owner</th>
-                <th className="py-2.5 px-3">Attached Date</th>
+                <th className="py-2.5 px-3">Assigned to</th>
+                <th className="py-2.5 px-3">Date added</th>
                 <th className="py-2.5 px-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -441,7 +441,7 @@ export const CampaignDetailPage: React.FC = () => {
               ) : leads.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-vynexa-text-muted">
-                    No leads linked to this campaign yet. Click "Add Leads" to link candidate leads.
+                    No leads in this campaign yet. Click "Add leads" to link leads.
                   </td>
                 </tr>
               ) : (
@@ -476,7 +476,7 @@ export const CampaignDetailPage: React.FC = () => {
                         size="sm"
                         onClick={() => handleRemoveLead(item)}
                         className="h-6 w-6 p-0 text-vynexa-text-muted hover:text-vynexa-status-danger"
-                        title="Remove Lead from Campaign"
+                        title="Remove lead from campaign"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>

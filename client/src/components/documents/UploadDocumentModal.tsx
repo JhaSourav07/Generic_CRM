@@ -101,8 +101,8 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Document Uploaded',
-        message: `Successfully stored ${selectedFile.name}`
+        title: 'Document uploaded',
+        message: `${selectedFile.name} uploaded successfully.`
       });
 
       setSelectedFile(null);
@@ -110,7 +110,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       if (onSuccess) onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to upload document');
+      setError(err.message || 'Could not upload document');
     } finally {
       setLoading(false);
     }
@@ -126,7 +126,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Upload Business Document"
+      title="Upload document"
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -160,7 +160,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             <span className="font-semibold text-vynexa-text-primary">Click to select</span> or drag and drop file here
           </div>
           <p className="text-[11px] text-vynexa-text-muted">
-            PDF, Word, Excel, CSV, Text, or standard images (Max 10MB)
+            PDF, Word, Excel, CSV, text, or images (up to 10MB)
           </p>
         </div>
 
@@ -194,12 +194,12 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         {/* Custom Document Name */}
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Display Document Name (Optional)
+            Document name (optional)
           </label>
           <Input
             value={documentName}
             onChange={(e) => setDocumentName(e.target.value)}
-            placeholder="e.g. Master Services Agreement 2026"
+            placeholder="e.g. Master Services Agreement"
             className="text-xs"
           />
         </div>
@@ -209,7 +209,7 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             Cancel
           </Button>
           <Button variant="primary" size="sm" type="submit" disabled={!selectedFile || loading}>
-            {loading ? 'Uploading...' : 'Upload Document'}
+            {loading ? 'Uploading...' : 'Upload document'}
           </Button>
         </div>
       </form>

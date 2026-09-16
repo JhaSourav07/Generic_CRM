@@ -109,8 +109,8 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
       onClose={() => {
         if (!loading) onClose();
       }}
-      title="Edit Marketing Campaign"
-      description="Update campaign parameters, budget, dates, and status."
+      title="Edit campaign"
+      description="Update campaign budget, dates, and status."
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -123,7 +123,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
 
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-            Campaign Name <span className="text-vynexa-status-danger">*</span>
+            Campaign name <span className="text-vynexa-status-danger">*</span>
           </label>
           <Input
             value={name}
@@ -136,7 +136,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              Campaign Type
+              Type
             </label>
             <Select
               value={type}
@@ -172,7 +172,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              Start Date
+              Start date
             </label>
             <Input
               type="date"
@@ -184,7 +184,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              End Date
+              End date
             </label>
             <Input
               type="date"
@@ -232,7 +232,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading ? 'Saving...' : 'Save changes'}
           </Button>
         </div>
       </form>

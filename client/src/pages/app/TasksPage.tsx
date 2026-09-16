@@ -290,8 +290,8 @@ export const TasksPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header Bar */}
       <PageHeader
-        title="Tasks & Action Items"
-        description="Operational work-queue for customer follow-ups, scheduled obligations, and assignments."
+        title="Tasks"
+        description="Keep track of what needs to be done across your team."
         breadcrumbs={[
           { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Tasks' }
@@ -303,7 +303,7 @@ export const TasksPage: React.FC = () => {
               size="sm"
               onClick={() => navigate('/app/follow-ups')}
             >
-              Follow-ups View
+              Follow-ups
             </Button>
             <Button
               variant="primary"
@@ -311,7 +311,7 @@ export const TasksPage: React.FC = () => {
               leftIcon={<Plus className="h-3.5 w-3.5" />}
               onClick={() => setIsCreateOpen(true)}
             >
-              New Task
+              Add task
             </Button>
           </div>
         }
@@ -321,7 +321,7 @@ export const TasksPage: React.FC = () => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
           <div className="text-[11px] text-vynexa-text-muted flex items-center gap-1.5">
-            <CheckSquare className="h-3 w-3 text-vynexa-blue" /> Active Tasks
+            <CheckSquare className="h-3 w-3 text-vynexa-blue" /> Open tasks
           </div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {summary.openCount}
@@ -339,7 +339,7 @@ export const TasksPage: React.FC = () => {
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
           <div className="text-[11px] text-vynexa-text-muted flex items-center gap-1.5">
-            <Clock className="h-3 w-3 text-amber-400" /> Due Today
+            <Clock className="h-3 w-3 text-amber-400" /> Due today
           </div>
           <div className="text-xl font-bold font-mono text-amber-400 mt-1">
             {summary.dueTodayCount}
@@ -359,9 +359,9 @@ export const TasksPage: React.FC = () => {
       {/* Status Tabs */}
       <div className="flex items-center gap-2 border-b border-vynexa-border pb-3">
         {[
-          { id: 'ALL', label: 'All Tasks' },
-          { id: 'TODO', label: 'To Do' },
-          { id: 'IN_PROGRESS', label: 'In Progress' },
+          { id: 'ALL', label: 'All tasks' },
+          { id: 'TODO', label: 'To do' },
+          { id: 'IN_PROGRESS', label: 'In progress' },
           { id: 'COMPLETED', label: 'Completed' }
         ].map((tab) => (
           <button
@@ -393,7 +393,7 @@ export const TasksPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search task title, description, contact..."
+              placeholder="Search tasks, descriptions, or contacts..."
               className="pl-8 bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             />
           </div>
@@ -408,7 +408,7 @@ export const TasksPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             >
-              <option value="">All Priorities</option>
+              <option value="">All priorities</option>
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
               <option value="HIGH">High</option>
@@ -426,7 +426,7 @@ export const TasksPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs flex-1"
             >
-              <option value="">All Assignees</option>
+              <option value="">All assignees</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name}
@@ -480,7 +480,7 @@ export const TasksPage: React.FC = () => {
             </div>
             <div className="text-sm font-semibold text-vynexa-text-primary">No tasks found</div>
             <div className="text-xs text-vynexa-text-muted max-w-sm mx-auto">
-              No tasks currently match your filter criteria. Create tasks to keep work moving forward.
+              No tasks match your search or filters. Add a task to stay organized.
             </div>
             <Button
               variant="outline"
@@ -488,7 +488,7 @@ export const TasksPage: React.FC = () => {
               leftIcon={<Plus className="h-3.5 w-3.5" />}
               onClick={() => setIsCreateOpen(true)}
             >
-              Create New Task
+              Add task
             </Button>
           </div>
         ) : (
@@ -518,10 +518,10 @@ export const TasksPage: React.FC = () => {
                       }`}
                       title={
                         !canModify
-                          ? 'Only assigned user or manager can update this task'
+                          ? 'Only the assigned user or a manager can update this task'
                           : completed
                           ? 'Reopen task'
-                          : 'Mark completed'
+                          : 'Mark as completed'
                       }
                     >
                       {completed ? (
@@ -588,7 +588,7 @@ export const TasksPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         className={`h-8 w-8 p-0 ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
-                        title={!canModify ? 'Only assigned user or manager can reassign' : 'Reassign Task'}
+                        title={!canModify ? 'Only the assigned user or a manager can reassign' : 'Reassign task'}
                         disabled={!canModify}
                         onClick={() => setSelectedForAssign(task)}
                       >
@@ -598,7 +598,7 @@ export const TasksPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         className={`h-8 w-8 p-0 ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
-                        title={!canModify ? 'Only assigned user or manager can edit' : 'Edit Task'}
+                        title={!canModify ? 'Only the assigned user or a manager can edit' : 'Edit task'}
                         disabled={!canModify}
                         onClick={() => setSelectedForEdit(task)}
                       >
@@ -608,7 +608,7 @@ export const TasksPage: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         className={`h-8 w-8 p-0 text-vynexa-danger ${!canModify ? 'opacity-40 cursor-not-allowed' : ''}`}
-                        title={!canModify ? 'Only assigned user or manager can delete' : 'Delete Task'}
+                        title={!canModify ? 'Only the assigned user or a manager can delete' : 'Delete task'}
                         disabled={!canModify}
                         onClick={() => setSelectedForDelete(task)}
                       >
@@ -678,13 +678,13 @@ export const TasksPage: React.FC = () => {
       <Dialog
         isOpen={Boolean(selectedForDelete)}
         onClose={() => setSelectedForDelete(null)}
-        title="Delete Task"
+        title="Delete task"
         maxWidth="sm"
       >
         <div className="space-y-4 text-xs">
           <p className="text-vynexa-text-secondary">
             Are you sure you want to delete <span className="font-semibold text-white">"{selectedForDelete?.title}"</span>?
-            This will archive the task from your active queue.
+            This will remove the task from your list.
           </p>
 
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-vynexa-border">
@@ -702,7 +702,7 @@ export const TasksPage: React.FC = () => {
               onClick={handleDelete}
               isLoading={deleting}
             >
-              Delete Task
+              Delete task
             </Button>
           </div>
         </div>

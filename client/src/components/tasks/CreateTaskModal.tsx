@@ -175,8 +175,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Task Created',
-        message: `'${data.title}' scheduled in workspace queue.`
+        title: 'Task created',
+        message: `'${data.title}' added to tasks.`
       });
 
       onSuccess();
@@ -184,7 +184,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Failed to Create Task',
+        title: 'Could not create task',
         message: err.message || 'An error occurred while creating the task.'
       });
     } finally {
@@ -193,16 +193,16 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Create New Task & Follow-up" maxWidth="md">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Add task" maxWidth="md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs">
         {/* Title */}
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-            Task Title *
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Task title *
           </label>
           <Input
             {...register('title')}
-            placeholder="e.g. Follow up with VP of Tech regarding contract"
+            placeholder="e.g. Follow up regarding contract"
             className="bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
           />
           {errors.title && (
@@ -213,7 +213,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         {/* Priority & Due Date & Assignee */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
               Priority *
             </label>
             <Select
@@ -228,8 +228,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Due Date
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Due date
             </label>
             <Input
               type="date"
@@ -239,8 +239,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Assigned To
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Assigned to
             </label>
             <Select
               {...register('assignedToId')}
@@ -259,8 +259,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         {/* Target Kind: Account vs Lead */}
         {!initialLeadId && !initialAccountId && (
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Related Entity
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Link to
             </label>
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer text-vynexa-text-secondary">
@@ -271,7 +271,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                   onChange={() => setValue('targetKind', 'ACCOUNT')}
                   className="text-vynexa-blue focus:ring-0"
                 />
-                Customer Account / Contact / Deal
+                Customer, contact, or deal
               </label>
               <label className="flex items-center gap-2 cursor-pointer text-vynexa-text-secondary">
                 <input
@@ -281,7 +281,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                   onChange={() => setValue('targetKind', 'LEAD')}
                   className="text-vynexa-blue focus:ring-0"
                 />
-                Prospect Lead
+                Lead
               </label>
             </div>
           </div>
@@ -290,8 +290,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         {/* Lead Selector */}
         {selectedTargetKind === 'LEAD' ? (
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Select Lead
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Lead
             </label>
             <Select
               {...register('leadId')}
@@ -310,15 +310,15 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           <div className="space-y-3">
             {/* Account Selector */}
             <div>
-              <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                Customer Account
+              <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                Customer
               </label>
               <Select
                 {...register('accountId')}
                 disabled={Boolean(initialAccountId)}
                 className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
               >
-                <option value="">Select customer account...</option>
+                <option value="">Select customer...</option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -330,8 +330,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             {/* Sub-selectors: Contact & Opportunity */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                  Contact Person
+                <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                  Contact person
                 </label>
                 <Select
                   {...register('contactId')}
@@ -348,8 +348,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                  Related Opportunity
+                <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                  Deal
                 </label>
                 <Select
                   {...register('opportunityId')}
@@ -370,13 +370,13 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
 
         {/* Description / Instructions */}
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-            Task Description & Details
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Notes
           </label>
           <Textarea
             {...register('description')}
             rows={3}
-            placeholder="Context, agenda, preparation notes, or specific requirements..."
+            placeholder="Add context, instructions, or notes..."
             className="bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
           />
         </div>
@@ -387,7 +387,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-            Create Task
+            Add task
           </Button>
         </div>
       </form>

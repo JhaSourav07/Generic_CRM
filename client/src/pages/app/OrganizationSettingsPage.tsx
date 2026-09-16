@@ -75,7 +75,7 @@ export const OrganizationSettingsPage: React.FC = () => {
         timezone: formData.timezone
       });
       setOrg(updated);
-      setSuccessMsg('Organization profile updated successfully.');
+      setSuccessMsg('Settings saved successfully.');
     } catch (_err: any) {
       setError(_err.message || 'Failed to update organization details.');
     } finally {
@@ -86,11 +86,11 @@ export const OrganizationSettingsPage: React.FC = () => {
   return (
     <div className="space-y-6 select-none">
       <PageHeader
-        title="Organization Settings"
-        description="Manage enterprise multi-tenant configuration, default currency, and identity."
+        title="Settings"
+        description="Update your organization details, currency, and timezone."
         breadcrumbs={[
-          { label: 'Workspace', href: '/app/dashboard' },
-          { label: 'Organization Settings' }
+          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Settings' }
         ]}
         actions={
           <Button variant="outline" size="sm" onClick={fetchOrganization} isLoading={loading} className="h-8">
@@ -124,10 +124,10 @@ export const OrganizationSettingsPage: React.FC = () => {
           <CardHeader>
             <CardTitle className="text-sm font-semibold text-vynexa-text flex items-center gap-2">
               <Building2 className="h-4 w-4 text-vynexa-primary" />
-              Tenant Context
+              Organization details
             </CardTitle>
             <CardDescription className="text-xs text-vynexa-muted">
-              Current organization metadata stored in PostgreSQL.
+              Your organization identifier and summary.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-xs font-mono">
@@ -145,14 +145,14 @@ export const OrganizationSettingsPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-b border-vynexa-border">
-                  <span className="text-vynexa-muted">Tenant Slug</span>
+                  <span className="text-vynexa-muted">Slug</span>
                   <Badge variant="outline" className="font-mono text-vynexa-text">
                     {org.slug}
                   </Badge>
                 </div>
 
                 <div className="flex items-center justify-between py-2 border-b border-vynexa-border">
-                  <span className="text-vynexa-muted">Total Members</span>
+                  <span className="text-vynexa-muted">Team members</span>
                   <span className="text-vynexa-text font-bold flex items-center gap-1">
                     <Users className="h-3.5 w-3.5 text-vynexa-muted" />
                     {org._count?.users ?? 1}
@@ -160,7 +160,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between py-2">
-                  <span className="text-vynexa-muted">Created Date</span>
+                  <span className="text-vynexa-muted">Date created</span>
                   <span className="text-vynexa-text">{new Date(org.createdAt).toLocaleDateString()}</span>
                 </div>
               </>
@@ -173,10 +173,10 @@ export const OrganizationSettingsPage: React.FC = () => {
           <CardHeader>
             <CardTitle className="text-sm font-semibold text-vynexa-text flex items-center gap-2">
               <Globe className="h-4 w-4 text-vynexa-primary" />
-              Organization Parameters
+              Preferences
             </CardTitle>
             <CardDescription className="text-xs text-vynexa-muted">
-              Configure tenant profile and regional preferences.
+              Manage your company profile and regional preferences.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -189,7 +189,7 @@ export const OrganizationSettingsPage: React.FC = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-vynexa-muted mb-1 font-medium">Organization Name *</label>
+                  <label className="block text-vynexa-muted mb-1 font-medium">Organization name *</label>
                   <Input
                     type="text"
                     required
@@ -201,7 +201,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-vynexa-muted mb-1 font-medium">Organization Slug (URL Handle) *</label>
+                  <label className="block text-vynexa-muted mb-1 font-medium">Organization slug *</label>
                   <Input
                     type="text"
                     required
@@ -211,7 +211,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                     placeholder="e.g. acme-corp"
                   />
                   <p className="text-[11px] text-vynexa-muted mt-1">
-                    Used for unique tenant identification. Characters must be lowercase alphanumeric or hyphens.
+                    Used in your account URL. Use only lowercase letters, numbers, and hyphens.
                   </p>
                 </div>
 
@@ -219,7 +219,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                   <div>
                     <label className="block text-vynexa-muted mb-1 font-medium flex items-center gap-1">
                       <DollarSign className="h-3.5 w-3.5 text-vynexa-primary" />
-                      Default Operating Currency *
+                      Currency *
                     </label>
                     <select
                       value={formData.currency}
@@ -238,7 +238,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                   <div>
                     <label className="block text-vynexa-muted mb-1 font-medium flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5 text-vynexa-primary" />
-                      Default Timezone *
+                      Timezone *
                     </label>
                     <select
                       value={formData.timezone}
@@ -265,7 +265,7 @@ export const OrganizationSettingsPage: React.FC = () => {
                     isLoading={saving}
                   >
                     <Save className="h-3.5 w-3.5 mr-1.5" />
-                    Save Settings
+                    Save changes
                   </Button>
                 </div>
               </form>

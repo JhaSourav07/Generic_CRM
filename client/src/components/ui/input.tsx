@@ -7,20 +7,55 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  containerClassName?: string;
+}
+
+const CONTAINER_CLASS_REGEX = /^(w-(?!hitespace)|min-w-|max-w-|flex-|shrink|grow|self-|basis-)/;
+
+function extractContainerClasses(className?: string) {
+  if (!className) return { containerClasses: '', elementClasses: '' };
+
+  const tokens = className.trim().split(/\s+/);
+  const containerTokens: string[] = [];
+  const elementTokens: string[] = [];
+
+  for (const token of tokens) {
+    if (CONTAINER_CLASS_REGEX.test(token)) {
+      containerTokens.push(token);
+    } else {
+      elementTokens.push(token);
+    }
+  }
+
+  return {
+    containerClasses: containerTokens.join(' '),
+    elementClasses: elementTokens.join(' ')
+  };
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, helperText, leftIcon, rightIcon, id, ...props }, ref) => {
+  ({ className, label, error, helperText, leftIcon, rightIcon, id, containerClassName, ...props }, ref) => {
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+    const { containerClasses, elementClasses } = extractContainerClasses(className);
+    const hasCustomWidth =
+      /(^|\s)(w-(?!hitespace)|flex-1|flex-auto|flex-initial)/.test(containerClasses) ||
+      (containerClassName ? /(^|\s)(w-(?!hitespace)|flex-1|flex-auto|flex-initial)/.test(containerClassName) : false);
 
     return (
-      <div className="w-full space-y-1.5">
+      <div
+        className={cn(
+          hasCustomWidth ? '' : 'w-full',
+          (label || error || helperText) && 'space-y-1.5',
+          containerClasses,
+          containerClassName
+        )}
+      >
         {label && (
           <label htmlFor={inputId} className="block text-xs font-medium text-vynexa-text-secondary">
             {label}
           </label>
         )}
-        <div className="relative flex items-center">
+        <div className="relative flex items-center w-full">
           {leftIcon && (
             <div className="absolute left-3 text-vynexa-text-muted pointer-events-none flex items-center justify-center">
               {leftIcon}
@@ -34,12 +69,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               leftIcon && 'pl-9',
               rightIcon && 'pr-9',
               error && 'border-vynexa-status-danger focus:border-vynexa-status-danger',
-              className
+              elementClasses
             )}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 text-vynexa-text-muted flex items-center justify-center">
+            <div className="absolute right-3 text-vynexa-text-muted flex items-center justify-center pointer-events-none">
               {rightIcon}
             </div>
           )}

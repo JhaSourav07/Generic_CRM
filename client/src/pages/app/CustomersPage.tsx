@@ -85,7 +85,7 @@ export const CustomersPage: React.FC = () => {
       setCustomers(res.customers);
       setMeta(res.meta);
     } catch (err: any) {
-      setError(err.message || 'Failed to load customer directory');
+      setError(err.message || 'Could not load customers. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -102,16 +102,16 @@ export const CustomersPage: React.FC = () => {
       await customersService.deleteCustomer(selectedCustomerForDelete.id);
       toast({
         type: 'success',
-        title: 'Customer Deleted',
-        message: `Account '${selectedCustomerForDelete.name}' soft-deleted successfully.`
+        title: 'Customer deleted',
+        message: `${selectedCustomerForDelete.name} has been removed.`
       });
       setSelectedCustomerForDelete(null);
       fetchCustomers();
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Deletion Failed',
-        message: err.message || 'Failed to delete customer account.'
+        title: 'Could not delete customer',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -139,7 +139,7 @@ export const CustomersPage: React.FC = () => {
       case 'enterprise':
         return <Badge variant="amber" className="font-mono">Enterprise</Badge>;
       case 'vip':
-        return <Badge variant="blue" className="font-mono">VIP Tier</Badge>;
+        return <Badge variant="blue" className="font-mono">VIP</Badge>;
       case 'premium':
         return <Badge variant="emerald" className="font-mono">Premium</Badge>;
       case 'standard':
@@ -161,10 +161,10 @@ export const CustomersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Customers & Accounts"
-        description="Organization accounts directory with financial, contract, and historical context."
+        title="Customers"
+        description="Manage your customers and their details."
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'CRM' },
           { label: 'Customers' }
         ]}
@@ -175,7 +175,7 @@ export const CustomersPage: React.FC = () => {
             leftIcon={<Plus className="h-3.5 w-3.5" />}
             onClick={() => setIsCreateOpen(true)}
           >
-            Add Customer Account
+            Add customer
           </Button>
         }
       />
@@ -185,7 +185,7 @@ export const CustomersPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="relative lg:col-span-2">
             <Input
-              placeholder="Search by company name, email, phone, domain..."
+              placeholder="Search by company name, email, or domain..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -212,7 +212,7 @@ export const CustomersPage: React.FC = () => {
               setPage(1);
             }}
             options={[
-              { value: '', label: 'All Account Statuses' },
+              { value: '', label: 'All statuses' },
               { value: 'active', label: 'Active' },
               { value: 'onboarding', label: 'Onboarding' },
               { value: 'inactive', label: 'Inactive' },
@@ -227,7 +227,7 @@ export const CustomersPage: React.FC = () => {
               setPage(1);
             }}
             options={[
-              { value: '', label: 'All Customer Tiers' },
+              { value: '', label: 'All tiers' },
               { value: 'enterprise', label: 'Enterprise' },
               { value: 'vip', label: 'VIP' },
               { value: 'premium', label: 'Premium' },
@@ -244,7 +244,7 @@ export const CustomersPage: React.FC = () => {
             <div className="p-8 text-center text-vynexa-danger">
               <p className="font-medium">{error}</p>
               <Button variant="outline" size="sm" className="mt-3" onClick={() => fetchCustomers()}>
-                Retry Loading
+                Try again
               </Button>
             </div>
           ) : loading ? (
@@ -263,11 +263,11 @@ export const CustomersPage: React.FC = () => {
           ) : customers.length === 0 ? (
             <div className="p-12 text-center">
               <Building2 className="h-10 w-10 text-vynexa-text-muted mx-auto mb-3" />
-              <h3 className="text-base font-semibold text-vynexa-text-primary">No Customer Accounts Found</h3>
+              <h3 className="text-base font-semibold text-vynexa-text-primary">No customers found</h3>
               <p className="text-sm text-vynexa-text-secondary mt-1 max-w-sm mx-auto">
                 {search || statusFilter || tierFilter || industryFilter
-                  ? 'No account records matched your current query criteria.'
-                  : 'Start building your enterprise accounts directory by adding your first customer company.'}
+                  ? 'No customers match your search filters.'
+                  : 'Add your first customer to get started.'}
               </p>
               <Button
                 variant="primary"
@@ -276,7 +276,7 @@ export const CustomersPage: React.FC = () => {
                 leftIcon={<Plus className="h-3.5 w-3.5" />}
                 onClick={() => setIsCreateOpen(true)}
               >
-                Add Customer Account
+                Add customer
               </Button>
             </div>
           ) : (
@@ -284,13 +284,13 @@ export const CustomersPage: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>CUSTOMER / ACCOUNT</TableHead>
-                    <TableHead>INDUSTRY</TableHead>
-                    <TableHead>TIER</TableHead>
-                    <TableHead>CONTACTS</TableHead>
-                    <TableHead>ANNUAL REVENUE</TableHead>
-                    <TableHead>STATUS</TableHead>
-                    <TableHead className="text-right">ACTIONS</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Industry</TableHead>
+                    <TableHead>Tier</TableHead>
+                    <TableHead>Contacts</TableHead>
+                    <TableHead>Annual revenue</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -353,20 +353,20 @@ export const CustomersPage: React.FC = () => {
                               icon={<Eye className="h-3.5 w-3.5" />}
                               onClick={() => navigate(`/app/customers/${account.id}`)}
                             >
-                              View Account Context
+                              View details
                             </DropdownItem>
                             <DropdownItem
                               icon={<Edit2 className="h-3.5 w-3.5" />}
                               onClick={() => setSelectedCustomerForEdit(account)}
                             >
-                              Edit Account
+                              Edit customer
                             </DropdownItem>
                             <DropdownItem
                               icon={<Trash2 className="h-3.5 w-3.5" />}
                               danger
                               onClick={() => setSelectedCustomerForDelete(account)}
                             >
-                              Delete Account
+                              Delete customer
                             </DropdownItem>
                           </Dropdown>
                         </TableCell>
@@ -382,7 +382,7 @@ export const CustomersPage: React.FC = () => {
           {meta.totalPages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-vynexa-border text-xs text-vynexa-text-secondary">
               <div className="font-mono">
-                Showing {((meta.page - 1) * meta.limit) + 1} to {Math.min(meta.page * meta.limit, meta.total)} of {meta.total} accounts
+                Showing {((meta.page - 1) * meta.limit) + 1} to {Math.min(meta.page * meta.limit, meta.total)} of {meta.total} customers
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -431,8 +431,8 @@ export const CustomersPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedCustomerForDelete}
         onClose={() => setSelectedCustomerForDelete(null)}
-        title="Delete Customer Account"
-        description="Are you sure you want to delete this customer account? This will soft-delete the record and retain linked context for compliance."
+        title="Delete customer"
+        description="Are you sure you want to delete this customer? This cannot be undone."
       >
         <div className="space-y-4 pt-2">
           {selectedCustomerForDelete && (
@@ -456,7 +456,7 @@ export const CustomersPage: React.FC = () => {
               onClick={handleDelete}
               isLoading={deleting}
             >
-              Confirm Deletion
+              Delete customer
             </Button>
           </div>
         </div>

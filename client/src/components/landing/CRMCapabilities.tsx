@@ -6,38 +6,38 @@ export const CRMCapabilities: React.FC = () => {
     {
       icon: Users,
       tag: 'LEADS',
-      title: 'Lead Management & Conversion',
-      desc: 'Capture, score, triage, and assign incoming inquiries. Convert qualified leads into Customer Accounts, Contacts, and Opportunities in a single atomic transaction.'
+      title: 'Leads & Conversion',
+      desc: 'Collect new inquiries, see who is a good fit, and turn leads into customers with one click.'
     },
     {
       icon: Building2,
       tag: 'CUSTOMERS',
-      title: 'Accounts & Contact History',
-      desc: 'Maintain complete organization records with historical interaction history, primary decision maker contacts, and associated commercial agreements.'
+      title: 'Customers & Contacts',
+      desc: 'Keep all your customer details, key contacts, purchase history, and past conversations in one place.'
     },
     {
       icon: TrendingUp,
       tag: 'SALES',
-      title: 'Pipelines, Quotes & Orders',
-      desc: 'Track deals through multi-stage Kanban pipelines. Generate formal price proposals from product line items and generate commercial orders.'
+      title: 'Pipeline, Quotes & Orders',
+      desc: 'See every deal in progress, send clear price quotes, and turn approved quotes into customer orders.'
     },
     {
       icon: Calendar,
       tag: 'ACTIVITIES',
-      title: 'Interactions & Tasks',
-      desc: 'Log calls, meetings, notes, emails, and follow-ups. Assign actionable tasks to team members with due dates and completion tracking.'
+      title: 'Activities & Tasks',
+      desc: 'Keep track of calls, meetings, emails, and notes. Assign tasks to teammates with clear due dates.'
     },
     {
       icon: LifeBuoy,
       tag: 'SUPPORT',
-      title: 'Customer Case Hub',
-      desc: 'Manage customer support requests, SLA resolution timelines, priority escalation, and historical resolution logs.'
+      title: 'Customer Support',
+      desc: 'Track and resolve customer requests quickly so nothing slips through the cracks.'
     },
     {
       icon: BarChart2,
-      tag: 'INSIGHTS',
-      title: 'Business Analytics & Reports',
-      desc: 'Gain operational visibility into pipeline velocity, team activity metrics, conversion funnels, and revenue projections.'
+      tag: 'REPORTS',
+      title: 'Reports & Numbers',
+      desc: 'See how your sales are moving, which marketing brings leads, and how your team is performing.'
     }
   ];
 
@@ -45,12 +45,12 @@ export const CRMCapabilities: React.FC = () => {
     <section id="solutions" className="py-20 px-4 sm:px-6 border-b border-vynexa-border bg-vynexa-surface/30">
       <div className="mx-auto max-w-7xl space-y-12">
         <div className="max-w-3xl space-y-3">
-          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">SYSTEM CAPABILITIES</h2>
+          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">WHAT VYNEXA DOES</h2>
           <p className="text-2xl sm:text-3xl font-bold text-vynexa-text-primary tracking-tight">
-            One unified CRM that connects every operational domain.
+            Everything your business needs in one place.
           </p>
           <p className="text-xs sm:text-sm text-vynexa-text-secondary leading-relaxed">
-            Eliminate fragmented tools. Vynexa CRM brings lead ingestion, deal movement, quote generation, and support SLA management into a single high-density system.
+            Replace messy spreadsheets and disconnected apps. Keep your sales, customers, quotes, tasks, and support organized together.
           </p>
         </div>
 

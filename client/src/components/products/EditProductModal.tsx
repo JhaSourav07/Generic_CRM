@@ -80,8 +80,8 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Product Updated',
-        message: `'${data.name}' has been updated.`
+        title: 'Product updated',
+        message: `'${data.name}' updated successfully.`
       });
 
       onSuccess();
@@ -89,7 +89,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Update Failed',
+        title: 'Update failed',
         message: err.message || 'Could not update product.'
       });
     } finally {
@@ -98,14 +98,14 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Edit Catalog Product" maxWidth="md">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Edit product" maxWidth="md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-            Product Name *
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Product name *
           </label>
           <Input
-            placeholder="e.g. Enterprise Cloud License"
+            placeholder="e.g. Enterprise License"
             {...register('name')}
             error={errors.name?.message}
           />
@@ -113,7 +113,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
               SKU
             </label>
             <Input
@@ -124,20 +124,20 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Catalog Type *
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Type *
             </label>
             <Select {...register('type')}>
-              <option value="PRODUCT">Product (Physical/Digital Goods)</option>
-              <option value="SERVICE">Service (Implementation, Consulting)</option>
+              <option value="PRODUCT">Product</option>
+              <option value="SERVICE">Service</option>
             </Select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Unit Price *
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Price *
             </label>
             <Input
               type="number"
@@ -149,7 +149,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
               Currency
             </label>
             <Input
@@ -161,12 +161,12 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
             Description
           </label>
           <Textarea
             rows={3}
-            placeholder="Commercial terms, deliverables, and package details..."
+            placeholder="Add product details or specifications..."
             {...register('description')}
           />
         </div>
@@ -179,7 +179,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
             {...register('isActive')}
           />
           <label htmlFor="isActiveEdit" className="text-xs font-medium text-vynexa-text-primary cursor-pointer">
-            Active in catalog (can be added to new commercial quotes)
+            Active (available for quotes and orders)
           </label>
         </div>
 
@@ -188,7 +188,7 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Changes'}
+            {loading ? 'Saving...' : 'Save changes'}
           </Button>
         </div>
       </form>

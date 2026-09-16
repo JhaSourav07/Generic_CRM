@@ -38,8 +38,8 @@ export const MarkLostModal: React.FC<MarkLostModalProps> = ({
 
       toast({
         type: 'info',
-        title: 'Deal Marked Lost',
-        message: `Opportunity '${opportunity.name}' has been marked as Lost.`
+        title: 'Deal marked lost',
+        message: `'${opportunity.name}' marked as lost.`
       });
 
       onSuccess();
@@ -47,8 +47,8 @@ export const MarkLostModal: React.FC<MarkLostModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Action Failed',
-        message: err.message || 'Could not mark opportunity as lost.'
+        title: 'Could not mark deal as lost',
+        message: err.message || 'Failed to update deal.'
       });
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ export const MarkLostModal: React.FC<MarkLostModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Mark Opportunity as Lost" maxWidth="sm">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Mark deal as lost" maxWidth="sm">
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 rounded-lg border border-vynexa-border bg-vynexa-surface">
           <div className="h-10 w-10 rounded-full bg-vynexa-danger/10 border border-vynexa-danger/20 flex items-center justify-center shrink-0">
@@ -64,33 +64,33 @@ export const MarkLostModal: React.FC<MarkLostModalProps> = ({
           </div>
           <div>
             <div className="font-semibold text-vynexa-text-primary text-sm">{opportunity?.name}</div>
-            <div className="text-xs text-vynexa-text-muted">Record competitive loss intelligence</div>
+            <div className="text-xs text-vynexa-text-muted">Record why this deal was lost</div>
           </div>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Primary Loss Reason <span className="text-vynexa-danger">*</span>
+            Reason <span className="text-vynexa-danger">*</span>
           </label>
           <Select
             value={reasonCategory}
             onChange={(e) => setReasonCategory(e.target.value)}
             className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary mb-3"
           >
-            <option value="Price / Budget">Price / Budget Constraints</option>
-            <option value="Competitor Selected">Selected Competitor</option>
-            <option value="Feature / Technical Mismatch">Feature / Technical Mismatch</option>
-            <option value="Timing / Project Postponed">Timing / Project Postponed</option>
-            <option value="No Decision / Ghosted">No Decision / Ghosted</option>
+            <option value="Price / Budget">Price / Budget constraints</option>
+            <option value="Competitor Selected">Selected competitor</option>
+            <option value="Feature / Technical Mismatch">Missing features</option>
+            <option value="Timing / Project Postponed">Project postponed</option>
+            <option value="No Decision / Ghosted">No decision</option>
             <option value="Other">Other</option>
           </Select>
 
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Additional Details (Optional)
+            Additional notes (optional)
           </label>
           <Input
             type="text"
-            placeholder="e.g. Competitor undercut by 15%, evaluate next FY..."
+            placeholder="e.g. Budget cut, evaluating next quarter..."
             value={customReason}
             onChange={(e) => setCustomReason(e.target.value)}
             className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary placeholder:text-vynexa-text-muted text-xs"
@@ -108,7 +108,7 @@ export const MarkLostModal: React.FC<MarkLostModalProps> = ({
             onClick={handleConfirm}
             isLoading={loading}
           >
-            Confirm Lost
+            Mark as lost
           </Button>
         </div>
       </div>

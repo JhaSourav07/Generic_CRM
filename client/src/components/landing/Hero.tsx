@@ -10,18 +10,18 @@ export const Hero: React.FC = () => {
         {/* Eyebrow Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-vynexa-border bg-vynexa-surface-secondary text-[11px] font-mono text-vynexa-text-secondary select-none">
           <span className="h-1.5 w-1.5 rounded-full bg-vynexa-status-success" />
-          <span>VYNEXA CRM — UNIFIED PLATFORM</span>
+          <span>VYNEXA CRM</span>
         </div>
 
         {/* Headline */}
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-vynexa-text-primary leading-[1.15]">
-          One system for the <br />
-          <span className="text-vynexa-text-secondary">entire customer lifecycle.</span>
+          Keep your sales, customers, <br />
+          <span className="text-vynexa-text-secondary">tasks, and support in one place.</span>
         </h1>
 
         {/* Supporting Text */}
         <p className="mx-auto max-w-2xl text-xs sm:text-sm md:text-base text-vynexa-text-secondary font-normal leading-relaxed">
-          Manage leads, relationships, sales, activities, support, and operations from one connected CRM. Engineered for commercial teams that demand data density and operational clarity.
+          Manage leads, sales, customer details, quotes, and support in one fast, simple CRM. Built for business owners and sales teams who want clarity without clutter.
         </p>
 
         {/* Call to Action Buttons */}
@@ -41,10 +41,10 @@ export const Hero: React.FC = () => {
         {/* Architecture Assurance Bar */}
         <div className="pt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto text-left">
           {[
-            { icon: ShieldCheck, title: 'Multi-Tenant Isolation', desc: 'Row-level PostgreSQL boundaries' },
-            { icon: Zap, title: 'High Density UI', desc: 'Fast scanning charcoal layout' },
-            { icon: Layers, title: 'Commercial Lifecycle', desc: 'Lead to quote to order tracking' },
-            { icon: Lock, title: 'Enterprise RBAC', desc: 'Server-side action permission checks' }
+            { icon: ShieldCheck, title: 'Private & Secure', desc: 'Your data stays separated and protected' },
+            { icon: Zap, title: 'Fast & Focused', desc: 'Clean interface designed for quick scanning' },
+            { icon: Layers, title: 'Full Sales Journey', desc: 'From new lead to signed order' },
+            { icon: Lock, title: 'Team Access', desc: 'Choose what each team member can access' }
           ].map((item, idx) => (
             <div key={idx} className="p-3 rounded-lg border border-vynexa-border bg-vynexa-surface">
               <item.icon className="h-4 w-4 text-vynexa-text-primary mb-1.5" />

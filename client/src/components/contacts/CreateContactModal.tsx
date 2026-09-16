@@ -102,8 +102,8 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Contact Created',
-        message: `Contact '${data.firstName} ${data.lastName}' created successfully.`
+        title: 'Contact added',
+        message: `Contact '${data.firstName} ${data.lastName}' added.`
       });
 
       onSuccess();
@@ -111,7 +111,7 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Creation Failed',
+        title: 'Could not add contact',
         message: err.message || 'An unexpected error occurred while creating contact.'
       });
     } finally {
@@ -123,20 +123,20 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Contact"
-      description="Add an individual decision maker record to your CRM database."
+      title="Add contact"
+      description="Enter details to add a new contact."
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="First Name *"
+            label="First name *"
             placeholder="John"
             {...register('firstName')}
             error={errors.firstName?.message}
           />
           <Input
-            label="Last Name *"
+            label="Last name *"
             placeholder="Doe"
             {...register('lastName')}
             error={errors.lastName?.message}
@@ -145,14 +145,14 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Email Address"
+            label="Email address"
             type="email"
             placeholder="john.doe@acme.com"
             {...register('email')}
             error={errors.email?.message}
           />
           <Input
-            label="Phone Number"
+            label="Phone number"
             placeholder="+1 (555) 019-2834"
             {...register('phone')}
             error={errors.phone?.message}
@@ -161,7 +161,7 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Job Title"
+            label="Job title"
             placeholder="VP of Engineering"
             {...register('jobTitle')}
             error={errors.jobTitle?.message}
@@ -175,9 +175,9 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
         </div>
 
         <Select
-          label="Associated Customer Company"
+          label="Customer"
           options={[
-            { value: '', label: 'None (Standalone Contact)' },
+            { value: '', label: 'None' },
             ...customers.map(c => ({ value: c.id, label: c.name }))
           ]}
           {...register('accountId')}
@@ -186,15 +186,15 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
 
         <div className="pt-2">
           <Checkbox
-            label="Primary Contact Person for Customer Company"
+            label="Primary contact for this customer"
             checked={isPrimary}
             onCheckedChange={(checked) => setValue('isPrimary', checked)}
           />
         </div>
 
         <Textarea
-          label="Notes / Overview"
-          placeholder="Add background context, communication preferences, or background notes..."
+          label="Notes"
+          placeholder="Add any notes or communication preferences..."
           rows={3}
           {...register('notes')}
           error={errors.notes?.message}
@@ -205,7 +205,7 @@ export const CreateContactModal: React.FC<CreateContactModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Create Contact
+            Add contact
           </Button>
         </div>
       </form>

@@ -30,8 +30,8 @@ export const MarkWonModal: React.FC<MarkWonModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Deal Won! 🎉',
-        message: `Opportunity '${opportunity.name}' has been marked as WON.`
+        title: 'Deal won',
+        message: `'${opportunity.name}' marked as won.`
       });
 
       onSuccess();
@@ -39,8 +39,8 @@ export const MarkWonModal: React.FC<MarkWonModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Action Failed',
-        message: err.message || 'Could not mark opportunity as won.'
+        title: 'Could not mark deal as won',
+        message: err.message || 'Failed to update deal.'
       });
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ export const MarkWonModal: React.FC<MarkWonModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Mark Opportunity as Won" maxWidth="sm">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Mark deal as won" maxWidth="sm">
       <div className="space-y-4">
         <div className="flex items-center gap-3 p-3 rounded-lg border border-vynexa-border bg-vynexa-surface">
           <div className="h-10 w-10 rounded-full bg-vynexa-emerald/10 border border-vynexa-emerald/20 flex items-center justify-center shrink-0">
@@ -72,7 +72,7 @@ export const MarkWonModal: React.FC<MarkWonModalProps> = ({
 
         <p className="text-xs text-vynexa-text-secondary leading-relaxed">
           Are you sure you want to mark this deal as <span className="font-semibold text-vynexa-emerald">Won</span>?
-          This will close the opportunity and update executive revenue metrics.
+          This will close the deal and update your sales metrics.
         </p>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-vynexa-border">
@@ -87,7 +87,7 @@ export const MarkWonModal: React.FC<MarkWonModalProps> = ({
             isLoading={loading}
             className="bg-vynexa-emerald hover:bg-vynexa-emerald/90 text-white"
           >
-            Confirm Won
+            Mark as won
           </Button>
         </div>
       </div>

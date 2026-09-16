@@ -98,8 +98,8 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Support Case Created',
-        message: 'Ticket has been logged and assigned to workflow queue.'
+        title: 'Support request created',
+        message: 'Support request added.'
       });
 
       setSubject('');
@@ -112,7 +112,7 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
       if (onSuccess) onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to create support case.');
+      setError(err.message || 'Could not create support request.');
     } finally {
       setLoading(false);
     }
@@ -122,7 +122,7 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Create Support Case"
+      title="Add support request"
       maxWidth="md"
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -141,13 +141,13 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
           <Input
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="e.g. SSL Certificate Renewal Failure on API Endpoint"
+            placeholder="e.g. Trouble connecting to email integration"
             required
             className="text-xs"
           />
         </div>
 
-        {/* Priority & Customer Account */}
+        {/* Priority & Customer */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
@@ -157,10 +157,10 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
               value={priority}
               onChange={(e) => setPriority(e.target.value as SupportCasePriority)}
               options={[
-                { label: 'Low Priority', value: 'LOW' },
-                { label: 'Medium Priority', value: 'MEDIUM' },
-                { label: 'High Priority', value: 'HIGH' },
-                { label: 'Urgent Priority', value: 'URGENT' }
+                { label: 'Low', value: 'LOW' },
+                { label: 'Medium', value: 'MEDIUM' },
+                { label: 'High', value: 'HIGH' },
+                { label: 'Urgent', value: 'URGENT' }
               ]}
               className="text-xs"
             />
@@ -168,13 +168,13 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Customer Account
+              Customer
             </label>
             <Select
               value={accountId}
               onChange={(e) => setAccountId(e.target.value)}
               options={[
-                { label: 'Select Customer Account (Optional)', value: '' },
+                { label: 'Select customer (optional)', value: '' },
                 ...accounts.map((acc) => ({ label: acc.name, value: acc.id }))
               ]}
               className="text-xs"
@@ -186,7 +186,7 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Contact Person
+              Contact person
             </label>
             <Select
               value={contactId}
@@ -195,10 +195,10 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
               options={[
                 {
                   label: !accountId
-                    ? 'Select account first'
+                    ? 'Select customer first'
                     : contacts.length === 0
-                    ? 'No contacts on account'
-                    : 'Select Contact (Optional)',
+                    ? 'No contacts on customer'
+                    : 'Select contact (optional)',
                   value: ''
                 },
                 ...contacts.map((c) => ({
@@ -212,13 +212,13 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Assign Support Agent
+              Assigned to
             </label>
             <Select
               value={assignedToId}
               onChange={(e) => setAssignedToId(e.target.value)}
               options={[
-                { label: 'Unassigned Queue', value: '' },
+                { label: 'Unassigned', value: '' },
                 ...users.map((u) => ({
                   label: `${u.name} (${u.role?.name || 'Agent'})`,
                   value: u.id
@@ -232,13 +232,13 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
         {/* Description */}
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Description & Reproduction Steps
+            Description
           </label>
           <Textarea
             rows={4}
             value={description}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
-            placeholder="Detailed description of client issue, symptoms, logs, or error codes..."
+            placeholder="Describe the issue, steps to reproduce, or error messages..."
             className="text-xs"
           />
         </div>
@@ -248,7 +248,7 @@ export const CreateSupportCaseModal: React.FC<CreateSupportCaseModalProps> = ({
             Cancel
           </Button>
           <Button variant="primary" size="sm" type="submit" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Case'}
+            {loading ? 'Adding...' : 'Add support request'}
           </Button>
         </div>
       </form>

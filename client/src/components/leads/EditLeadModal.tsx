@@ -90,7 +90,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
 
       toast({
         type: 'success',
-        title: 'Lead Updated',
+        title: 'Lead updated',
         message: `Lead '${data.firstName} ${data.lastName}' updated successfully.`
       });
 
@@ -99,7 +99,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Update Failed',
+        title: 'Update failed',
         message: err.message || 'An error occurred while updating lead.'
       });
     } finally {
@@ -111,19 +111,19 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Lead Details"
-      description={`Update information for ${lead.firstName} ${lead.lastName}`}
+      title="Edit lead"
+      description={`Update details for ${lead.firstName} ${lead.lastName}`}
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="First Name *"
+            label="First name *"
             {...register('firstName')}
             error={errors.firstName?.message}
           />
           <Input
-            label="Last Name *"
+            label="Last name *"
             {...register('lastName')}
             error={errors.lastName?.message}
           />
@@ -131,13 +131,13 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Email Address"
+            label="Email address"
             type="email"
             {...register('email')}
             error={errors.email?.message}
           />
           <Input
-            label="Phone Number"
+            label="Phone number"
             {...register('phone')}
             error={errors.phone?.message}
           />
@@ -145,12 +145,12 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
 
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Company Name"
+            label="Company name"
             {...register('company')}
             error={errors.company?.message}
           />
           <Input
-            label="Job Title"
+            label="Job title"
             {...register('jobTitle')}
             error={errors.jobTitle?.message}
           />
@@ -158,7 +158,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
 
         <div className="grid grid-cols-3 gap-4">
           <Input
-            label="Lead Source"
+            label="Lead source"
             {...register('source')}
             error={errors.source?.message}
           />
@@ -177,7 +177,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
             error={errors.status?.message}
           />
           <Input
-            label="Score (0-100)"
+            label="Lead score (0-100)"
             type="number"
             min={0}
             max={100}
@@ -187,9 +187,9 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
         </div>
 
         <Select
-          label="Assigned Owner"
+          label="Assigned to"
           options={[
-            { value: '', label: 'Unassigned (No Owner)' },
+            { value: '', label: 'Unassigned' },
             ...users.map(u => ({ value: u.id, label: `${u.name} (${u.role.name})` }))
           ]}
           {...register('ownerId')}
@@ -197,7 +197,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
         />
 
         <Textarea
-          label="Notes / Context"
+          label="Notes"
           rows={3}
           {...register('notes')}
           error={errors.notes?.message}
@@ -208,7 +208,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({ isOpen, lead, onCl
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Save Changes
+            Save changes
           </Button>
         </div>
       </form>

@@ -85,7 +85,7 @@ export const LeadsPage: React.FC = () => {
       setLeads(res.leads);
       setMeta(res.meta);
     } catch (err: any) {
-      setError(err.message || 'Failed to load lead directory');
+      setError(err.message || 'Could not load leads. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -102,16 +102,16 @@ export const LeadsPage: React.FC = () => {
       await leadsService.deleteLead(selectedLeadForDelete.id);
       toast({
         type: 'success',
-        title: 'Lead Deleted',
-        message: `Lead '${selectedLeadForDelete.firstName} ${selectedLeadForDelete.lastName}' soft-deleted.`
+        title: 'Lead deleted',
+        message: `${selectedLeadForDelete.firstName} ${selectedLeadForDelete.lastName} has been removed.`
       });
       setSelectedLeadForDelete(null);
       fetchLeads();
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Delete Failed',
-        message: err.message || 'Could not delete lead.'
+        title: 'Could not delete lead',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -141,10 +141,10 @@ export const LeadsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="Lead Management"
-        description="Capture, score, assign, triage, and convert sales leads into active customers."
+        title="Leads"
+        description="Track and follow up with potential customers."
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'CRM' },
           { label: 'Leads' }
         ]}
@@ -155,18 +155,18 @@ export const LeadsPage: React.FC = () => {
             onClick={() => setIsCreateOpen(true)}
             leftIcon={<Plus className="h-3.5 w-3.5" />}
           >
-            Create Lead
+            Add lead
           </Button>
         }
       />
 
       {/* Filter Toolbar */}
       <Card className="bg-vynexa-surface border-vynexa-border p-4">
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
           {/* Search */}
           <div className="w-full md:w-72 relative">
             <Input
-              placeholder="Search by name, company, email..."
+              placeholder="Search by name, company, or email..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -178,7 +178,7 @@ export const LeadsPage: React.FC = () => {
 
           {/* Filters & Sorting */}
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <div className="w-40">
+            <div className="w-40 shrink-0">
               <Select
                 value={statusFilter}
                 onChange={(e) => {
@@ -186,7 +186,7 @@ export const LeadsPage: React.FC = () => {
                   setPage(1);
                 }}
                 options={[
-                  { value: '', label: 'All Statuses' },
+                  { value: '', label: 'All statuses' },
                   { value: 'NEW', label: 'New' },
                   { value: 'QUALIFIED', label: 'Qualified' },
                   { value: 'CONTACTED', label: 'Contacted' },
@@ -197,15 +197,15 @@ export const LeadsPage: React.FC = () => {
               />
             </div>
 
-            <div className="w-40">
+            <div className="w-40 shrink-0">
               <Select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 options={[
-                  { value: 'createdAt', label: 'Sort by Date' },
-                  { value: 'score', label: 'Sort by Score' },
-                  { value: 'company', label: 'Sort by Company' },
-                  { value: 'firstName', label: 'Sort by Name' }
+                  { value: 'createdAt', label: 'Date created' },
+                  { value: 'score', label: 'Lead score' },
+                  { value: 'company', label: 'Company' },
+                  { value: 'firstName', label: 'Name' }
                 ]}
               />
             </div>
@@ -214,6 +214,7 @@ export const LeadsPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="shrink-0"
             >
               {sortOrder === 'asc' ? '↑ Asc' : '↓ Desc'}
             </Button>
@@ -235,7 +236,7 @@ export const LeadsPage: React.FC = () => {
             <div className="p-12 text-center space-y-3">
               <p className="text-sm text-rose-400 font-medium">{error}</p>
               <Button variant="outline" size="sm" onClick={fetchLeads}>
-                Retry Loading
+                Try again
               </Button>
             </div>
           ) : leads.length === 0 ? (
@@ -245,23 +246,23 @@ export const LeadsPage: React.FC = () => {
               </div>
               <h3 className="text-sm font-semibold text-vynexa-text-primary">No leads found</h3>
               <p className="text-xs text-vynexa-text-muted max-w-sm mx-auto">
-                No lead records match your search criteria. Create your first lead or adjust filter parameters.
+                No leads match your search. Add a lead or clear your filters to see more results.
               </p>
               <Button variant="primary" size="sm" onClick={() => setIsCreateOpen(true)} leftIcon={<Plus className="h-3.5 w-3.5" />}>
-                Create New Lead
+                Add lead
               </Button>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>LEAD NAME</TableHead>
-                  <TableHead>COMPANY / TITLE</TableHead>
-                  <TableHead>SOURCE</TableHead>
-                  <TableHead>SCORE</TableHead>
-                  <TableHead>STATUS</TableHead>
-                  <TableHead>OWNER</TableHead>
-                  <TableHead className="text-right">ACTIONS</TableHead>
+                  <TableHead>Lead name</TableHead>
+                  <TableHead>Company &amp; title</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Score</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Assigned to</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -276,7 +277,7 @@ export const LeadsPage: React.FC = () => {
                         >
                           {lead.firstName} {lead.lastName}
                         </span>
-                        <span className="text-xs text-vynexa-text-muted">{lead.email || 'No Email'}</span>
+                        <span className="text-xs text-vynexa-text-muted">{lead.email || 'No email'}</span>
                       </div>
                     </TableCell>
 
@@ -318,27 +319,27 @@ export const LeadsPage: React.FC = () => {
                         }
                       >
                         <DropdownItem icon={<Eye className="h-3.5 w-3.5" />} onClick={() => navigate(`/app/leads/${lead.id}`)}>
-                          View Details
+                          View details
                         </DropdownItem>
                         <DropdownItem icon={<Edit2 className="h-3.5 w-3.5" />} onClick={() => setSelectedLeadForEdit(lead)}>
-                          Edit Lead
+                          Edit lead
                         </DropdownItem>
                         <DropdownItem icon={<UserPlus className="h-3.5 w-3.5" />} onClick={() => setSelectedLeadForAssign(lead)}>
-                          Assign Owner
+                          Assign team member
                         </DropdownItem>
                         <DropdownItem
                           icon={<UserCheck className="h-3.5 w-3.5 text-emerald-400" />}
                           disabled={lead.status === 'CONVERTED'}
                           onClick={() => setSelectedLeadForConvert(lead)}
                         >
-                          Convert Lead
+                          Turn into customer
                         </DropdownItem>
                         <DropdownItem
                           icon={<Trash2 className="h-3.5 w-3.5 text-rose-400" />}
                           danger
                           onClick={() => setSelectedLeadForDelete(lead)}
                         >
-                          Delete Lead
+                          Delete lead
                         </DropdownItem>
                       </Dropdown>
                     </TableCell>
@@ -352,7 +353,7 @@ export const LeadsPage: React.FC = () => {
           {!loading && leads.length > 0 && (
             <div className="p-4 border-t border-vynexa-border flex items-center justify-between">
               <span className="text-xs text-vynexa-text-muted">
-                Showing {leads.length} of {meta.total} total leads (Page {meta.page} of {meta.totalPages})
+                Showing {leads.length} of {meta.total} leads (Page {meta.page} of {meta.totalPages})
               </span>
               <div className="flex items-center gap-2">
                 <Button
@@ -414,8 +415,8 @@ export const LeadsPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedLeadForDelete}
         onClose={() => setSelectedLeadForDelete(null)}
-        title="Delete Lead"
-        description="Are you sure you want to delete this lead? It will be soft-deleted and archived from active CRM listings."
+        title="Delete lead"
+        description="Are you sure you want to delete this lead? This cannot be undone."
         maxWidth="sm"
       >
         <div className="flex justify-end gap-3 pt-4">
@@ -423,7 +424,7 @@ export const LeadsPage: React.FC = () => {
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDelete} isLoading={deleting}>
-            Confirm Delete
+            Delete lead
           </Button>
         </div>
       </Dialog>

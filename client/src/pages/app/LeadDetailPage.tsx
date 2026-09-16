@@ -58,7 +58,7 @@ export const LeadDetailPage: React.FC = () => {
       const data = await leadsService.getLeadById(id);
       setLead(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to load lead details');
+      setError(err.message || 'Could not load lead details. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -75,15 +75,15 @@ export const LeadDetailPage: React.FC = () => {
       await leadsService.deleteLead(lead.id);
       toast({
         type: 'success',
-        title: 'Lead Deleted',
-        message: 'Lead soft-deleted successfully.'
+        title: 'Lead deleted',
+        message: 'Lead has been removed.'
       });
       navigate('/app/leads');
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Delete Failed',
-        message: err.message || 'Failed to delete lead.'
+        title: 'Could not delete lead',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -126,7 +126,7 @@ export const LeadDetailPage: React.FC = () => {
       <div className="p-12 text-center space-y-4">
         <h3 className="text-base font-semibold text-rose-400">{error || 'Lead not found'}</h3>
         <Button variant="outline" onClick={() => navigate('/app/leads')} leftIcon={<ArrowLeft className="h-4 w-4" />}>
-          Back to Leads
+          Back to leads
         </Button>
       </div>
     );
@@ -137,9 +137,9 @@ export const LeadDetailPage: React.FC = () => {
       {/* Header */}
       <PageHeader
         title={`${lead.firstName} ${lead.lastName}`}
-        description={lead.company ? `${lead.company} ${lead.jobTitle ? `• ${lead.jobTitle}` : ''}` : 'Sales Lead Record'}
+        description={lead.company ? `${lead.company} ${lead.jobTitle ? `• ${lead.jobTitle}` : ''}` : 'Lead details'}
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Leads', href: '/app/leads' },
           { label: `${lead.firstName} ${lead.lastName}` }
         ]}
@@ -159,7 +159,7 @@ export const LeadDetailPage: React.FC = () => {
               onClick={() => setIsAssignOpen(true)}
               leftIcon={<UserPlus className="h-3.5 w-3.5" />}
             >
-              Assign Owner
+              Assign team member
             </Button>
             {lead.status !== 'CONVERTED' && (
               <Button
@@ -168,7 +168,7 @@ export const LeadDetailPage: React.FC = () => {
                 onClick={() => setIsConvertOpen(true)}
                 leftIcon={<UserCheck className="h-3.5 w-3.5" />}
               >
-                Convert Lead
+                Turn into customer
               </Button>
             )}
             <Button
@@ -192,7 +192,7 @@ export const LeadDetailPage: React.FC = () => {
                 <UserCheck className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-emerald-300">Lead Converted to Customer</h4>
+                <h4 className="text-sm font-semibold text-emerald-300">Converted to customer</h4>
                 <p className="text-xs text-emerald-400/80">
                   Converted on {lead.convertedAt ? new Date(lead.convertedAt).toLocaleDateString() : 'N/A'}
                 </p>
@@ -200,7 +200,7 @@ export const LeadDetailPage: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               {lead.convertedAccount && (
-                <Badge variant="emerald">Account: {lead.convertedAccount.name}</Badge>
+                <Badge variant="emerald">Customer: {lead.convertedAccount.name}</Badge>
               )}
               {lead.convertedContact && (
                 <Badge variant="blue">Contact: {lead.convertedContact.firstName} {lead.convertedContact.lastName}</Badge>
@@ -216,13 +216,13 @@ export const LeadDetailPage: React.FC = () => {
         <div className="lg:col-span-2 space-y-6">
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="flex flex-row items-center justify-between border-b border-vynexa-border pb-4">
-              <CardTitle className="text-sm font-semibold">Contact & Identity Information</CardTitle>
+              <CardTitle className="text-sm font-semibold">Contact details</CardTitle>
               {getStatusBadge(lead.status)}
             </CardHeader>
             <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-1">
                 <span className="text-xs text-vynexa-text-muted flex items-center gap-1.5">
-                  <User className="h-3.5 w-3.5" /> Full Name
+                  <User className="h-3.5 w-3.5" /> Full name
                 </span>
                 <p className="text-sm font-medium text-vynexa-text-primary">
                   {lead.firstName} {lead.lastName}
@@ -240,7 +240,7 @@ export const LeadDetailPage: React.FC = () => {
 
               <div className="space-y-1">
                 <span className="text-xs text-vynexa-text-muted flex items-center gap-1.5">
-                  <Mail className="h-3.5 w-3.5" /> Email Address
+                  <Mail className="h-3.5 w-3.5" /> Email
                 </span>
                 <p className="text-sm text-vynexa-text-primary">
                   {lead.email ? (
@@ -255,21 +255,21 @@ export const LeadDetailPage: React.FC = () => {
 
               <div className="space-y-1">
                 <span className="text-xs text-vynexa-text-muted flex items-center gap-1.5">
-                  <Phone className="h-3.5 w-3.5" /> Phone Number
+                  <Phone className="h-3.5 w-3.5" /> Phone
                 </span>
                 <p className="text-sm text-vynexa-text-primary">{lead.phone || '—'}</p>
               </div>
 
               <div className="space-y-1">
                 <span className="text-xs text-vynexa-text-muted flex items-center gap-1.5">
-                  <Briefcase className="h-3.5 w-3.5" /> Job Title
+                  <Briefcase className="h-3.5 w-3.5" /> Job title
                 </span>
                 <p className="text-sm text-vynexa-text-primary">{lead.jobTitle || '—'}</p>
               </div>
 
               <div className="space-y-1">
                 <span className="text-xs text-vynexa-text-muted flex items-center gap-1.5">
-                  <Globe className="h-3.5 w-3.5" /> Lead Source
+                  <Globe className="h-3.5 w-3.5" /> How they found you
                 </span>
                 <p className="text-sm text-vynexa-text-primary">{lead.source || 'Direct'}</p>
               </div>
@@ -280,7 +280,7 @@ export const LeadDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-4">
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <FileText className="h-4 w-4 text-vynexa-text-muted" /> Lead Notes & Background
+                <FileText className="h-4 w-4 text-vynexa-text-muted" /> Notes
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
@@ -289,7 +289,7 @@ export const LeadDetailPage: React.FC = () => {
                   {lead.notes}
                 </p>
               ) : (
-                <p className="text-xs text-vynexa-text-muted italic">No notes recorded for this lead.</p>
+                <p className="text-xs text-vynexa-text-muted italic">No notes added yet.</p>
               )}
             </CardContent>
           </Card>
@@ -305,11 +305,11 @@ export const LeadDetailPage: React.FC = () => {
         <div className="space-y-6">
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-4">
-              <CardTitle className="text-sm font-semibold">Lead Score & Ownership</CardTitle>
+              <CardTitle className="text-sm font-semibold">Score &amp; assignment</CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div>
-                <span className="text-xs text-vynexa-text-muted">Lead Score</span>
+                <span className="text-xs text-vynexa-text-muted">Lead score</span>
                 <div className="mt-1 flex items-baseline gap-2">
                   <span className="text-2xl font-bold font-mono text-vynexa-text-primary">{lead.score}</span>
                   <span className="text-xs text-vynexa-text-muted">/ 100</span>
@@ -317,7 +317,7 @@ export const LeadDetailPage: React.FC = () => {
               </div>
 
               <div className="pt-3 border-t border-vynexa-border">
-                <span className="text-xs text-vynexa-text-muted">Assigned Owner</span>
+                <span className="text-xs text-vynexa-text-muted">Assigned to</span>
                 <p className="mt-1 text-sm font-medium text-vynexa-text-primary">
                   {lead.owner ? lead.owner.name : <span className="text-vynexa-text-muted italic">Unassigned</span>}
                 </p>
@@ -377,8 +377,8 @@ export const LeadDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Delete Lead"
-        description="Are you sure you want to delete this lead? This action soft-deletes the record."
+        title="Delete lead"
+        description="Are you sure you want to delete this lead? This cannot be undone."
         maxWidth="sm"
       >
         <div className="flex justify-end gap-3 pt-4">
@@ -386,7 +386,7 @@ export const LeadDetailPage: React.FC = () => {
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDelete} isLoading={deleting}>
-            Confirm Delete
+            Delete lead
           </Button>
         </div>
       </Dialog>

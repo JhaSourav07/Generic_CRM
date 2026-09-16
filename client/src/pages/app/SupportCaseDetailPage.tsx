@@ -264,14 +264,14 @@ export const SupportCaseDetailPage: React.FC = () => {
           className="text-xs text-vynexa-text-secondary hover:text-vynexa-text-primary flex items-center gap-1 transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-          Back to Support Cases
+          Back to support
         </Link>
       </div>
 
       {/* Page Header */}
       <PageHeader
         title={`${supportCase.caseNumber} • ${supportCase.subject}`}
-        description={`Support ticket created on ${new Date(supportCase.createdAt).toLocaleString()}`}
+        description={`Support request created on ${new Date(supportCase.createdAt).toLocaleDateString()}`}
         actions={
           <div className="flex items-center gap-2">
             {getStatusBadge(supportCase.status)}
@@ -279,14 +279,14 @@ export const SupportCaseDetailPage: React.FC = () => {
             {supportCase.status === 'OPEN' && (
               <Button size="sm" variant="secondary" onClick={handleStartInvestigation}>
                 <Clock className="h-3.5 w-3.5 mr-1 text-amber-400" />
-                In Progress
+                Mark in progress
               </Button>
             )}
 
             {(supportCase.status === 'OPEN' || supportCase.status === 'IN_PROGRESS') && (
               <Button size="sm" onClick={() => setIsResolveOpen(true)}>
                 <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-emerald-400" />
-                Resolve Case
+                Resolve request
               </Button>
             )}
 
@@ -298,7 +298,7 @@ export const SupportCaseDetailPage: React.FC = () => {
                 </Button>
                 <Button size="sm" onClick={() => setIsCloseOpen(true)}>
                   <Check className="h-3.5 w-3.5 mr-1 text-slate-400" />
-                  Close Case
+                  Close request
                 </Button>
               </>
             )}
@@ -329,12 +329,12 @@ export const SupportCaseDetailPage: React.FC = () => {
           {/* Main Case Card */}
           <Card className="p-5 bg-vynexa-surface border-vynexa-border space-y-4">
             <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Issue Overview & Description
+              Description
             </h3>
 
             <div className="text-sm text-vynexa-text-primary leading-relaxed bg-vynexa-surface-secondary/40 p-4 rounded-md border border-vynexa-border/60 whitespace-pre-wrap">
               {supportCase.description || (
-                <span className="text-vynexa-text-muted italic">No initial description provided.</span>
+                <span className="text-vynexa-text-muted italic">No description provided.</span>
               )}
             </div>
 
@@ -358,7 +358,7 @@ export const SupportCaseDetailPage: React.FC = () => {
               <div className="flex items-center gap-2 text-emerald-400">
                 <CheckCircle2 className="h-4 w-4 shrink-0" />
                 <h3 className="text-xs font-semibold uppercase tracking-wider">
-                  Resolution Summary
+                  Resolution
                 </h3>
                 {supportCase.resolvedAt && (
                   <span className="text-[11px] font-mono text-emerald-400/80 ml-auto">
@@ -377,13 +377,13 @@ export const SupportCaseDetailPage: React.FC = () => {
           {supportCase.timeline && (
             <Card className="p-5 bg-vynexa-surface border-vynexa-border space-y-4">
               <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-                Case History & Activities
+                History and activity
               </h3>
 
               {supportCase.timeline.auditLogs?.length === 0 &&
               supportCase.timeline.activities?.length === 0 ? (
                 <p className="text-xs text-vynexa-text-muted italic py-2">
-                  No previous audit actions recorded.
+                  No activity recorded yet.
                 </p>
               ) : (
                 <div className="space-y-3 divide-y divide-vynexa-border/40">
@@ -411,7 +411,7 @@ export const SupportCaseDetailPage: React.FC = () => {
           {/* Assignee Card */}
           <Card className="p-4 bg-vynexa-surface border-vynexa-border space-y-3">
             <h3 className="text-[11px] font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Assigned Specialist
+              Assigned to
             </h3>
 
             <div className="space-y-2">
@@ -441,14 +441,14 @@ export const SupportCaseDetailPage: React.FC = () => {
           <Card className="p-4 bg-vynexa-surface border-vynexa-border space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-[11px] font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-                Customer Account
+                Customer
               </h3>
               {supportCase.account && (
                 <Link
                   to={`/app/customers/${supportCase.account.id}`}
                   className="text-[11px] text-blue-400 hover:underline"
                 >
-                  View Account
+                  View customer
                 </Link>
               )}
             </div>
@@ -473,7 +473,7 @@ export const SupportCaseDetailPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <p className="text-xs text-vynexa-text-muted italic">No account linked.</p>
+              <p className="text-xs text-vynexa-text-muted italic">No customer linked.</p>
             )}
           </Card>
 
@@ -481,14 +481,14 @@ export const SupportCaseDetailPage: React.FC = () => {
           <Card className="p-4 bg-vynexa-surface border-vynexa-border space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-[11px] font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-                Customer Contact
+                Contact person
               </h3>
               {supportCase.contact && (
                 <Link
                   to={`/app/contacts/${supportCase.contact.id}`}
                   className="text-[11px] text-blue-400 hover:underline"
                 >
-                  View Contact
+                  View contact
                 </Link>
               )}
             </div>
@@ -520,7 +520,7 @@ export const SupportCaseDetailPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <p className="text-xs text-vynexa-text-muted italic">No specific contact person linked.</p>
+              <p className="text-xs text-vynexa-text-muted italic">No contact person linked.</p>
             )}
           </Card>
 
@@ -533,22 +533,22 @@ export const SupportCaseDetailPage: React.FC = () => {
       <Dialog
         isOpen={isResolveOpen}
         onClose={() => setIsResolveOpen(false)}
-        title="Resolve Support Case"
+        title="Resolve support request"
         maxWidth="md"
       >
         <form onSubmit={handleResolve} className="space-y-4">
           <p className="text-xs text-vynexa-text-secondary">
-            Provide a detailed summary of how this customer issue was investigated and resolved.
+            Describe how the customer's issue was resolved.
           </p>
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-vynexa-text-secondary">
-              Resolution Summary <span className="text-rose-400">*</span>
+              Resolution details <span className="text-rose-400">*</span>
             </label>
             <Textarea
               value={resolutionText}
               onChange={(e) => setResolutionText(e.target.value)}
-              placeholder="Explain the root cause and steps taken to resolve the incident..."
+              placeholder="Explain how the issue was resolved..."
               rows={4}
               required
               className="text-xs"
@@ -571,7 +571,7 @@ export const SupportCaseDetailPage: React.FC = () => {
               disabled={resolving || !resolutionText.trim()}
             >
               <CheckCircle2 className="h-4 w-4 mr-1.5 text-emerald-400" />
-              {resolving ? 'Submitting...' : 'Confirm Resolution'}
+              {resolving ? 'Submitting...' : 'Resolve request'}
             </Button>
           </div>
         </form>
@@ -581,22 +581,22 @@ export const SupportCaseDetailPage: React.FC = () => {
       <Dialog
         isOpen={isCloseOpen}
         onClose={() => setIsCloseOpen(false)}
-        title="Close Support Case"
+        title="Close support request"
         maxWidth="sm"
       >
         <form onSubmit={handleClose} className="space-y-4">
           <p className="text-xs text-vynexa-text-secondary">
-            Are you sure you want to mark this case as closed? It can be reopened in the future if the issue recurs.
+            Are you sure you want to close this support request? You can reopen it at any time.
           </p>
 
           <div className="space-y-1.5">
             <label className="text-xs font-semibold text-vynexa-text-secondary">
-              Closing Remarks (Optional)
+              Notes (optional)
             </label>
             <Textarea
               value={closeNotes}
               onChange={(e) => setCloseNotes(e.target.value)}
-              placeholder="Optional closing notes or customer feedback..."
+              placeholder="Add any final notes..."
               rows={3}
               className="text-xs"
             />
@@ -617,7 +617,7 @@ export const SupportCaseDetailPage: React.FC = () => {
               size="sm"
               disabled={closing}
             >
-              {closing ? 'Closing...' : 'Close Case'}
+              {closing ? 'Closing...' : 'Close request'}
             </Button>
           </div>
         </form>
@@ -627,12 +627,12 @@ export const SupportCaseDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Delete Support Case"
+        title="Delete support request"
         maxWidth="sm"
       >
         <div className="space-y-4">
           <p className="text-xs text-vynexa-text-secondary">
-            Are you sure you want to delete case <span className="font-mono font-bold text-vynexa-text-primary">{supportCase.caseNumber}</span>? This action soft-deletes the record and archives historical attachments.
+            Are you sure you want to delete request <span className="font-mono font-bold text-vynexa-text-primary">{supportCase.caseNumber}</span>? This action cannot be undone.
           </p>
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-vynexa-border">
@@ -652,7 +652,7 @@ export const SupportCaseDetailPage: React.FC = () => {
               disabled={deleting}
               onClick={handleDelete}
             >
-              {deleting ? 'Deleting...' : 'Delete Case'}
+              {deleting ? 'Deleting...' : 'Delete request'}
             </Button>
           </div>
         </div>

@@ -37,8 +37,8 @@ export const ProductPreview: React.FC = () => {
     <section id="product" className="py-16 px-4 sm:px-6 border-b border-vynexa-border">
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">PRODUCT VIEWPORT</h2>
-          <p className="text-2xl font-bold text-vynexa-text-primary tracking-tight">High-density workspace for sales operations</p>
+          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">LIVE WORKSPACE PREVIEW</h2>
+          <p className="text-2xl font-bold text-vynexa-text-primary tracking-tight">A clear, focused workspace for your sales team</p>
         </div>
 
         {/* Application Frame Simulation */}
@@ -49,11 +49,11 @@ export const ProductPreview: React.FC = () => {
               <span className="h-2.5 w-2.5 rounded-full bg-vynexa-border" />
               <span className="h-2.5 w-2.5 rounded-full bg-vynexa-border" />
               <span className="h-2.5 w-2.5 rounded-full bg-vynexa-border" />
-              <span className="text-vynexa-text-muted ml-3 hidden sm:inline">vynexa.app / pipeline / active-deals</span>
+              <span className="text-vynexa-text-muted ml-3 hidden sm:inline">vynexa.app / pipeline</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[11px] text-vynexa-text-muted">ORGANIZATION: ACME CORP</span>
-              <span className="bg-vynexa-surface px-2 py-0.5 rounded text-[10px] text-vynexa-text-secondary border border-vynexa-border">PRO TENANT</span>
+              <span className="text-[11px] text-vynexa-text-muted">COMPANY: ACME CORP</span>
+              <span className="bg-vynexa-surface px-2 py-0.5 rounded text-[10px] text-vynexa-text-secondary border border-vynexa-border">WORKSPACE</span>
             </div>
           </div>
 
@@ -64,9 +64,9 @@ export const ProductPreview: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 font-semibold text-sm text-vynexa-text-primary">
                   <Kanban className="h-4 w-4 text-vynexa-text-muted" />
-                  <span>Commercial Sales Pipeline</span>
+                  <span>Sales Pipeline</span>
                 </div>
-                <Badge variant="emerald" className="font-mono">Q3 FY26</Badge>
+                <Badge variant="emerald" className="font-mono">This Quarter</Badge>
               </div>
 
               <div className="flex items-center gap-2">
@@ -75,13 +75,13 @@ export const ProductPreview: React.FC = () => {
                   <input
                     type="text"
                     readOnly
-                    placeholder="Filter deals..."
+                    placeholder="Filter sales..."
                     className="h-8 pl-8 pr-3 w-40 sm:w-48 rounded border border-vynexa-border bg-vynexa-surface text-xs text-vynexa-text-primary pointer-events-none"
                   />
                 </div>
                 <div className="h-8 px-2.5 rounded border border-vynexa-border bg-vynexa-surface flex items-center gap-1.5 text-xs text-vynexa-text-secondary select-none">
                   <Filter className="h-3.5 w-3.5 text-vynexa-text-muted" />
-                  <span>Filter</span>
+                  <span>Filters</span>
                 </div>
               </div>
             </div>

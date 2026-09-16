@@ -93,8 +93,8 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
 
       toast({
         type: 'success',
-        title: 'Customer Account Created',
-        message: `Customer '${data.name}' created successfully.`
+        title: 'Customer added',
+        message: `Customer '${data.name}' added.`
       });
 
       onSuccess();
@@ -102,7 +102,7 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Creation Failed',
+        title: 'Could not add customer',
         message: err.message || 'An unexpected error occurred.'
       });
     } finally {
@@ -114,20 +114,20 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Create New Customer Account"
-      description="Add a new customer organization record to your enterprise CRM database."
+      title="Add customer"
+      description="Enter details to add a new customer company."
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Customer Name *"
+            label="Company name *"
             placeholder="Acme Global Inc."
             {...register('name')}
             error={errors.name?.message}
           />
           <Input
-            label="Industry / Sector"
+            label="Industry"
             placeholder="e.g. Technology, Healthcare"
             {...register('industry')}
             error={errors.industry?.message}
@@ -136,20 +136,20 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
 
         <div className="grid grid-cols-3 gap-4">
           <Input
-            label="Corporate Email"
+            label="Email address"
             type="email"
             placeholder="info@acme.com"
             {...register('email')}
             error={errors.email?.message}
           />
           <Input
-            label="Main Phone"
+            label="Phone number"
             placeholder="+1 (555) 019-2834"
             {...register('phone')}
             error={errors.phone?.message}
           />
           <Input
-            label="Website URL"
+            label="Website"
             placeholder="https://acme.com"
             {...register('website')}
             error={errors.website?.message}
@@ -164,7 +164,7 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
             error={errors.city?.message}
           />
           <Input
-            label="State / Province"
+            label="State / Region"
             placeholder="CA"
             {...register('state')}
             error={errors.state?.message}
@@ -178,9 +178,9 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
         </div>
 
         <Select
-          label="Account Owner"
+          label="Assigned to"
           options={[
-            { value: '', label: 'Select an owner...' },
+            { value: '', label: 'Unassigned' },
             ...users.map(u => ({ value: u.id, label: `${u.name} (${u.role.name})` }))
           ]}
           {...register('ownerId')}
@@ -188,8 +188,8 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
         />
 
         <Textarea
-          label="Notes / Overview"
-          placeholder="Add relationship history, contract context, or corporate profile background..."
+          label="Notes"
+          placeholder="Add any notes or context about this customer..."
           rows={3}
           {...register('notes')}
           error={errors.notes?.message}
@@ -200,7 +200,7 @@ export const CreateCustomerModal: React.FC<CreateCustomerModalProps> = ({ isOpen
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Create Customer
+            Add customer
           </Button>
         </div>
       </form>

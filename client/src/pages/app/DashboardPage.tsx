@@ -38,7 +38,7 @@ export const DashboardPage: React.FC = () => {
       const res = await dashboardService.getOverview();
       setData(res);
     } catch (_err) {
-      setError('Unable to load workspace dashboard data from PostgreSQL server.');
+      setError('Unable to load dashboard data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export const DashboardPage: React.FC = () => {
       {/* Restrained Enterprise Dashboard Header */}
       <PageHeader
         title="Dashboard"
-        description="Overview of your customer and sales activity."
+        description="See your sales, active deals, tasks, and recent activity."
         breadcrumbs={[
           { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Overview' }
@@ -86,7 +86,7 @@ export const DashboardPage: React.FC = () => {
               size="sm"
               onClick={fetchDashboard}
               isLoading={loading}
-              title="Refresh Dashboard"
+              title="Refresh dashboard"
               className="h-7 px-2"
             >
               <RefreshCw className="h-3.5 w-3.5" />
@@ -103,11 +103,11 @@ export const DashboardPage: React.FC = () => {
               <AlertCircle className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-vynexa-text-primary">Dashboard Connection Error</h3>
+              <h3 className="text-sm font-semibold text-vynexa-text-primary">Could not load dashboard</h3>
               <p className="text-xs text-vynexa-text-secondary mt-1">{error}</p>
             </div>
             <Button size="sm" variant="outline" onClick={fetchDashboard} leftIcon={<RefreshCw className="h-3.5 w-3.5" />}>
-              Retry Connection
+              Try again
             </Button>
           </CardContent>
         </Card>
@@ -151,7 +151,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.totalLeads}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">In pipeline</span>
+              <span className="text-[10px] text-vynexa-text-muted">All leads</span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -162,7 +162,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.activeOpportunities}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">Open status</span>
+              <span className="text-[10px] text-vynexa-text-muted">In progress</span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -173,7 +173,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {formatCurrency(data.metrics.pipelineValue)}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">Open forecast</span>
+              <span className="text-[10px] text-vynexa-text-muted">Expected sales</span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -184,7 +184,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.openTasks}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">Pending action</span>
+              <span className="text-[10px] text-vynexa-text-muted">To finish</span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -195,7 +195,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.wonOpportunities}
               </div>
-              <span className="text-[10px] text-vynexa-text-muted">Closed won</span>
+              <span className="text-[10px] text-vynexa-text-muted">Deals won</span>
             </Card>
 
             <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
@@ -206,7 +206,7 @@ export const DashboardPage: React.FC = () => {
               <div className="text-xl font-bold font-mono text-vynexa-text-primary tracking-tight">
                 {data.metrics.overdueTasks}
               </div>
-              <span className="text-[10px] text-vynexa-status-danger font-mono font-medium">Requires action</span>
+              <span className="text-[10px] text-vynexa-status-danger font-mono font-medium">Needs attention</span>
             </Card>
           </div>
 
@@ -219,12 +219,12 @@ export const DashboardPage: React.FC = () => {
                 <CardHeader className="pb-3 border-b border-vynexa-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-sm font-semibold">Sales Pipeline Distribution</CardTitle>
-                      <CardDescription className="text-xs">Active opportunities grouped by deal stage.</CardDescription>
+                      <CardTitle className="text-sm font-semibold">Sales pipeline</CardTitle>
+                      <CardDescription className="text-xs">Active deals by stage.</CardDescription>
                     </div>
                     <Link to="/app/pipeline">
                       <Button variant="ghost" size="sm" className="text-xs font-mono" rightIcon={<ArrowUpRight className="h-3.5 w-3.5" />}>
-                        View Kanban
+                        View pipeline
                       </Button>
                     </Link>
                   </div>
@@ -232,7 +232,7 @@ export const DashboardPage: React.FC = () => {
                 <CardContent className="pt-4 space-y-3">
                   {data.pipeline.length === 0 ? (
                     <div className="py-8 text-center text-xs text-vynexa-text-muted">
-                      No active pipeline stages configured.
+                      No deals in your pipeline yet.
                     </div>
                   ) : (
                     data.pipeline.map((stage) => (
@@ -266,12 +266,12 @@ export const DashboardPage: React.FC = () => {
                 <CardHeader className="pb-3 border-b border-vynexa-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-sm font-semibold">Tasks &amp; Action Items</CardTitle>
-                      <CardDescription className="text-xs">Pending tasks and customer follow-ups.</CardDescription>
+                      <CardTitle className="text-sm font-semibold">Tasks</CardTitle>
+                      <CardDescription className="text-xs">Things you and your team need to do.</CardDescription>
                     </div>
                     {data.metrics.overdueTasks > 0 && (
                       <Badge variant="red" className="text-[10px] font-mono">
-                        {data.metrics.overdueTasks} Overdue
+                        {data.metrics.overdueTasks} overdue
                       </Badge>
                     )}
                   </div>
@@ -280,8 +280,8 @@ export const DashboardPage: React.FC = () => {
                   {data.tasks.length === 0 ? (
                     <div className="py-8 text-center text-xs text-vynexa-text-muted space-y-1">
                       <CheckCircle2 className="h-6 w-6 text-vynexa-text-muted mx-auto" />
-                      <p className="font-medium text-vynexa-text-primary">You're all caught up!</p>
-                      <p className="text-[11px]">No pending tasks or action items due.</p>
+                      <p className="font-medium text-vynexa-text-primary">You're all caught up</p>
+                      <p className="text-[11px]">No tasks need attention right now.</p>
                     </div>
                   ) : (
                     <div className="divide-y divide-vynexa-border/40">
@@ -330,13 +330,13 @@ export const DashboardPage: React.FC = () => {
               {/* RECENT ACTIVITIES LOG */}
               <Card className="bg-vynexa-surface border-vynexa-border">
                 <CardHeader className="pb-3 border-b border-vynexa-border">
-                  <CardTitle className="text-sm font-semibold">Recent Interaction Log</CardTitle>
-                  <CardDescription className="text-xs">Latest activity recorded across workspace.</CardDescription>
+                  <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
+                  <CardDescription className="text-xs">Calls, meetings, emails, and notes.</CardDescription>
                 </CardHeader>
                 <CardContent className="pt-3">
                   {data.recentActivities.length === 0 ? (
                     <div className="py-8 text-center text-xs text-vynexa-text-muted">
-                      No customer interactions logged yet.
+                      No activity logged yet.
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -372,10 +372,10 @@ export const DashboardPage: React.FC = () => {
               <Card className="bg-vynexa-surface border-vynexa-border">
                 <CardHeader className="pb-3 border-b border-vynexa-border">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm font-semibold">Workspace Stream</CardTitle>
+                    <CardTitle className="text-sm font-semibold">Recent updates</CardTitle>
                     {data.notifications.unreadCount > 0 && (
                       <Badge variant="blue" className="text-[10px] font-mono px-1.5">
-                        {data.notifications.unreadCount} Unread
+                        {data.notifications.unreadCount} unread
                       </Badge>
                     )}
                   </div>
@@ -383,7 +383,7 @@ export const DashboardPage: React.FC = () => {
                 <CardContent className="pt-3">
                   {data.notifications.items.length === 0 ? (
                     <div className="py-6 text-center text-xs text-vynexa-text-muted">
-                      No system notifications.
+                      No new notifications.
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -406,8 +406,8 @@ export const DashboardPage: React.FC = () => {
                 <CardContent className="p-3.5 flex items-center gap-3">
                   <ShieldCheck className="h-5 w-5 text-vynexa-text-muted shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-vynexa-text-primary">Tenant Data Boundary</p>
-                    <p className="text-[11px] text-vynexa-text-muted">Metrics &amp; records isolated for {data.organization.name}.</p>
+                    <p className="text-xs font-semibold text-vynexa-text-primary">Data privacy</p>
+                    <p className="text-[11px] text-vynexa-text-muted">All records are private to {data.organization.name}.</p>
                   </div>
                 </CardContent>
               </Card>

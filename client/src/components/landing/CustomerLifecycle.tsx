@@ -3,25 +3,25 @@ import { ArrowRight } from 'lucide-react';
 
 export const CustomerLifecycle: React.FC = () => {
   const steps = [
-    { num: '01', title: 'Lead', desc: 'Inbound capture & scoring' },
-    { num: '02', title: 'Qualification', desc: 'Triage & account conversion' },
-    { num: '03', title: 'Opportunity', desc: 'Pipeline deal tracking' },
-    { num: '04', title: 'Quote', desc: 'Product line proposal' },
-    { num: '05', title: 'Order', desc: 'Commercial agreement' },
-    { num: '06', title: 'Support', desc: 'Service case resolution' },
-    { num: '07', title: 'Retention', desc: 'Account renewal & growth' }
+    { num: '01', title: 'Lead', desc: 'Capture new interest' },
+    { num: '02', title: 'Qualify', desc: 'Check if they are a fit' },
+    { num: '03', title: 'Potential Sale', desc: 'Track deals in progress' },
+    { num: '04', title: 'Quote', desc: 'Send clear price quotes' },
+    { num: '05', title: 'Order', desc: 'Confirm the sale' },
+    { num: '06', title: 'Support', desc: 'Answer customer questions' },
+    { num: '07', title: 'Follow-up', desc: 'Keep customers happy' }
   ];
 
   return (
     <section id="workflow" className="py-20 px-4 sm:px-6 border-b border-vynexa-border">
       <div className="mx-auto max-w-7xl space-y-12">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">CONNECTED LIFECYCLE</h2>
+          <h2 className="text-xs font-mono font-semibold tracking-wider text-vynexa-text-muted uppercase">HOW IT WORKS</h2>
           <p className="text-2xl sm:text-3xl font-bold text-vynexa-text-primary tracking-tight">
-            From first inquiry to long-term account retention
+            See every sale from first contact to order
           </p>
           <p className="text-xs sm:text-sm text-vynexa-text-secondary">
-            Vynexa connects every transition so context is never lost when a lead becomes an active account.
+            Keep notes, tasks, quotes, and conversations together so your team never misses a detail.
           </p>
         </div>
 

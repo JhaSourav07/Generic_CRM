@@ -55,7 +55,7 @@ export const ContactDetailPage: React.FC = () => {
       const data = await contactsService.getContact(id);
       setContact(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to load contact record');
+      setError(err.message || 'Could not load contact details. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -72,15 +72,15 @@ export const ContactDetailPage: React.FC = () => {
       await contactsService.deleteContact(contact.id);
       toast({
         type: 'success',
-        title: 'Contact Deleted',
-        message: `Contact '${contact.firstName} ${contact.lastName}' deleted.`
+        title: 'Contact deleted',
+        message: `${contact.firstName} ${contact.lastName} has been removed.`
       });
       navigate('/app/contacts');
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Deletion Failed',
-        message: err.message || 'Failed to delete contact.'
+        title: 'Could not delete contact',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -123,12 +123,12 @@ export const ContactDetailPage: React.FC = () => {
           onClick={() => navigate('/app/contacts')}
           leftIcon={<ArrowLeft className="h-4 w-4" />}
         >
-          Back to Contacts
+          Back to contacts
         </Button>
         <Card className="bg-vynexa-surface border-vynexa-border p-8 text-center">
-          <p className="text-vynexa-danger font-medium mb-4">{error || 'Contact record not found'}</p>
+          <p className="text-vynexa-danger font-medium mb-4">{error || 'Contact not found'}</p>
           <Button variant="primary" size="sm" onClick={() => navigate('/app/contacts')}>
-            Return to Contact Directory
+            Back to contacts
           </Button>
         </Card>
       </div>
@@ -140,9 +140,9 @@ export const ContactDetailPage: React.FC = () => {
       {/* Header Bar */}
       <PageHeader
         title={`${contact.firstName} ${contact.lastName}`}
-        description={`Contact Record ID: ${contact.id}`}
+        description={contact.jobTitle ? `${contact.jobTitle}` : 'Contact details'}
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Contacts', href: '/app/contacts' },
           { label: `${contact.firstName} ${contact.lastName}` }
         ]}
@@ -154,7 +154,7 @@ export const ContactDetailPage: React.FC = () => {
               leftIcon={<Edit2 className="h-3.5 w-3.5" />}
               onClick={() => setIsEditModalOpen(true)}
             >
-              Edit Contact
+              Edit contact
             </Button>
             <Button
               variant="danger"
@@ -183,11 +183,11 @@ export const ContactDetailPage: React.FC = () => {
                   <h2 className="text-lg font-bold text-vynexa-text-primary flex items-center gap-2">
                     {contact.firstName} {contact.lastName}
                     {contact.isPrimary && (
-                      <Badge variant="emerald" className="text-[10px]">Primary Contact</Badge>
+                      <Badge variant="emerald" className="text-[10px]">Primary contact</Badge>
                     )}
                   </h2>
                   <p className="text-xs text-vynexa-text-secondary">
-                    {contact.jobTitle || 'No Title'} {contact.department ? `(${contact.department})` : ''}
+                    {contact.jobTitle || 'No title'} {contact.department ? `(${contact.department})` : ''}
                   </p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export const ContactDetailPage: React.FC = () => {
 
               <div className="flex items-center gap-2 text-vynexa-text-secondary sm:col-span-2">
                 <Building2 className="h-4 w-4 text-vynexa-text-muted" />
-                <span className="font-semibold text-vynexa-text-primary">Associated Customer Company:</span>
+                <span className="font-semibold text-vynexa-text-primary">Customer:</span>
                 {contact.account ? (
                   <button
                     onClick={() => navigate(`/app/customers/${contact.account!.id}`)}
@@ -217,7 +217,7 @@ export const ContactDetailPage: React.FC = () => {
                     {contact.account.name}
                   </button>
                 ) : (
-                  <span className="text-vynexa-text-muted">Standalone Contact</span>
+                  <span className="text-vynexa-text-muted">No company</span>
                 )}
               </div>
             </div>
@@ -225,7 +225,7 @@ export const ContactDetailPage: React.FC = () => {
             {contact.notes && (
               <div className="mt-4 pt-4 border-t border-vynexa-border">
                 <h4 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-                  Notes & Context
+                  Notes
                 </h4>
                 <p className="text-xs text-vynexa-text-primary bg-vynexa-elevated/50 p-3 rounded-lg border border-vynexa-border whitespace-pre-wrap">
                   {contact.notes}
@@ -240,7 +240,7 @@ export const ContactDetailPage: React.FC = () => {
               <div>
                 <CardTitle className="text-base flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-vynexa-text-secondary" />
-                  Associated Opportunities ({contact.opportunities?.length || 0})
+                  Opportunities ({contact.opportunities?.length || 0})
                 </CardTitle>
               </div>
               <Button
@@ -249,28 +249,28 @@ export const ContactDetailPage: React.FC = () => {
                 leftIcon={<Plus className="h-3.5 w-3.5" />}
                 onClick={() => setIsCreateOpportunityOpen(true)}
               >
-                New Opportunity
+                Add opportunity
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               {!contact.opportunities || contact.opportunities.length === 0 ? (
                 <div className="p-8 text-center">
                   <Briefcase className="h-8 w-8 text-vynexa-text-muted mx-auto mb-2" />
-                  <p className="text-sm font-medium text-vynexa-text-primary">No Opportunities Linked</p>
+                  <p className="text-sm font-medium text-vynexa-text-primary">No opportunities yet</p>
                   <p className="text-xs text-vynexa-text-secondary mt-1">
-                    Associate this contact with deal opportunities in your pipeline.
+                    Track potential deals and sales for this contact.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>OPPORTUNITY</TableHead>
-                      <TableHead>STAGE</TableHead>
-                      <TableHead>VALUE</TableHead>
-                      <TableHead>STATUS</TableHead>
-                      <TableHead>CLOSE DATE</TableHead>
-                      <TableHead className="text-right">ACTION</TableHead>
+                      <TableHead>Deal</TableHead>
+                      <TableHead>Stage</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Target close</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -335,12 +335,12 @@ export const ContactDetailPage: React.FC = () => {
         <div className="space-y-6">
           <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-4">
             <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Contact Metadata
+              Contact details
             </h3>
             <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" /> Created Date
+                  <Calendar className="h-3.5 w-3.5" /> Created
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(contact.createdAt).toLocaleDateString()}
@@ -348,7 +348,7 @@ export const ContactDetailPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" /> Last Updated
+                  <Calendar className="h-3.5 w-3.5" /> Updated
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(contact.updatedAt).toLocaleDateString()}
@@ -361,7 +361,7 @@ export const ContactDetailPage: React.FC = () => {
           {contact.convertedFromLeads && contact.convertedFromLeads.length > 0 && (
             <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-3">
               <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-vynexa-emerald" /> Converted Lead Origin
+                <CheckCircle2 className="h-3.5 w-3.5 text-vynexa-emerald" /> Converted from lead
               </h3>
               {contact.convertedFromLeads.map((lead: any) => (
                 <div key={lead.id} className="p-3 bg-vynexa-elevated rounded-lg border border-vynexa-border text-xs space-y-1">
@@ -399,8 +399,8 @@ export const ContactDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Contact Record"
-        description="Are you sure you want to soft-delete this contact record?"
+        title="Delete contact"
+        description="Are you sure you want to delete this contact? This cannot be undone."
       >
         <div className="space-y-4 pt-2">
           <div className="flex justify-end gap-3 pt-4 border-t border-vynexa-border">
@@ -408,7 +408,7 @@ export const ContactDetailPage: React.FC = () => {
               Cancel
             </Button>
             <Button variant="danger" onClick={handleDeleteContact} isLoading={deleting}>
-              Confirm Deletion
+              Delete contact
             </Button>
           </div>
         </div>

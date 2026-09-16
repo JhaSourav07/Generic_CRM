@@ -171,10 +171,10 @@ export const RolesPage: React.FC = () => {
   return (
     <div className="space-y-6 select-none">
       <PageHeader
-        title="Roles & Access Control (RBAC)"
-        description="Configure tenant role definitions and fine-grained resource permission matrix."
+        title="Roles & Permissions"
+        description="Define what each role in your organization can view, create, edit, or delete."
         breadcrumbs={[
-          { label: 'Workspace', href: '/app/dashboard' },
+          { label: 'Application', href: '/app/dashboard' },
           { label: 'Roles & Permissions' }
         ]}
         actions={
@@ -185,7 +185,7 @@ export const RolesPage: React.FC = () => {
             </Button>
             <Button variant="primary" size="sm" onClick={handleOpenCreateModal} className="h-8">
               <Plus className="h-3.5 w-3.5 mr-1.5" />
-              Create Custom Role
+              Add role
             </Button>
           </div>
         }
@@ -239,11 +239,11 @@ export const RolesPage: React.FC = () => {
                     {isSystemRole ? (
                       <Badge variant="outline" className="text-[10px] font-mono gap-1 shrink-0 bg-vynexa-bg/80">
                         <Lock className="h-2.5 w-2.5 text-vynexa-muted" />
-                        System
+                        System role
                       </Badge>
                     ) : (
                       <Badge variant="blue" className="text-[10px] font-mono shrink-0">
-                        Custom
+                        Custom role
                       </Badge>
                     )}
                   </div>
@@ -270,7 +270,7 @@ export const RolesPage: React.FC = () => {
                       className="h-7 text-xs px-2.5"
                     >
                       <Edit2 className="h-3 w-3 mr-1" />
-                      {isSystemRole ? 'Protected' : 'Edit Matrix'}
+                      {isSystemRole ? 'Protected' : 'Edit permissions'}
                     </Button>
                     {!isSystemRole && (
                       <Button
@@ -281,7 +281,7 @@ export const RolesPage: React.FC = () => {
                           setDeletingRole(r);
                         }}
                         className="h-7 text-xs px-2"
-                        title="Delete Role"
+                        title="Delete role"
                       >
                         <Trash2 className="h-3 w-3" />
                       </Button>
@@ -301,7 +301,7 @@ export const RolesPage: React.FC = () => {
             <div className="p-4 border-b border-vynexa-border flex items-center justify-between shrink-0">
               <h3 className="font-semibold text-sm text-vynexa-text flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-vynexa-primary" />
-                {editingRole ? `Edit Role: ${editingRole.name}` : 'Create Custom Tenant Role'}
+                {editingRole ? `Edit role: ${editingRole.name}` : 'Add custom role'}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -321,11 +321,11 @@ export const RolesPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-vynexa-muted mb-1 font-medium">Role Name *</label>
+                  <label className="block text-vynexa-muted mb-1 font-medium">Role name *</label>
                   <Input
                     type="text"
                     required
-                    placeholder="e.g. Senior Account Executive"
+                    placeholder="e.g. Sales Representative"
                     value={roleName}
                     onChange={(e) => setRoleName(e.target.value)}
                     className="bg-vynexa-bg border-vynexa-border h-9"
@@ -335,7 +335,7 @@ export const RolesPage: React.FC = () => {
                   <label className="block text-vynexa-muted mb-1 font-medium">Description</label>
                   <Input
                     type="text"
-                    placeholder="Brief scope summary..."
+                    placeholder="Brief description of this role..."
                     value={roleDesc}
                     onChange={(e) => setRoleDesc(e.target.value)}
                     className="bg-vynexa-bg border-vynexa-border h-9"
@@ -346,7 +346,7 @@ export const RolesPage: React.FC = () => {
               {/* PERMISSION MATRIX TABLE */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="font-semibold text-vynexa-text">Resource Permission Matrix</h4>
+                  <h4 className="font-semibold text-vynexa-text">Permissions</h4>
                   <span className="font-mono text-vynexa-muted text-[11px]">
                     {selectedPermissionIds.length} permissions selected
                   </span>
@@ -357,9 +357,9 @@ export const RolesPage: React.FC = () => {
                     <table className="w-full text-left text-xs">
                       <thead className="bg-vynexa-bg border-b border-vynexa-border text-vynexa-muted font-mono uppercase text-[10px]">
                         <tr>
-                          <th className="py-2.5 px-4">Resource Domain</th>
-                          <th className="py-2.5 px-4">Available Actions</th>
-                          <th className="py-2.5 px-4 text-right">Toggle All</th>
+                          <th className="py-2.5 px-4">Feature</th>
+                          <th className="py-2.5 px-4">Allowed actions</th>
+                          <th className="py-2.5 px-4 text-right">Toggle all</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-vynexa-border">
@@ -403,7 +403,7 @@ export const RolesPage: React.FC = () => {
                                   onClick={() => toggleAllForResource(resKey)}
                                   className="text-[11px] text-vynexa-muted hover:text-vynexa-primary font-mono underline"
                                 >
-                                  {allSelected ? 'Deselect Resource' : 'Select All'}
+                                  {allSelected ? 'Deselect all' : 'Select all'}
                                 </button>
                               </td>
                             </tr>
@@ -432,7 +432,7 @@ export const RolesPage: React.FC = () => {
                 isLoading={submitting}
                 onClick={handleSubmitModal}
               >
-                {editingRole ? 'Save Role Matrix' : 'Create Role'}
+                {editingRole ? 'Save permissions' : 'Add role'}
               </Button>
             </div>
           </div>
@@ -445,7 +445,7 @@ export const RolesPage: React.FC = () => {
           <div className="bg-vynexa-elevated border border-vynexa-border rounded-lg shadow-xl w-full max-w-md p-5 space-y-4">
             <h3 className="font-semibold text-sm text-vynexa-text flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-vynexa-status-danger" />
-              Delete Custom Role
+              Delete role
             </h3>
 
             {deleteError && (
@@ -455,9 +455,9 @@ export const RolesPage: React.FC = () => {
             )}
 
             <p className="text-xs text-vynexa-muted">
-              Are you sure you want to delete custom role{' '}
+              Are you sure you want to delete role{' '}
               <strong className="text-vynexa-text font-mono">{deletingRole.name}</strong>?
-              This action is permanent and will fail if active users are assigned to this role.
+              You cannot delete a role if team members are currently assigned to it.
             </p>
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-vynexa-border">
@@ -474,7 +474,7 @@ export const RolesPage: React.FC = () => {
                 isLoading={deleteLoading}
                 onClick={handleDeleteRole}
               >
-                Confirm Delete
+                Delete role
               </Button>
             </div>
           </div>

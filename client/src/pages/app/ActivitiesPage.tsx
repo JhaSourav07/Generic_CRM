@@ -178,8 +178,8 @@ export const ActivitiesPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header Bar */}
       <PageHeader
-        title="Activities & Interactions"
-        description="Chronological log of customer calls, meetings, notes, and communications."
+        title="Activities"
+        description="Log and review calls, meetings, emails, and notes."
         breadcrumbs={[
           { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Activities' }
@@ -191,7 +191,7 @@ export const ActivitiesPage: React.FC = () => {
             leftIcon={<Plus className="h-3.5 w-3.5" />}
             onClick={() => setIsCreateOpen(true)}
           >
-            Log Activity
+            Log activity
           </Button>
         }
       />
@@ -199,7 +199,7 @@ export const ActivitiesPage: React.FC = () => {
       {/* Metrics Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
-          <div className="text-[11px] text-vynexa-text-muted">Total Recorded</div>
+          <div className="text-[11px] text-vynexa-text-muted">All activities</div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {totalCount}
           </div>
@@ -207,7 +207,7 @@ export const ActivitiesPage: React.FC = () => {
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
           <div className="text-[11px] text-vynexa-text-muted flex items-center gap-1.5">
-            <PhoneCall className="h-3 w-3" /> Calls Logged
+            <PhoneCall className="h-3 w-3" /> Calls
           </div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {activities.filter((a) => a.type === 'CALL').length}
@@ -216,7 +216,7 @@ export const ActivitiesPage: React.FC = () => {
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
           <div className="text-[11px] text-vynexa-text-muted flex items-center gap-1.5">
-            <Video className="h-3 w-3" /> Meetings Held
+            <Video className="h-3 w-3" /> Meetings
           </div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {activities.filter((a) => a.type === 'MEETING').length}
@@ -225,7 +225,7 @@ export const ActivitiesPage: React.FC = () => {
 
         <Card className="bg-vynexa-surface border-vynexa-border p-3.5">
           <div className="text-[11px] text-vynexa-text-muted flex items-center gap-1.5">
-            <FileText className="h-3 w-3" /> Notes & Memos
+            <FileText className="h-3 w-3" /> Notes
           </div>
           <div className="text-xl font-bold font-mono text-vynexa-text-primary mt-1">
             {activities.filter((a) => a.type === 'NOTE').length}
@@ -245,7 +245,7 @@ export const ActivitiesPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search subject, description, entity..."
+              placeholder="Search subject, notes, or customer..."
               className="pl-8 bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             />
           </div>
@@ -260,7 +260,7 @@ export const ActivitiesPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             >
-              <option value="">All Activity Types</option>
+              <option value="">All types</option>
               <option value="CALL">Calls</option>
               <option value="MEETING">Meetings</option>
               <option value="EMAIL">Emails</option>
@@ -340,7 +340,7 @@ export const ActivitiesPage: React.FC = () => {
             </div>
             <div className="text-sm font-semibold text-vynexa-text-primary">No activities found</div>
             <div className="text-xs text-vynexa-text-muted max-w-sm mx-auto">
-              No historical interactions match your current search and filter criteria.
+              No activities match your search or filters. Log an activity to start tracking interactions.
             </div>
             <Button
               variant="outline"
@@ -348,7 +348,7 @@ export const ActivitiesPage: React.FC = () => {
               leftIcon={<Plus className="h-3.5 w-3.5" />}
               onClick={() => setIsCreateOpen(true)}
             >
-              Log New Activity
+              Log activity
             </Button>
           </div>
         ) : (
@@ -483,13 +483,13 @@ export const ActivitiesPage: React.FC = () => {
       <Dialog
         isOpen={Boolean(selectedForDelete)}
         onClose={() => setSelectedForDelete(null)}
-        title="Delete Activity Record"
+        title="Delete activity"
         maxWidth="sm"
       >
         <div className="space-y-4 text-xs">
           <p className="text-vynexa-text-secondary">
             Are you sure you want to delete <span className="font-semibold text-white">"{selectedForDelete?.subject}"</span>?
-            This will permanently remove the logged interaction.
+            This cannot be undone.
           </p>
 
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-vynexa-border">
@@ -507,7 +507,7 @@ export const ActivitiesPage: React.FC = () => {
               onClick={handleDelete}
               isLoading={deleting}
             >
-              Delete
+              Delete activity
             </Button>
           </div>
         </div>

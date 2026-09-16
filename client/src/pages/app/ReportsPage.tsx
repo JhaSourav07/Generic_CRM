@@ -36,13 +36,13 @@ import {
 
 const REPORT_TABS = [
   { id: 'overview', label: 'Overview' },
-  { id: 'leads', label: 'Lead Funnel' },
-  { id: 'sales', label: 'Sales & Revenue' },
-  { id: 'pipeline', label: 'Pipeline Forecast' },
-  { id: 'activities', label: 'Team Activities' },
-  { id: 'tasks', label: 'Tasks & Productivity' },
-  { id: 'support', label: 'Support & SLAs' },
-  { id: 'campaigns', label: 'Campaign ROI' }
+  { id: 'leads', label: 'Leads' },
+  { id: 'sales', label: 'Sales' },
+  { id: 'pipeline', label: 'Pipeline' },
+  { id: 'activities', label: 'Activities' },
+  { id: 'tasks', label: 'Tasks' },
+  { id: 'support', label: 'Support' },
+  { id: 'campaigns', label: 'Campaigns' }
 ];
 
 export const ReportsPage: React.FC = () => {
@@ -146,8 +146,8 @@ export const ReportsPage: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="Reports & Analytics"
-        description="Comprehensive business intelligence across operational domains with formula-safe CSV export."
+        title="Reports"
+        description="Review sales performance, pipeline forecasts, and team activity."
       />
 
       {/* Date & Filter Toolbar */}
@@ -169,7 +169,7 @@ export const ReportsPage: React.FC = () => {
       {/* Tab Content */}
       {loading ? (
         <div className="py-16 text-center text-xs text-vynexa-text-muted">
-          Aggregating real-time report metrics...
+          Loading report...
         </div>
       ) : (
         <div className="space-y-6">
@@ -178,58 +178,58 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 <MetricStatCard
-                  title="Lead Conversion Rate"
+                  title="Lead conversion rate"
                   value={`${overviewData.leads.conversionRate}%`}
                   subtitle={`${overviewData.leads.converted} of ${overviewData.leads.total} leads converted`}
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Active Pipeline Value"
+                  title="Pipeline value"
                   value={`$${overviewData.sales.pipelineValue.toLocaleString()}`}
                   subtitle={`${overviewData.sales.openOpportunities} open deals`}
                   variant="blue"
                   icon={Briefcase}
                 />
                 <MetricStatCard
-                  title="Won Revenue"
+                  title="Won revenue"
                   value={`$${overviewData.sales.wonRevenue.toLocaleString()}`}
                   subtitle={`${overviewData.sales.wonOpportunities} closed deals (${overviewData.sales.winRate}% win rate)`}
                   variant="emerald"
                   icon={DollarSign}
                 />
                 <MetricStatCard
-                  title="Average Deal Size"
+                  title="Average deal size"
                   value={`$${overviewData.sales.averageDealSize.toLocaleString()}`}
-                  subtitle="Per won commercial deal"
+                  subtitle="For won deals"
                   variant="default"
                   icon={Target}
                 />
                 <MetricStatCard
-                  title="Task Completion Rate"
+                  title="Task completion rate"
                   value={`${overviewData.tasks.completionRate}%`}
                   subtitle={`${overviewData.tasks.completed} of ${overviewData.tasks.total} tasks completed`}
                   variant="default"
                   icon={CheckSquare}
                 />
                 <MetricStatCard
-                  title="Support Resolution Rate"
+                  title="Support resolution rate"
                   value={`${overviewData.support.resolutionRate}%`}
-                  subtitle={`${overviewData.support.resolved} of ${overviewData.support.total} tickets resolved`}
+                  subtitle={`${overviewData.support.resolved} of ${overviewData.support.total} requests resolved`}
                   variant="emerald"
                   icon={LifeBuoy}
                 />
                 <MetricStatCard
-                  title="Active Marketing Campaigns"
+                  title="Active campaigns"
                   value={overviewData.campaigns.active}
-                  subtitle={`${overviewData.campaigns.total} total campaigns configured`}
+                  subtitle={`${overviewData.campaigns.total} total campaigns`}
                   variant="default"
                   icon={Megaphone}
                 />
                 <MetricStatCard
-                  title="Total Pipeline Deals"
+                  title="Total opportunities"
                   value={overviewData.sales.totalOpportunities}
-                  subtitle={`${overviewData.sales.lostOpportunities} closed lost`}
+                  subtitle={`${overviewData.sales.lostOpportunities} lost deals`}
                   variant="default"
                   icon={BarChart3}
                 />
@@ -242,23 +242,23 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <MetricStatCard
-                  title="Total Leads Ingested"
+                  title="Total leads"
                   value={leadData.totalLeads}
-                  subtitle="Captured across all acquisition channels"
+                  subtitle="All captured leads"
                   variant="default"
                   icon={Users}
                 />
                 <MetricStatCard
-                  title="Conversion Rate"
+                  title="Conversion rate"
                   value={`${leadData.conversionRate}%`}
-                  subtitle="Leads converted to Customers & Deals"
+                  subtitle="Converted to customers and deals"
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Active Lead Funnel Stages"
+                  title="Lead statuses"
                   value={leadData.byStatus.length}
-                  subtitle="Defined status categories"
+                  subtitle="Active status categories"
                   variant="blue"
                   icon={Target}
                 />
@@ -266,7 +266,7 @@ export const ReportsPage: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
-                  title="Leads by Lifecycle Status"
+                  title="Leads by status"
                   segments={leadData.byStatus.map((s) => ({
                     label: s.status,
                     count: s.count,
@@ -276,7 +276,7 @@ export const ReportsPage: React.FC = () => {
                 />
 
                 <DistributionBar
-                  title="Leads by Acquisition Source"
+                  title="Leads by source"
                   segments={leadData.bySource.map((s) => ({
                     label: s.source,
                     count: s.count,
@@ -290,14 +290,14 @@ export const ReportsPage: React.FC = () => {
               {leadData.trend && leadData.trend.length > 0 && (
                 <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                   <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                    Daily Lead Ingestion Timeline
+                    Daily new leads
                   </h4>
                   <div className="max-h-48 overflow-y-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
                         <tr className="border-b border-vynexa-border text-vynexa-text-secondary">
                           <th className="py-2 px-3">Date</th>
-                          <th className="py-2 px-3 text-right">Leads Ingested</th>
+                          <th className="py-2 px-3 text-right">Leads</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-vynexa-border/40 font-mono">
@@ -322,30 +322,30 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
-                  title="Won Revenue"
+                  title="Won revenue"
                   value={`$${salesData.wonRevenue.toLocaleString()}`}
                   subtitle={`${salesData.wonCount} won deals`}
                   variant="emerald"
                   icon={DollarSign}
                 />
                 <MetricStatCard
-                  title="Open Pipeline Value"
+                  title="Open pipeline value"
                   value={`$${salesData.pipelineValue.toLocaleString()}`}
                   subtitle={`${salesData.openCount} open deals`}
                   variant="blue"
                   icon={Briefcase}
                 />
                 <MetricStatCard
-                  title="Win Rate"
+                  title="Win rate"
                   value={`${salesData.winRate}%`}
-                  subtitle={`${salesData.wonCount} Won / ${salesData.lostCount} Lost`}
+                  subtitle={`${salesData.wonCount} won / ${salesData.lostCount} lost`}
                   variant="emerald"
                   icon={Percent}
                 />
                 <MetricStatCard
-                  title="Average Deal Size"
+                  title="Average deal size"
                   value={`$${salesData.averageDealSize.toLocaleString()}`}
-                  subtitle="Per closed commercial order"
+                  subtitle="For won deals"
                   variant="default"
                   icon={Target}
                 />
@@ -354,24 +354,24 @@ export const ReportsPage: React.FC = () => {
               {/* Sales Rep Leaderboard */}
               <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                 <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                  Sales Performance by Representative
+                  Sales by team member
                 </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/40 text-vynexa-text-secondary font-medium">
-                        <th className="py-2.5 px-3">Sales Rep</th>
-                        <th className="py-2.5 px-3 text-center">Total Opportunities</th>
-                        <th className="py-2.5 px-3 text-center">Won Deals</th>
-                        <th className="py-2.5 px-3 text-right">Won Revenue</th>
-                        <th className="py-2.5 px-3 text-right">Rep Win Rate</th>
+                        <th className="py-2.5 px-3">Team member</th>
+                        <th className="py-2.5 px-3 text-center">Total opportunities</th>
+                        <th className="py-2.5 px-3 text-center">Won deals</th>
+                        <th className="py-2.5 px-3 text-right">Won revenue</th>
+                        <th className="py-2.5 px-3 text-right">Win rate</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-vynexa-border/60">
                       {salesData.byRep.length === 0 ? (
                         <tr>
                           <td colSpan={5} className="py-6 text-center text-vynexa-text-muted">
-                            No sales representative performance data in this date range.
+                            No sales data found for this date range.
                           </td>
                         </tr>
                       ) : (
@@ -418,23 +418,23 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <MetricStatCard
-                  title="Total Pipeline Deals"
+                  title="Open deals"
                   value={pipelineData.totalDeals}
-                  subtitle={pipelineData.pipeline?.name || 'Default Sales Pipeline'}
+                  subtitle={pipelineData.pipeline?.name || 'Sales pipeline'}
                   variant="default"
                   icon={Briefcase}
                 />
                 <MetricStatCard
-                  title="Unweighted Pipeline Value"
+                  title="Pipeline value"
                   value={`$${pipelineData.totalPipelineValue.toLocaleString()}`}
-                  subtitle="Total nominal deal value"
+                  subtitle="Total value of open deals"
                   variant="blue"
                   icon={DollarSign}
                 />
                 <MetricStatCard
-                  title="Weighted Expected Forecast"
+                  title="Expected sales"
                   value={`$${pipelineData.totalWeightedValue.toLocaleString()}`}
-                  subtitle="Probability-adjusted pipeline revenue"
+                  subtitle="Estimated sales based on deal probabilities"
                   variant="emerald"
                   icon={TrendingUp}
                 />
@@ -443,7 +443,7 @@ export const ReportsPage: React.FC = () => {
               {/* Stage-by-Stage Table */}
               <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                 <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                  Pipeline Stages & Probability Breakdown
+                  Deals by stage
                 </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
@@ -451,9 +451,9 @@ export const ReportsPage: React.FC = () => {
                       <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/40 text-vynexa-text-secondary font-medium">
                         <th className="py-2.5 px-3">Stage</th>
                         <th className="py-2.5 px-3 text-center">Deals</th>
-                        <th className="py-2.5 px-3 text-center">Win Probability</th>
-                        <th className="py-2.5 px-3 text-right">Nominal Value</th>
-                        <th className="py-2.5 px-3 text-right">Weighted Forecast</th>
+                        <th className="py-2.5 px-3 text-center">Probability</th>
+                        <th className="py-2.5 px-3 text-right">Total value</th>
+                        <th className="py-2.5 px-3 text-right">Expected sales</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-vynexa-border/60">
@@ -488,16 +488,16 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <MetricStatCard
-                  title="Total Activities Logged"
+                  title="Total activities"
                   value={activityData.totalActivities}
-                  subtitle="Calls, meetings, emails, and touchpoints"
+                  subtitle="Calls, meetings, emails, and notes"
                   variant="default"
                   icon={PhoneCall}
                 />
                 <MetricStatCard
-                  title="Active Team Contributors"
+                  title="Team members"
                   value={activityData.byUser.length}
-                  subtitle="Logging customer interactions"
+                  subtitle="With logged activities"
                   variant="blue"
                   icon={Users}
                 />
@@ -505,7 +505,7 @@ export const ReportsPage: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
-                  title="Activities by Interaction Type"
+                  title="Activities by type"
                   segments={activityData.byType.map((t) => ({
                     label: t.type,
                     count: t.count,
@@ -516,14 +516,14 @@ export const ReportsPage: React.FC = () => {
 
                 <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                   <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                    Activities Logged by Team Member
+                    Activities by team member
                   </h4>
                   <div className="max-h-60 overflow-y-auto">
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
                         <tr className="border-b border-vynexa-border text-vynexa-text-secondary">
-                          <th className="py-2 px-3">Team Member</th>
-                          <th className="py-2 px-3 text-right">Activities Logged</th>
+                          <th className="py-2 px-3">Team member</th>
+                          <th className="py-2 px-3 text-right">Activities</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-vynexa-border/40">
@@ -553,30 +553,30 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
-                  title="Total Action Items"
+                  title="Total tasks"
                   value={taskData.totalTasks}
-                  subtitle="Assigned across organization"
+                  subtitle="All created tasks"
                   variant="default"
                   icon={CheckSquare}
                 />
                 <MetricStatCard
-                  title="Completed Tasks"
+                  title="Completed tasks"
                   value={taskData.completedTasks}
                   subtitle={`${taskData.completionRate}% completion rate`}
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Overdue Tasks"
+                  title="Overdue tasks"
                   value={taskData.overdueTasks}
-                  subtitle="Past scheduled due date"
+                  subtitle="Past due date"
                   variant={taskData.overdueTasks > 0 ? 'red' : 'default'}
                   icon={Clock}
                 />
                 <MetricStatCard
-                  title="Completion Rate"
+                  title="Completion rate"
                   value={`${taskData.completionRate}%`}
-                  subtitle="Efficiency indicator"
+                  subtitle="Percentage of tasks finished"
                   variant="emerald"
                   icon={Percent}
                 />
@@ -584,7 +584,7 @@ export const ReportsPage: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
-                  title="Tasks by Status"
+                  title="Tasks by status"
                   segments={taskData.byStatus.map((s) => ({
                     label: s.status,
                     count: s.count
@@ -593,7 +593,7 @@ export const ReportsPage: React.FC = () => {
                 />
 
                 <DistributionBar
-                  title="Tasks by Priority"
+                  title="Tasks by priority"
                   segments={taskData.byPriority.map((p) => ({
                     label: p.priority,
                     count: p.count
@@ -609,34 +609,34 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
-                  title="Total Support Cases"
+                  title="Total requests"
                   value={supportData.totalCases}
-                  subtitle="Logged tickets"
+                  subtitle="All support requests"
                   variant="default"
                   icon={LifeBuoy}
                 />
                 <MetricStatCard
-                  title="Open / In Progress"
+                  title="Open requests"
                   value={supportData.openCases}
-                  subtitle="Requiring agent resolution"
+                  subtitle="In progress or awaiting response"
                   variant="blue"
                   icon={Clock}
                 />
                 <MetricStatCard
-                  title="Resolved Cases"
+                  title="Resolved requests"
                   value={supportData.resolvedCases}
                   subtitle={`${supportData.resolutionRate}% resolution rate`}
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Avg Resolution Time"
+                  title="Average resolution time"
                   value={
                     supportData.averageResolutionHours !== null
                       ? `${supportData.averageResolutionHours} hrs`
                       : 'N/A'
                   }
-                  subtitle="Average SLA time to close"
+                  subtitle="Average time to resolve"
                   variant="default"
                   icon={Clock}
                 />
@@ -644,7 +644,7 @@ export const ReportsPage: React.FC = () => {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <DistributionBar
-                  title="Cases by Status"
+                  title="Requests by status"
                   segments={supportData.byStatus.map((s) => ({
                     label: s.status,
                     count: s.count
@@ -653,7 +653,7 @@ export const ReportsPage: React.FC = () => {
                 />
 
                 <DistributionBar
-                  title="Cases by Priority"
+                  title="Requests by priority"
                   segments={supportData.byPriority.map((p) => ({
                     label: p.priority,
                     count: p.count
@@ -669,28 +669,28 @@ export const ReportsPage: React.FC = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <MetricStatCard
-                  title="Total Campaigns"
+                  title="Total campaigns"
                   value={campaignData.totalCampaigns}
                   subtitle={`${campaignData.activeCampaigns} currently active`}
                   variant="default"
                   icon={Megaphone}
                 />
                 <MetricStatCard
-                  title="Total Marketing Budget"
+                  title="Total budget"
                   value={`$${campaignData.totalBudget.toLocaleString()}`}
-                  subtitle="Allocated across initiatives"
+                  subtitle="Across all campaigns"
                   variant="default"
                   icon={DollarSign}
                 />
                 <MetricStatCard
-                  title="Attributable Revenue"
+                  title="Revenue generated"
                   value={`$${campaignData.totalAttributableRevenue.toLocaleString()}`}
-                  subtitle="Generated from linked leads"
+                  subtitle="From campaign leads"
                   variant="emerald"
                   icon={TrendingUp}
                 />
                 <MetricStatCard
-                  title="Aggregate ROI"
+                  title="Return on investment"
                   value={
                     campaignData.totalBudget > 0
                       ? `${Math.round(
@@ -700,7 +700,7 @@ export const ReportsPage: React.FC = () => {
                         )}%`
                       : 'N/A'
                   }
-                  subtitle="Net return on marketing investment"
+                  subtitle="Based on campaign budget"
                   variant="emerald"
                   icon={Percent}
                 />
@@ -709,7 +709,7 @@ export const ReportsPage: React.FC = () => {
               {/* Campaign Performance Table */}
               <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
                 <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                  Campaign Attribution & Performance Matrix
+                  Campaign performance
                 </h4>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
@@ -721,7 +721,7 @@ export const ReportsPage: React.FC = () => {
                         <th className="py-2.5 px-3 text-center">Leads</th>
                         <th className="py-2.5 px-3 text-center">Converted</th>
                         <th className="py-2.5 px-3 text-right">Pipeline</th>
-                        <th className="py-2.5 px-3 text-right">Attributable Revenue</th>
+                        <th className="py-2.5 px-3 text-right">Revenue</th>
                         <th className="py-2.5 px-3 text-right">ROI</th>
                       </tr>
                     </thead>
@@ -729,7 +729,7 @@ export const ReportsPage: React.FC = () => {
                       {campaignData.campaigns.length === 0 ? (
                         <tr>
                           <td colSpan={8} className="py-6 text-center text-vynexa-text-muted">
-                            No campaign performance records found in this date range.
+                            No campaign records found for this date range.
                           </td>
                         </tr>
                       ) : (

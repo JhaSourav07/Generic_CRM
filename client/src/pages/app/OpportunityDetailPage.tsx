@@ -166,7 +166,7 @@ export const OpportunityDetailPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title={opportunity.name}
-        description={`Deal Value: ${formatCurrency(numValue)} | Stage: ${opportunity.stage?.name || 'Unassigned'}`}
+        description={`Deal value: ${formatCurrency(numValue)} | Stage: ${opportunity.stage?.name || 'Unassigned'}`}
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Opportunities', href: '/app/opportunities' },
@@ -191,7 +191,7 @@ export const OpportunityDetailPage: React.FC = () => {
                   leftIcon={<ArrowRightLeft className="h-3.5 w-3.5" />}
                   onClick={() => setIsStageOpen(true)}
                 >
-                  Change Stage
+                  Change stage
                 </Button>
 
                 <Button
@@ -201,7 +201,7 @@ export const OpportunityDetailPage: React.FC = () => {
                   leftIcon={<Trophy className="h-3.5 w-3.5" />}
                   onClick={() => setIsWonOpen(true)}
                 >
-                  Mark Won
+                  Mark as won
                 </Button>
 
                 <Button
@@ -211,7 +211,7 @@ export const OpportunityDetailPage: React.FC = () => {
                   leftIcon={<XCircle className="h-3.5 w-3.5" />}
                   onClick={() => setIsLostOpen(true)}
                 >
-                  Mark Lost
+                  Mark as lost
                 </Button>
               </>
             )}
@@ -222,7 +222,7 @@ export const OpportunityDetailPage: React.FC = () => {
               leftIcon={<Edit2 className="h-3.5 w-3.5" />}
               onClick={() => setIsEditOpen(true)}
             >
-              Edit
+              Edit opportunity
             </Button>
 
             <Button
@@ -246,7 +246,7 @@ export const OpportunityDetailPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-vynexa-border pb-4">
               <div>
                 <span className="text-xs text-vynexa-text-secondary uppercase tracking-wider font-semibold">
-                  Commercial Value
+                  Deal value
                 </span>
                 <div className="text-3xl font-bold font-mono text-vynexa-text-primary mt-1">
                   {formatCurrency(numValue)}
@@ -269,21 +269,21 @@ export const OpportunityDetailPage: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-vynexa-text-muted">Current Stage</span>
+                <span className="text-vynexa-text-muted">Stage</span>
                 <div className="font-semibold text-vynexa-text-primary mt-1">
                   {opportunity.stage?.name || '—'}
                 </div>
               </div>
 
               <div>
-                <span className="text-vynexa-text-muted">Win Probability</span>
+                <span className="text-vynexa-text-muted">Win chance</span>
                 <div className="font-semibold font-mono text-vynexa-text-primary mt-1">
                   {Math.round(prob * 100)}%
                 </div>
               </div>
 
               <div>
-                <span className="text-vynexa-text-muted">Weighted Value</span>
+                <span className="text-vynexa-text-muted">Expected sales</span>
                 <div className="font-semibold font-mono text-vynexa-text-primary mt-1">
                   {formatCurrency(weightedValue)}
                 </div>
@@ -295,10 +295,10 @@ export const OpportunityDetailPage: React.FC = () => {
               <div className="p-3 bg-vynexa-emerald/10 border border-vynexa-emerald/20 rounded-lg flex items-center gap-3 text-xs text-vynexa-emerald">
                 <Trophy className="h-4 w-4 shrink-0" />
                 <div>
-                  <span className="font-semibold">Deal Successfully Closed Won</span>
+                  <span className="font-semibold">Deal won</span>
                   {opportunity.closedAt && (
                     <span className="text-[11px] block text-vynexa-emerald/80 font-mono">
-                      Closed on {new Date(opportunity.closedAt).toLocaleDateString()}
+                      Won on {new Date(opportunity.closedAt).toLocaleDateString()}
                     </span>
                   )}
                 </div>
@@ -309,13 +309,13 @@ export const OpportunityDetailPage: React.FC = () => {
               <div className="p-3 bg-vynexa-danger/10 border border-vynexa-danger/20 rounded-lg flex items-center gap-3 text-xs text-vynexa-danger">
                 <XCircle className="h-4 w-4 shrink-0" />
                 <div>
-                  <span className="font-semibold">Deal Closed Lost</span>
+                  <span className="font-semibold">Deal lost</span>
                   <p className="text-[11px] text-vynexa-danger/80 mt-0.5">
                     Reason: {opportunity.lostReason || 'No reason specified'}
                   </p>
                   {opportunity.closedAt && (
                     <span className="text-[10px] block text-vynexa-danger/70 font-mono mt-0.5">
-                      Closed on {new Date(opportunity.closedAt).toLocaleDateString()}
+                      Lost on {new Date(opportunity.closedAt).toLocaleDateString()}
                     </span>
                   )}
                 </div>
@@ -326,12 +326,12 @@ export const OpportunityDetailPage: React.FC = () => {
           {/* Customer & Contact Card */}
           <Card className="bg-vynexa-surface border-vynexa-border p-6 space-y-4">
             <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider flex items-center gap-2">
-              <Building2 className="h-4 w-4" /> Customer & Contact Relationships
+              <Building2 className="h-4 w-4" /> Customer and contact
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="p-3 bg-vynexa-surface-secondary rounded-lg border border-vynexa-border space-y-2">
-                <span className="text-vynexa-text-muted text-[11px]">Associated Customer</span>
+                <span className="text-vynexa-text-muted text-[11px]">Customer</span>
                 {opportunity.account ? (
                   <div>
                     <button
@@ -347,12 +347,12 @@ export const OpportunityDetailPage: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="text-vynexa-text-muted italic">No customer account associated</div>
+                  <div className="text-vynexa-text-muted italic">No customer linked</div>
                 )}
               </div>
 
               <div className="p-3 bg-vynexa-surface-secondary rounded-lg border border-vynexa-border space-y-2">
-                <span className="text-vynexa-text-muted text-[11px]">Primary Contact</span>
+                <span className="text-vynexa-text-muted text-[11px]">Primary contact</span>
                 {opportunity.contact ? (
                   <div>
                     <button
@@ -373,7 +373,7 @@ export const OpportunityDetailPage: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <div className="text-vynexa-text-muted italic">No contact associated</div>
+                  <div className="text-vynexa-text-muted italic">No contact linked</div>
                 )}
               </div>
             </div>
@@ -383,7 +383,7 @@ export const OpportunityDetailPage: React.FC = () => {
           {opportunity.description && (
             <Card className="bg-vynexa-surface border-vynexa-border p-6 space-y-3">
               <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider flex items-center gap-2">
-                <FileText className="h-4 w-4" /> Deal Notes & Scope
+                <FileText className="h-4 w-4" /> Notes
               </h3>
               <p className="text-xs text-vynexa-text-primary leading-relaxed whitespace-pre-wrap">
                 {opportunity.description}
@@ -410,7 +410,7 @@ export const OpportunityDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-                Opportunity Owner
+                Assigned to
               </h3>
               <Button
                 variant="ghost"
@@ -442,13 +442,13 @@ export const OpportunityDetailPage: React.FC = () => {
           {/* Deal Metadata Card */}
           <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-3">
             <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Deal Timeline
+              Timeline
             </h3>
 
             <div className="space-y-2.5 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" /> Expected Close
+                  <Calendar className="h-3.5 w-3.5" /> Expected close
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {opportunity.expectedCloseDate
@@ -459,7 +459,7 @@ export const OpportunityDetailPage: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5" /> Created Date
+                  <Clock className="h-3.5 w-3.5" /> Created
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(opportunity.createdAt).toLocaleDateString()}
@@ -468,7 +468,7 @@ export const OpportunityDetailPage: React.FC = () => {
 
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5" /> Last Modified
+                  <Clock className="h-3.5 w-3.5" /> Last updated
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(opportunity.updatedAt).toLocaleDateString()}
@@ -523,19 +523,19 @@ export const OpportunityDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Delete Opportunity"
+        title="Delete opportunity"
         maxWidth="sm"
       >
         <div className="space-y-4">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
-            Are you sure you want to delete <span className="font-semibold text-vynexa-text-primary">{opportunity.name}</span>?
+            Are you sure you want to delete <span className="font-semibold text-vynexa-text-primary">{opportunity.name}</span>? This will remove the deal from your sales pipeline.
           </p>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-vynexa-border">
             <Button variant="outline" size="sm" onClick={() => setIsDeleteOpen(false)} disabled={deleting}>
               Cancel
             </Button>
             <Button variant="danger" size="sm" onClick={handleDelete} isLoading={deleting}>
-              Confirm Delete
+              Delete opportunity
             </Button>
           </div>
         </div>

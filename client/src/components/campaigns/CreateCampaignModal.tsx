@@ -107,8 +107,8 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
           onClose();
         }
       }}
-      title="Create Marketing Campaign"
-      description="Define a new marketing campaign to track leads, pipeline attribution, and ROI."
+      title="Add campaign"
+      description="Set up a marketing campaign to track lead sources and results."
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
@@ -121,12 +121,12 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
 
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-            Campaign Name <span className="text-vynexa-status-danger">*</span>
+            Campaign name <span className="text-vynexa-status-danger">*</span>
           </label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Q4 Enterprise Security Summit"
+            placeholder="e.g. Q4 Security Summit"
             disabled={loading}
             required
           />
@@ -135,7 +135,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              Campaign Type
+              Type
             </label>
             <Select
               value={type}
@@ -171,7 +171,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              Start Date
+              Start date
             </label>
             <Input
               type="date"
@@ -183,7 +183,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
-              End Date
+              End date
             </label>
             <Input
               type="date"
@@ -216,7 +216,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Target audience, channels, and objective goals..."
+            placeholder="Audience, channels, and campaign goals..."
             rows={3}
             disabled={loading}
           />
@@ -235,7 +235,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Creating...' : 'Create Campaign'}
+            {loading ? 'Adding...' : 'Add campaign'}
           </Button>
         </div>
       </form>

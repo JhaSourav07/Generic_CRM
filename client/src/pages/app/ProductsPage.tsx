@@ -117,8 +117,8 @@ export const ProductsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Products & Services"
-        description="Commercial catalog items, tiered pricing, and service offerings for customer quotes."
+        title="Products"
+        description="Manage products, services, and pricing for your sales quotes."
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Products' }
@@ -130,19 +130,19 @@ export const ProductsPage: React.FC = () => {
             className="flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            <span>Create Product</span>
+            <span>Add product</span>
           </Button>
         }
       />
 
       {/* Filter Toolbar */}
       <Card className="p-4 bg-vynexa-surface border-vynexa-border">
-        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div className="flex flex-1 items-center gap-3 w-full">
-            <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          <div className="flex flex-wrap flex-1 items-center gap-3 w-full">
+            <div className="relative flex-1 min-w-[200px] max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-vynexa-text-muted" />
               <Input
-                placeholder="Search products by name, SKU, description..."
+                placeholder="Search products by name, SKU, or description..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -158,9 +158,9 @@ export const ProductsPage: React.FC = () => {
                 setTypeFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-36 h-9 text-xs"
+              className="w-36 shrink-0 h-9 text-xs"
             >
-              <option value="">All Types</option>
+              <option value="">All types</option>
               <option value="PRODUCT">Products</option>
               <option value="SERVICE">Services</option>
             </Select>
@@ -171,22 +171,22 @@ export const ProductsPage: React.FC = () => {
                 setActiveFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-36 h-9 text-xs"
+              className="w-36 shrink-0 h-9 text-xs"
             >
-              <option value="">All Statuses</option>
-              <option value="true">Active Only</option>
-              <option value="false">Inactive Only</option>
+              <option value="">All statuses</option>
+              <option value="true">Active only</option>
+              <option value="false">Inactive only</option>
             </Select>
           </div>
 
-          <div className="flex items-center gap-2 self-end md:self-auto">
+          <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
             <span className="text-xs text-vynexa-text-muted whitespace-nowrap">Sort:</span>
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-32 h-9 text-xs"
+              className="w-32 shrink-0 h-9 text-xs"
             >
-              <option value="createdAt">Date Created</option>
+              <option value="createdAt">Date created</option>
               <option value="name">Name</option>
               <option value="price">Price</option>
               <option value="sku">SKU</option>
@@ -195,7 +195,7 @@ export const ProductsPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="h-9 px-2 text-xs"
+              className="h-9 px-2 text-xs shrink-0"
               title="Toggle sort order"
             >
               {sortOrder === 'asc' ? '↑' : '↓'}
@@ -225,8 +225,8 @@ export const ProductsPage: React.FC = () => {
             <h3 className="text-sm font-semibold text-vynexa-text-primary">No products found</h3>
             <p className="text-xs text-vynexa-text-secondary max-w-sm mx-auto">
               {search || typeFilter || activeFilter
-                ? 'No items match your active filters. Clear filters to see available catalog items.'
-                : 'Get started by creating your first product or service package.'}
+                ? 'No items match your search or filters.'
+                : 'Add your first product or service.'}
             </p>
             {!search && !typeFilter && !activeFilter && (
               <Button
@@ -236,7 +236,7 @@ export const ProductsPage: React.FC = () => {
                 className="mt-2"
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />
-                Add First Product
+                Add product
               </Button>
             )}
           </div>
@@ -245,7 +245,7 @@ export const ProductsPage: React.FC = () => {
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-muted uppercase tracking-wider font-mono text-[10px]">
-                  <th className="py-3 px-4">Product Name</th>
+                  <th className="py-3 px-4">Product name</th>
                   <th className="py-3 px-4">SKU</th>
                   <th className="py-3 px-4">Type</th>
                   <th className="py-3 px-4">Price</th>
@@ -300,14 +300,14 @@ export const ProductsPage: React.FC = () => {
                         <button
                           onClick={() => setSelectedForEdit(prod)}
                           className="p-1 rounded text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
-                          title="Edit Product"
+                          title="Edit product"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => setSelectedForDelete(prod)}
                           className="p-1 rounded text-vynexa-text-muted hover:text-red-400 hover:bg-vynexa-surface-secondary transition-colors"
-                          title="Delete / Deactivate"
+                          title="Delete product"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -373,16 +373,16 @@ export const ProductsPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedForDelete}
         onClose={() => setSelectedForDelete(null)}
-        title="Remove Catalog Product"
+        title="Delete product"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
-            Are you sure you want to remove{' '}
+            Are you sure you want to delete{' '}
             <strong className="text-vynexa-text-primary">{selectedForDelete?.name}</strong>?
           </p>
           <div className="rounded border border-vynexa-border bg-vynexa-surface-secondary/60 p-3 text-[11px] text-vynexa-text-muted leading-relaxed">
-            <span className="font-semibold text-vynexa-text-primary">Historical Protection Policy:</span> If this product is referenced by historical commercial quotes or orders, it will be safely deactivated (<code className="font-mono text-xs">isActive = false</code>) rather than physically deleted, maintaining full audit trail integrity.
+            If this product is linked to past quotes or orders, it will be deactivated rather than deleted so your sales records remain accurate.
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button
@@ -399,7 +399,7 @@ export const ProductsPage: React.FC = () => {
               onClick={handleDelete}
               disabled={deleting}
             >
-              {deleting ? 'Removing...' : 'Confirm Remove'}
+              {deleting ? 'Deleting...' : 'Delete product'}
             </Button>
           </div>
         </div>

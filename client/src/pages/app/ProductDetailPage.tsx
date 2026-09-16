@@ -113,7 +113,7 @@ export const ProductDetailPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title={product.name}
-        description={`Catalog item SKU: ${product.sku || 'N/A'}`}
+        description={`SKU: ${product.sku || 'None'}`}
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Products', href: '/app/products' },
@@ -137,7 +137,7 @@ export const ProductDetailPage: React.FC = () => {
               className="flex items-center gap-1.5 text-xs"
             >
               <Edit2 className="h-3.5 w-3.5" />
-              <span>Edit</span>
+              <span>Edit product</span>
             </Button>
             <Button
               variant="danger"
@@ -146,7 +146,7 @@ export const ProductDetailPage: React.FC = () => {
               className="flex items-center gap-1.5 text-xs"
             >
               <Trash2 className="h-3.5 w-3.5" />
-              <span>Remove</span>
+              <span>Delete product</span>
             </Button>
           </div>
         }
@@ -159,10 +159,10 @@ export const ProductDetailPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-vynexa-text-primary flex items-center gap-2">
                 <Package className="h-4 w-4 text-vynexa-text-muted" />
-                Product Specification
+                Product details
               </CardTitle>
               <Badge variant={product.isActive ? 'emerald' : 'red'}>
-                {product.isActive ? 'Active in Catalog' : 'Inactive / Deactivated'}
+                {product.isActive ? 'Active' : 'Inactive'}
               </Badge>
             </div>
           </CardHeader>
@@ -170,7 +170,7 @@ export const ProductDetailPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Catalog Type
+                  Type
                 </span>
                 <Badge variant={product.type === 'SERVICE' ? 'blue' : 'slate'} className="text-xs">
                   {product.type}
@@ -179,27 +179,27 @@ export const ProductDetailPage: React.FC = () => {
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  SKU Code
+                  SKU
                 </span>
                 <span className="font-mono text-xs text-vynexa-text-primary">
-                  {product.sku || 'None assigned'}
+                  {product.sku || 'None'}
                 </span>
               </div>
             </div>
 
             <div>
               <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                Description & Deliverables
+                Description
               </span>
               <p className="text-xs text-vynexa-text-secondary leading-relaxed bg-vynexa-surface-secondary/40 p-3 rounded border border-vynexa-border/40">
-                {product.description || 'No detailed description provided for this catalog item.'}
+                {product.description || 'No description provided.'}
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-vynexa-border/60">
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Unit Price
+                  Unit price
                 </span>
                 <span className="font-mono text-lg font-bold text-vynexa-text-primary">
                   {formatPrice(product.price, product.currency)}
@@ -208,7 +208,7 @@ export const ProductDetailPage: React.FC = () => {
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Default Currency
+                  Currency
                 </span>
                 <span className="font-mono text-xs text-vynexa-text-primary">
                   {product.currency}
@@ -223,14 +223,14 @@ export const ProductDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                Commercial Activity
+                Activity
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               <div className="flex items-center justify-between p-2.5 rounded bg-vynexa-surface-secondary/50 border border-vynexa-border/40">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-vynexa-text-muted" />
-                  <span className="text-xs text-vynexa-text-secondary">Quotes Included</span>
+                  <span className="text-xs text-vynexa-text-secondary">Quotes</span>
                 </div>
                 <span className="font-mono text-xs font-bold text-vynexa-text-primary">
                   {product._count?.quoteItems || 0}
@@ -240,7 +240,7 @@ export const ProductDetailPage: React.FC = () => {
               <div className="flex items-center justify-between p-2.5 rounded bg-vynexa-surface-secondary/50 border border-vynexa-border/40">
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4 text-vynexa-text-muted" />
-                  <span className="text-xs text-vynexa-text-secondary">Orders Fulfilled</span>
+                  <span className="text-xs text-vynexa-text-secondary">Orders</span>
                 </div>
                 <span className="font-mono text-xs font-bold text-vynexa-text-primary">
                   {product._count?.orderItems || 0}
@@ -252,20 +252,16 @@ export const ProductDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                System Audit Metadata
+                Timeline
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-2 text-xs font-mono text-vynexa-text-muted">
-              <div>
-                <span className="text-[10px] text-vynexa-text-secondary block">Record ID:</span>
-                <span className="text-[11px] select-all truncate block">{product.id}</span>
-              </div>
               <div>
                 <span className="text-[10px] text-vynexa-text-secondary block">Created:</span>
                 <span className="text-[11px]">{new Date(product.createdAt).toLocaleString()}</span>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-secondary block">Last Updated:</span>
+                <span className="text-[10px] text-vynexa-text-secondary block">Last updated:</span>
                 <span className="text-[11px]">{new Date(product.updatedAt).toLocaleString()}</span>
               </div>
             </CardContent>
@@ -286,16 +282,16 @@ export const ProductDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Remove Catalog Product"
+        title="Delete product"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
-            Are you sure you want to remove{' '}
+            Are you sure you want to delete{' '}
             <strong className="text-vynexa-text-primary">{product.name}</strong>?
           </p>
           <div className="rounded border border-vynexa-border bg-vynexa-surface-secondary/60 p-3 text-[11px] text-vynexa-text-muted leading-relaxed">
-            <span className="font-semibold text-vynexa-text-primary">Historical Protection Policy:</span> If this product is referenced by historical commercial quotes or orders, it will be safely deactivated (<code className="font-mono text-xs">isActive = false</code>) rather than physically deleted, maintaining full audit trail integrity.
+            If this product is linked to past quotes or orders, it will be deactivated rather than deleted so your sales records remain accurate.
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <Button
@@ -312,7 +308,7 @@ export const ProductDetailPage: React.FC = () => {
               onClick={handleDelete}
               disabled={deleting}
             >
-              {deleting ? 'Removing...' : 'Confirm Remove'}
+              {deleting ? 'Deleting...' : 'Delete product'}
             </Button>
           </div>
         </div>

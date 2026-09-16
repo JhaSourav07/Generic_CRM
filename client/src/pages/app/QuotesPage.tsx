@@ -161,8 +161,8 @@ export const QuotesPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Commercial Quotes"
-        description="Formal proposals, structured line item pricing, customer approvals, and order conversions."
+        title="Quotes"
+        description="Create and manage price quotes for customers."
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Quotes' }
@@ -174,19 +174,19 @@ export const QuotesPage: React.FC = () => {
             className="flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            <span>Create Quote</span>
+            <span>Create quote</span>
           </Button>
         }
       />
 
       {/* Filter Toolbar */}
       <Card className="p-4 bg-vynexa-surface border-vynexa-border">
-        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div className="flex flex-1 items-center gap-3 w-full">
-            <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          <div className="flex flex-wrap flex-1 items-center gap-3 w-full">
+            <div className="relative flex-1 min-w-[200px] max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-vynexa-text-muted" />
               <Input
-                placeholder="Search by quote #, customer, or opportunity..."
+                placeholder="Search quotes, customers, or deals..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -202,9 +202,9 @@ export const QuotesPage: React.FC = () => {
                 setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-40 h-9 text-xs"
+              className="w-40 shrink-0 h-9 text-xs"
             >
-              <option value="">All Statuses</option>
+              <option value="">All statuses</option>
               <option value="DRAFT">Draft</option>
               <option value="SENT">Sent</option>
               <option value="APPROVED">Approved</option>
@@ -213,23 +213,23 @@ export const QuotesPage: React.FC = () => {
             </Select>
           </div>
 
-          <div className="flex items-center gap-2 self-end md:self-auto">
+          <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
             <span className="text-xs text-vynexa-text-muted whitespace-nowrap">Sort:</span>
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-36 h-9 text-xs"
+              className="w-36 shrink-0 h-9 text-xs"
             >
-              <option value="createdAt">Date Created</option>
-              <option value="total">Total Value</option>
-              <option value="quoteNumber">Quote Number</option>
-              <option value="validUntil">Expiration Date</option>
+              <option value="createdAt">Date created</option>
+              <option value="total">Total value</option>
+              <option value="quoteNumber">Quote number</option>
+              <option value="validUntil">Expiration date</option>
             </Select>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="h-9 px-2 text-xs"
+              className="h-9 px-2 text-xs shrink-0"
               title="Toggle sort order"
             >
               {sortOrder === 'asc' ? '↑' : '↓'}
@@ -259,8 +259,8 @@ export const QuotesPage: React.FC = () => {
             <h3 className="text-sm font-semibold text-vynexa-text-primary">No quotes found</h3>
             <p className="text-xs text-vynexa-text-secondary max-w-sm mx-auto">
               {search || statusFilter
-                ? 'No quotes match your active filters. Clear search or filters to see all proposals.'
-                : 'Create your first commercial quote for an account or sales opportunity.'}
+                ? 'No quotes match your search or filters.'
+                : 'Create your first price quote for a customer or deal.'}
             </p>
             {!search && !statusFilter && (
               <Button
@@ -270,7 +270,7 @@ export const QuotesPage: React.FC = () => {
                 className="mt-2"
               >
                 <Plus className="h-3.5 w-3.5 mr-1" />
-                Draft Quote
+                Create quote
               </Button>
             )}
           </div>
@@ -280,12 +280,12 @@ export const QuotesPage: React.FC = () => {
               <thead>
                 <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-muted uppercase tracking-wider font-mono text-[10px]">
                   <th className="py-3 px-4">Quote #</th>
-                  <th className="py-3 px-4">Customer Account</th>
+                  <th className="py-3 px-4">Customer</th>
                   <th className="py-3 px-4">Opportunity</th>
                   <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Grand Total</th>
-                  <th className="py-3 px-4">Valid Until</th>
-                  <th className="py-3 px-4">Created By</th>
+                  <th className="py-3 px-4">Total</th>
+                  <th className="py-3 px-4">Valid until</th>
+                  <th className="py-3 px-4">Created by</th>
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -306,7 +306,7 @@ export const QuotesPage: React.FC = () => {
                           <span className="truncate max-w-[180px]">{q.account.name}</span>
                         </span>
                       ) : (
-                        <span className="text-vynexa-text-muted italic">No account</span>
+                        <span className="text-vynexa-text-muted italic">No customer</span>
                       )}
                     </td>
                     <td className="py-3 px-4 text-vynexa-text-secondary">
@@ -369,7 +369,7 @@ export const QuotesPage: React.FC = () => {
                             className="h-7 px-2 text-[11px] flex items-center gap-1"
                           >
                             <ShoppingBag className="h-3 w-3" />
-                            <span>{q.orders && q.orders.length > 0 ? 'Converted' : 'Convert to Order'}</span>
+                            <span>{q.orders && q.orders.length > 0 ? 'Converted' : 'Create order'}</span>
                           </Button>
                         )}
                       </div>
@@ -425,14 +425,14 @@ export const QuotesPage: React.FC = () => {
       <Dialog
         isOpen={!!convertingQuote}
         onClose={() => setConvertingQuote(null)}
-        title="Convert Quote to Commercial Order"
+        title="Turn quote into order"
         maxWidth="md"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
-            You are converting approved Quote{' '}
+            You are turning approved quote{' '}
             <strong className="text-vynexa-text-primary">#{convertingQuote?.quoteNumber}</strong>{' '}
-            into an official fulfillment Order.
+            into a new customer order.
           </p>
           <div className="p-3 bg-vynexa-surface-secondary/60 rounded border border-vynexa-border/60 font-mono text-xs space-y-1">
             <div className="flex justify-between">
@@ -440,12 +440,12 @@ export const QuotesPage: React.FC = () => {
               <span className="text-vynexa-text-primary font-semibold">{convertingQuote?.account?.name || 'N/A'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-vynexa-text-muted">Approved Total:</span>
+              <span className="text-vynexa-text-muted">Approved total:</span>
               <span className="text-primary font-bold">${convertingQuote?.total ? Number(convertingQuote.total).toFixed(2) : '0.00'}</span>
             </div>
           </div>
-          <p className="text-[11px] text-vynexa-text-muted italic">
-            * The generated order will preserve all approved commercial terms, quantities, discounts, and item pricing exactly as quoted.
+          <p className="text-[11px] text-vynexa-text-muted">
+            The order will keep all approved items, prices, and quantities from this quote.
           </p>
           <div className="flex justify-end gap-3 pt-2">
             <Button
@@ -462,7 +462,7 @@ export const QuotesPage: React.FC = () => {
               onClick={handleConvertToOrder}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Generating Order...' : 'Generate Order'}
+              {actionLoading ? 'Creating order...' : 'Create order'}
             </Button>
           </div>
         </div>

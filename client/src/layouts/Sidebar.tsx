@@ -78,7 +78,7 @@ const navSections: NavSectionConfig[] = [
   {
     title: 'SUPPORT',
     items: [
-      { label: 'Support Cases', path: '/app/support', icon: LifeBuoy, isImplemented: true }
+      { label: 'Support', path: '/app/support', icon: LifeBuoy, isImplemented: true }
     ]
   },
   {
@@ -99,7 +99,7 @@ const navSections: NavSectionConfig[] = [
       { label: 'Users', path: '/app/users', icon: UserCog, isImplemented: true },
       { label: 'Roles & Permissions', path: '/app/roles', icon: ShieldCheck, isImplemented: true },
       { label: 'Settings', path: '/app/settings', icon: Settings, isImplemented: true },
-      { label: 'Audit Logs', path: '/app/audit-logs', icon: History, isImplemented: true }
+      { label: 'Audit Log', path: '/app/audit-logs', icon: History, isImplemented: true }
     ]
   }
 ];
@@ -121,8 +121,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       e.preventDefault();
       toast({
         type: 'info',
-        title: `${item.label} Module`,
-        message: 'This module full lifecycle feature will be unlocked in upcoming prompt updates.'
+        title: `${item.label}`,
+        message: 'This feature is coming soon.'
       });
     } else {
       navigate(item.path);
@@ -149,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                 VYNEXA
               </span>
               <span className="text-[10px] text-vynexa-text-muted font-medium tracking-widest font-mono">
-                CRM Platform
+                CRM
               </span>
             </div>
           )}
@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="hidden md:flex h-6 w-6 items-center justify-center rounded border border-vynexa-border text-vynexa-text-muted hover:text-vynexa-text-primary hover:bg-vynexa-surface-secondary transition-colors"
-          title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
         </button>
@@ -216,8 +216,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-vynexa-text-muted shrink-0" />
             <div className="flex flex-col overflow-hidden">
-              <span className="text-[11px] font-medium text-vynexa-text-primary truncate">Enterprise SaaS</span>
-              <span className="text-[10px] font-mono text-vynexa-text-muted truncate">v1.0.0 — Multi-tenant</span>
+              <span className="text-[11px] font-medium text-vynexa-text-primary truncate">Vynexa CRM</span>
+              <span className="text-[10px] font-mono text-vynexa-text-muted truncate">Connected &amp; secure</span>
             </div>
           </div>
         </div>

@@ -169,8 +169,8 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Opportunity Created',
-        message: `Opportunity '${data.name}' has been created.`
+        title: 'Deal added',
+        message: `Deal '${data.name}' added.`
       });
 
       onSuccess();
@@ -178,8 +178,8 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Failed to Create Opportunity',
-        message: err.message || 'An error occurred while creating the opportunity.'
+        title: 'Could not add deal',
+        message: err.message || 'An error occurred while creating the deal.'
       });
     } finally {
       setLoading(false);
@@ -187,29 +187,29 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Create New Opportunity" maxWidth="lg">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Add deal" maxWidth="lg">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Deal Name */}
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Opportunity Name <span className="text-vynexa-danger">*</span>
+            Deal name <span className="text-vynexa-danger">*</span>
           </label>
           <Input
             {...register('name')}
-            placeholder="e.g. Acme Corp Enterprise Expansion"
+            placeholder="e.g. Acme Corp expansion"
             className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary placeholder:text-vynexa-text-muted"
           />
           {errors.name && <p className="text-xs text-vynexa-danger mt-1">{errors.name.message}</p>}
         </div>
 
-        {/* Customer Account & Contact */}
+        {/* Customer & Contact */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Customer Account
+              Customer
             </label>
             <Select {...register('accountId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
-              <option value="">Select Account (Optional)</option>
+              <option value="">Select customer (optional)</option>
               {customers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -220,10 +220,10 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Primary Contact
+              Contact person
             </label>
             <Select {...register('contactId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
-              <option value="">Select Contact (Optional)</option>
+              <option value="">Select contact (optional)</option>
               {filteredContacts.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.firstName} {c.lastName} {c.email ? `(${c.email})` : ''}
@@ -237,7 +237,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Sales Pipeline <span className="text-vynexa-danger">*</span>
+              Pipeline <span className="text-vynexa-danger">*</span>
             </label>
             <Select
               value={selectedPipelineId}
@@ -255,7 +255,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Pipeline Stage <span className="text-vynexa-danger">*</span>
+              Stage <span className="text-vynexa-danger">*</span>
             </label>
             <Select
               value={watch('stageId')}
@@ -276,7 +276,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Deal Value ($) <span className="text-vynexa-danger">*</span>
+              Value ($) <span className="text-vynexa-danger">*</span>
             </label>
             <Input
               type="number"
@@ -290,7 +290,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Win Probability (%)
+              Win probability (%)
             </label>
             <Input
               type="number"
@@ -303,11 +303,11 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
           </div>
         </div>
 
-        {/* Expected Close Date & Owner */}
+        {/* Target Close Date & Owner */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Expected Close Date
+              Target close date
             </label>
             <Input
               type="date"
@@ -321,10 +321,10 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Deal Owner
+              Assigned to
             </label>
             <Select {...register('ownerId')} className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary">
-              <option value="">Current User (Default)</option>
+              <option value="">Current user</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name} ({u.email})
@@ -337,11 +337,11 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
         {/* Description */}
         <div>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Description & Notes
+            Notes
           </label>
           <Textarea
             {...register('description')}
-            placeholder="Deal context, key decision makers, scope, or timeline..."
+            placeholder="Add notes about this deal..."
             rows={3}
             className="w-full bg-vynexa-surface border-vynexa-border text-vynexa-text-primary placeholder:text-vynexa-text-muted text-xs"
           />
@@ -352,7 +352,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-            Create Opportunity
+            Add deal
           </Button>
         </div>
       </form>

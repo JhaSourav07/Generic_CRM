@@ -96,7 +96,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
 
       toast({
         type: 'success',
-        title: 'Customer Updated',
+        title: 'Customer updated',
         message: `Customer '${data.name}' updated successfully.`
       });
 
@@ -105,7 +105,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Update Failed',
+        title: 'Update failed',
         message: err.message || 'An error occurred while updating customer account.'
       });
     } finally {
@@ -117,19 +117,19 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Customer Account"
-      description={`Update information for customer '${customer.name}'`}
+      title="Edit customer"
+      description={`Update details for ${customer.name}`}
       maxWidth="lg"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Customer Name *"
+            label="Company name *"
             {...register('name')}
             error={errors.name?.message}
           />
           <Input
-            label="Industry / Sector"
+            label="Industry"
             {...register('industry')}
             error={errors.industry?.message}
           />
@@ -137,18 +137,18 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
 
         <div className="grid grid-cols-3 gap-4">
           <Input
-            label="Corporate Email"
+            label="Email address"
             type="email"
             {...register('email')}
             error={errors.email?.message}
           />
           <Input
-            label="Main Phone"
+            label="Phone number"
             {...register('phone')}
             error={errors.phone?.message}
           />
           <Input
-            label="Website URL"
+            label="Website"
             {...register('website')}
             error={errors.website?.message}
           />
@@ -161,7 +161,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
             error={errors.city?.message}
           />
           <Input
-            label="State / Province"
+            label="State / Region"
             {...register('state')}
             error={errors.state?.message}
           />
@@ -173,9 +173,9 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
         </div>
 
         <Select
-          label="Account Owner"
+          label="Assigned to"
           options={[
-            { value: '', label: 'Select an owner...' },
+            { value: '', label: 'Unassigned' },
             ...users.map(u => ({ value: u.id, label: `${u.name} (${u.role.name})` }))
           ]}
           {...register('ownerId')}
@@ -183,7 +183,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
         />
 
         <Textarea
-          label="Notes / Overview"
+          label="Notes"
           rows={3}
           {...register('notes')}
           error={errors.notes?.message}
@@ -194,7 +194,7 @@ export const EditCustomerModal: React.FC<EditCustomerModalProps> = ({ isOpen, cu
             Cancel
           </Button>
           <Button type="submit" variant="primary" isLoading={loading}>
-            Save Changes
+            Save changes
           </Button>
         </div>
       </form>

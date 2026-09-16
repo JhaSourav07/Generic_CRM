@@ -42,8 +42,8 @@ export const ChangeStageModal: React.FC<ChangeStageModalProps> = ({
       const newStage = stages.find((s) => s.id === selectedStageId);
       toast({
         type: 'success',
-        title: 'Stage Updated',
-        message: `'${opportunity.name}' moved to '${newStage?.name || 'new stage'}'.`
+        title: 'Stage updated',
+        message: `'${opportunity.name}' moved to ${newStage?.name || 'new stage'}.`
       });
 
       onSuccess();
@@ -51,7 +51,7 @@ export const ChangeStageModal: React.FC<ChangeStageModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Failed to Change Stage',
+        title: 'Could not change stage',
         message: err.message || 'Could not change opportunity stage.'
       });
     } finally {
@@ -60,14 +60,14 @@ export const ChangeStageModal: React.FC<ChangeStageModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Change Pipeline Stage" maxWidth="sm">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Change stage" maxWidth="sm">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <p className="text-xs text-vynexa-text-secondary mb-3">
-            Select the new pipeline stage for deal <span className="font-semibold text-vynexa-text-primary">{opportunity?.name}</span>:
+            Choose a new stage for <span className="font-semibold text-vynexa-text-primary">{opportunity?.name}</span>:
           </p>
           <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-            Target Stage
+            New stage
           </label>
           <Select
             value={selectedStageId}
@@ -87,7 +87,7 @@ export const ChangeStageModal: React.FC<ChangeStageModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-            Update Stage
+            Change stage
           </Button>
         </div>
       </form>

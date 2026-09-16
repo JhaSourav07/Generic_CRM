@@ -71,7 +71,7 @@ export const CustomerDetailPage: React.FC = () => {
       const data = await customersService.getCustomer(id);
       setCustomer(data);
     } catch (err: any) {
-      setError(err.message || 'Failed to load customer record');
+      setError(err.message || 'Could not load customer details. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -88,15 +88,15 @@ export const CustomerDetailPage: React.FC = () => {
       await customersService.deleteCustomer(customer.id);
       toast({
         type: 'success',
-        title: 'Customer Deleted',
-        message: `Account '${customer.name}' deleted.`
+        title: 'Customer deleted',
+        message: `${customer.name} has been removed.`
       });
       navigate('/app/customers');
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Deletion Failed',
-        message: err.message || 'Failed to delete customer account.'
+        title: 'Could not delete customer',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeleting(false);
@@ -110,16 +110,16 @@ export const CustomerDetailPage: React.FC = () => {
       await contactsService.deleteContact(selectedContactForDelete.id);
       toast({
         type: 'success',
-        title: 'Contact Deleted',
-        message: `Contact '${selectedContactForDelete.firstName} ${selectedContactForDelete.lastName}' soft-deleted.`
+        title: 'Contact deleted',
+        message: `${selectedContactForDelete.firstName} ${selectedContactForDelete.lastName} has been removed.`
       });
       setSelectedContactForDelete(null);
       fetchCustomerDetails();
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Deletion Failed',
-        message: err.message || 'Failed to delete contact.'
+        title: 'Could not delete contact',
+        message: err.message || 'An error occurred while deleting.'
       });
     } finally {
       setDeletingContact(false);
@@ -148,7 +148,7 @@ export const CustomerDetailPage: React.FC = () => {
       case 'enterprise':
         return <Badge variant="amber" className="font-mono">Enterprise</Badge>;
       case 'vip':
-        return <Badge variant="blue" className="font-mono">VIP Tier</Badge>;
+        return <Badge variant="blue" className="font-mono">VIP</Badge>;
       case 'premium':
         return <Badge variant="emerald" className="font-mono">Premium</Badge>;
       case 'standard':
@@ -194,12 +194,12 @@ export const CustomerDetailPage: React.FC = () => {
           onClick={() => navigate('/app/customers')}
           leftIcon={<ArrowLeft className="h-4 w-4" />}
         >
-          Back to Customers
+          Back to customers
         </Button>
         <Card className="bg-vynexa-surface border-vynexa-border p-8 text-center">
-          <p className="text-vynexa-danger font-medium mb-4">{error || 'Customer record not found'}</p>
+          <p className="text-vynexa-danger font-medium mb-4">{error || 'Customer not found'}</p>
           <Button variant="primary" size="sm" onClick={() => navigate('/app/customers')}>
-            Return to Customers Directory
+            Back to customers
           </Button>
         </Card>
       </div>
@@ -211,9 +211,9 @@ export const CustomerDetailPage: React.FC = () => {
       {/* Header Bar */}
       <PageHeader
         title={customer.name}
-        description={`Organization Account ID: ${customer.id}`}
+        description={customer.industry ? `${customer.industry}` : 'Customer details'}
         breadcrumbs={[
-          { label: 'Application', href: '/app/dashboard' },
+          { label: 'Workspace', href: '/app/dashboard' },
           { label: 'Customers', href: '/app/customers' },
           { label: customer.name }
         ]}
@@ -225,7 +225,7 @@ export const CustomerDetailPage: React.FC = () => {
               leftIcon={<Edit2 className="h-3.5 w-3.5" />}
               onClick={() => setIsEditModalOpen(true)}
             >
-              Edit Account
+              Edit customer
             </Button>
             <Button
               variant="danger"
@@ -255,7 +255,7 @@ export const CustomerDetailPage: React.FC = () => {
                     {customer.name}
                   </h2>
                   <p className="text-xs text-vynexa-text-secondary">
-                    {customer.industry || 'Industry unspecified'}
+                    {customer.industry || 'No industry specified'}
                   </p>
                 </div>
               </div>
@@ -268,7 +268,7 @@ export const CustomerDetailPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="flex items-center gap-2 text-vynexa-text-secondary">
                 <Globe className="h-4 w-4 text-vynexa-text-muted" />
-                <span className="font-semibold text-vynexa-text-primary">Website / Domain:</span>
+                <span className="font-semibold text-vynexa-text-primary">Website:</span>
                 <span>{customer.domain || customer.website || 'N/A'}</span>
               </div>
 
@@ -286,7 +286,7 @@ export const CustomerDetailPage: React.FC = () => {
 
               <div className="flex items-center gap-2 text-vynexa-text-secondary">
                 <DollarSign className="h-4 w-4 text-vynexa-text-muted" />
-                <span className="font-semibold text-vynexa-text-primary">Annual Revenue:</span>
+                <span className="font-semibold text-vynexa-text-primary">Annual revenue:</span>
                 <span className="font-mono text-vynexa-text-primary">{formatCurrency(customer.annualRevenue)}</span>
               </div>
 
@@ -296,7 +296,7 @@ export const CustomerDetailPage: React.FC = () => {
                 <span>
                   {[customer.address, customer.city, customer.state, customer.postalCode, customer.country]
                     .filter(Boolean)
-                    .join(', ') || 'Address unspecified'}
+                    .join(', ') || 'No address specified'}
                 </span>
               </div>
             </div>
@@ -304,7 +304,7 @@ export const CustomerDetailPage: React.FC = () => {
             {customer.notes && (
               <div className="mt-4 pt-4 border-t border-vynexa-border">
                 <h4 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-                  Account Notes
+                  Notes
                 </h4>
                 <p className="text-xs text-vynexa-text-primary bg-vynexa-elevated/50 p-3 rounded-lg border border-vynexa-border whitespace-pre-wrap">
                   {customer.notes}
@@ -319,7 +319,7 @@ export const CustomerDetailPage: React.FC = () => {
               <div>
                 <CardTitle className="text-base flex items-center gap-2">
                   <Users className="h-4 w-4 text-vynexa-text-secondary" />
-                  Key Account Contacts ({customer.contacts?.length || 0})
+                  Contacts ({customer.contacts?.length || 0})
                 </CardTitle>
               </div>
               <Button
@@ -328,27 +328,27 @@ export const CustomerDetailPage: React.FC = () => {
                 leftIcon={<Plus className="h-3.5 w-3.5" />}
                 onClick={() => setIsCreateContactOpen(true)}
               >
-                Add Contact
+                Add contact
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               {!customer.contacts || customer.contacts.length === 0 ? (
                 <div className="p-8 text-center">
                   <UserCheck className="h-8 w-8 text-vynexa-text-muted mx-auto mb-2" />
-                  <p className="text-sm font-medium text-vynexa-text-primary">No Contacts Linked</p>
+                  <p className="text-sm font-medium text-vynexa-text-primary">No contacts yet</p>
                   <p className="text-xs text-vynexa-text-secondary mt-1">
-                    Add decision makers and primary points of contact for this company.
+                    Add people who work at this company.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>NAME</TableHead>
-                      <TableHead>TITLE / DEPT</TableHead>
-                      <TableHead>EMAIL / PHONE</TableHead>
-                      <TableHead>ROLE</TableHead>
-                      <TableHead className="text-right">ACTIONS</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Title &amp; department</TableHead>
+                      <TableHead>Email &amp; phone</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -372,7 +372,7 @@ export const CustomerDetailPage: React.FC = () => {
                         </TableCell>
                         <TableCell>
                           {c.isPrimary ? (
-                            <Badge variant="emerald" className="text-[10px]">Primary Contact</Badge>
+                            <Badge variant="emerald" className="text-[10px]">Primary contact</Badge>
                           ) : (
                             <span className="text-xs text-vynexa-text-muted">Standard</span>
                           )}
@@ -411,7 +411,7 @@ export const CustomerDetailPage: React.FC = () => {
               <div>
                 <CardTitle className="text-base flex items-center gap-2">
                   <TrendingUp className="h-4 w-4 text-vynexa-text-secondary" />
-                  Deals & Opportunities ({customer.opportunities?.length || 0})
+                  Opportunities ({customer.opportunities?.length || 0})
                 </CardTitle>
               </div>
               <Button
@@ -420,28 +420,28 @@ export const CustomerDetailPage: React.FC = () => {
                 leftIcon={<Plus className="h-3.5 w-3.5" />}
                 onClick={() => setIsCreateOpportunityOpen(true)}
               >
-                New Opportunity
+                Add opportunity
               </Button>
             </CardHeader>
             <CardContent className="p-0">
               {!customer.opportunities || customer.opportunities.length === 0 ? (
                 <div className="p-8 text-center">
                   <Briefcase className="h-8 w-8 text-vynexa-text-muted mx-auto mb-2" />
-                  <p className="text-sm font-medium text-vynexa-text-primary">No Opportunities Recorded</p>
+                  <p className="text-sm font-medium text-vynexa-text-primary">No opportunities yet</p>
                   <p className="text-xs text-vynexa-text-secondary mt-1">
-                    Track potential deals, estimated revenue, and pipeline stage movement for this account.
+                    Track potential deals and sales for this customer.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>OPPORTUNITY</TableHead>
-                      <TableHead>STAGE</TableHead>
-                      <TableHead>VALUE</TableHead>
-                      <TableHead>STATUS</TableHead>
-                      <TableHead>CLOSE DATE</TableHead>
-                      <TableHead className="text-right">ACTION</TableHead>
+                      <TableHead>Deal</TableHead>
+                      <TableHead>Stage</TableHead>
+                      <TableHead>Value</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Target close</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -510,12 +510,12 @@ export const CustomerDetailPage: React.FC = () => {
           {/* Metadata Card */}
           <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-4">
             <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Account Metadata
+              Customer details
             </h3>
             <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" /> Created Date
+                  <Calendar className="h-3.5 w-3.5" /> Created
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(customer.createdAt).toLocaleDateString()}
@@ -523,7 +523,7 @@ export const CustomerDetailPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" /> Last Updated
+                  <Calendar className="h-3.5 w-3.5" /> Updated
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {new Date(customer.updatedAt).toLocaleDateString()}
@@ -531,7 +531,7 @@ export const CustomerDetailPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-vynexa-text-muted flex items-center gap-1.5">
-                  <Users className="h-3.5 w-3.5" /> Total Contacts
+                  <Users className="h-3.5 w-3.5" /> Total contacts
                 </span>
                 <span className="font-mono text-vynexa-text-primary">
                   {customer.contacts?.length || 0}
@@ -544,7 +544,7 @@ export const CustomerDetailPage: React.FC = () => {
           {customer.convertedFromLeads && customer.convertedFromLeads.length > 0 && (
             <Card className="bg-vynexa-surface border-vynexa-border p-5 space-y-3">
               <h3 className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-vynexa-emerald" /> Converted Lead Origin
+                <CheckCircle2 className="h-3.5 w-3.5 text-vynexa-emerald" /> Converted from lead
               </h3>
               {customer.convertedFromLeads.map((lead: any) => (
                 <div key={lead.id} className="p-3 bg-vynexa-elevated rounded-lg border border-vynexa-border text-xs space-y-1">
@@ -606,8 +606,8 @@ export const CustomerDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        title="Delete Customer Account"
-        description="Are you sure you want to delete this customer account? Linked contacts and lead history will remain intact for compliance."
+        title="Delete customer"
+        description="Are you sure you want to delete this customer? This cannot be undone."
       >
         <div className="space-y-4 pt-2">
           <div className="flex justify-end gap-3 pt-4 border-t border-vynexa-border">
@@ -615,7 +615,7 @@ export const CustomerDetailPage: React.FC = () => {
               Cancel
             </Button>
             <Button variant="danger" onClick={handleDeleteCustomer} isLoading={deleting}>
-              Confirm Deletion
+              Delete customer
             </Button>
           </div>
         </div>
@@ -625,13 +625,13 @@ export const CustomerDetailPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedContactForDelete}
         onClose={() => setSelectedContactForDelete(null)}
-        title="Delete Contact"
-        description="Are you sure you want to soft-delete this contact record?"
+        title="Delete contact"
+        description="Are you sure you want to delete this contact? This cannot be undone."
       >
         <div className="space-y-4 pt-2">
           {selectedContactForDelete && (
             <p className="text-xs text-vynexa-text-primary font-semibold">
-              {selectedContactForDelete.firstName} {selectedContactForDelete.lastName} ({selectedContactForDelete.jobTitle || 'No Title'})
+              {selectedContactForDelete.firstName} {selectedContactForDelete.lastName} ({selectedContactForDelete.jobTitle || 'No title'})
             </p>
           )}
           <div className="flex justify-end gap-3 pt-4 border-t border-vynexa-border">
@@ -639,7 +639,7 @@ export const CustomerDetailPage: React.FC = () => {
               Cancel
             </Button>
             <Button variant="danger" onClick={handleDeleteContact} isLoading={deletingContact}>
-              Confirm Deletion
+              Delete contact
             </Button>
           </div>
         </div>

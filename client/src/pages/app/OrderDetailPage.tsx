@@ -167,7 +167,7 @@ export const OrderDetailPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title={`Order #${order.orderNumber}`}
-        description={`Commercial Fulfillment Record • Created ${new Date(order.createdAt).toLocaleDateString()}`}
+        description={`Created on ${new Date(order.createdAt).toLocaleDateString()}`}
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Orders', href: '/app/orders' },
@@ -194,7 +194,7 @@ export const OrderDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Confirm Order</span>
+                <span>Confirm order</span>
               </Button>
             )}
 
@@ -207,7 +207,7 @@ export const OrderDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <RotateCw className="h-3.5 w-3.5" />
-                <span>Start Processing</span>
+                <span>Start processing</span>
               </Button>
             )}
 
@@ -220,7 +220,7 @@ export const OrderDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white"
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Mark Completed</span>
+                <span>Mark as completed</span>
               </Button>
             )}
 
@@ -233,7 +233,7 @@ export const OrderDetailPage: React.FC = () => {
                 className="text-xs flex items-center gap-1.5"
               >
                 <XCircle className="h-3.5 w-3.5" />
-                <span>Cancel</span>
+                <span>Cancel order</span>
               </Button>
             )}
           </div>
@@ -249,7 +249,7 @@ export const OrderDetailPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-vynexa-text-primary flex items-center gap-2">
                   <ShoppingBag className="h-4 w-4 text-vynexa-text-muted" />
-                  Order Overview
+                  Order details
                 </CardTitle>
                 {getStatusBadge(order.status)}
               </div>
@@ -257,7 +257,7 @@ export const OrderDetailPage: React.FC = () => {
             <CardContent className="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Customer Account
+                  Customer
                 </span>
                 <span className="font-semibold text-vynexa-text-primary">
                   {order.account?.name || '—'}
@@ -266,7 +266,7 @@ export const OrderDetailPage: React.FC = () => {
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Source Quote
+                  Quote
                 </span>
                 {order.quote ? (
                   <span
@@ -277,7 +277,7 @@ export const OrderDetailPage: React.FC = () => {
                     <span>#{order.quote.quoteNumber}</span>
                   </span>
                 ) : (
-                  <span className="text-vynexa-text-muted italic">Direct Order</span>
+                  <span className="text-vynexa-text-muted italic">Direct order</span>
                 )}
               </div>
 
@@ -292,7 +292,7 @@ export const OrderDetailPage: React.FC = () => {
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Ordered By
+                  Created by
                 </span>
                 <span className="text-vynexa-text-primary">
                   {order.createdBy?.name || 'System'}
@@ -305,20 +305,20 @@ export const OrderDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border overflow-hidden">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-sm font-semibold text-vynexa-text-primary">
-                Purchased Line Items & Historical Pricing
+                Items in this order
               </CardTitle>
             </CardHeader>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-muted uppercase tracking-wider font-mono text-[10px]">
-                    <th className="py-2.5 px-4">Item & Description</th>
+                    <th className="py-2.5 px-4">Item & description</th>
                     <th className="py-2.5 px-4">SKU</th>
                     <th className="py-2.5 px-3 text-right">Qty</th>
-                    <th className="py-2.5 px-3 text-right">Unit Price</th>
+                    <th className="py-2.5 px-3 text-right">Unit price</th>
                     <th className="py-2.5 px-3 text-right">Discount</th>
                     <th className="py-2.5 px-3 text-right">Tax</th>
-                    <th className="py-2.5 px-4 text-right">Line Total</th>
+                    <th className="py-2.5 px-4 text-right">Total</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-vynexa-border/60">
@@ -364,7 +364,7 @@ export const OrderDetailPage: React.FC = () => {
             <Card className="bg-vynexa-surface border-vynexa-border">
               <CardHeader className="border-b border-vynexa-border pb-3">
                 <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                  Order & Fulfillment Notes
+                  Order notes
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-3">
@@ -381,7 +381,7 @@ export const OrderDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                Order Financial Totals
+                Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-3 font-mono text-xs">
@@ -398,11 +398,11 @@ export const OrderDetailPage: React.FC = () => {
                 <span className="text-vynexa-text-primary">+{formatAmount(order.tax)}</span>
               </div>
               <div className="flex justify-between text-base font-bold text-vynexa-text-primary pt-3 border-t border-vynexa-border">
-                <span>Order Total:</span>
+                <span>Total:</span>
                 <span className="text-primary">{formatAmount(order.total)}</span>
               </div>
               <span className="text-[10px] text-vynexa-text-muted block pt-1 italic text-right">
-                Preserved historical pricing
+                Preserved pricing
               </span>
             </CardContent>
           </Card>
@@ -410,7 +410,7 @@ export const OrderDetailPage: React.FC = () => {
           <Card className="bg-vynexa-surface border-vynexa-border">
             <CardHeader className="border-b border-vynexa-border pb-3">
               <CardTitle className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-                Audit Timeline
+                Timeline
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-2 font-mono text-xs text-vynexa-text-muted">
@@ -419,7 +419,7 @@ export const OrderDetailPage: React.FC = () => {
                 <span className="text-[11px]">{new Date(order.createdAt).toLocaleString()}</span>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-secondary block">Last Updated:</span>
+                <span className="text-[10px] text-vynexa-text-secondary block">Last updated:</span>
                 <span className="text-[11px]">{new Date(order.updatedAt).toLocaleString()}</span>
               </div>
             </CardContent>
@@ -434,12 +434,12 @@ export const OrderDetailPage: React.FC = () => {
       <Dialog
         isOpen={isCancelOpen}
         onClose={() => setIsCancelOpen(false)}
-        title="Cancel Commercial Order"
+        title="Cancel order"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary">
-            Provide a reason for cancelling Order <strong>#{order.orderNumber}</strong>.
+            Enter an optional reason for cancelling order <strong>#{order.orderNumber}</strong>.
           </p>
           <Textarea
             rows={3}
@@ -462,7 +462,7 @@ export const OrderDetailPage: React.FC = () => {
               onClick={handleCancel}
               disabled={actionLoading}
             >
-              {actionLoading ? 'Cancelling...' : 'Confirm Cancellation'}
+              {actionLoading ? 'Cancelling...' : 'Cancel order'}
             </Button>
           </div>
         </div>

@@ -166,8 +166,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Activity Logged',
-        message: `'${data.subject}' recorded in CRM stream.`
+        title: 'Activity logged',
+        message: `'${data.subject}' added.`
       });
 
       onSuccess();
@@ -175,7 +175,7 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Failed to Log Activity',
+        title: 'Could not log activity',
         message: err.message || 'An error occurred while saving the activity.'
       });
     } finally {
@@ -184,12 +184,12 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Log Customer Activity" maxWidth="md">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Log activity" maxWidth="md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs">
         {/* Activity Type Selection Tabs */}
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1.5">
-            Activity Type *
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1.5">
+            Activity type *
           </label>
           <div className="grid grid-cols-5 gap-2">
             {[
@@ -222,12 +222,12 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
 
         {/* Subject */}
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-            Subject / Title *
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Subject *
           </label>
           <Input
             {...register('subject')}
-            placeholder="e.g. Intro call regarding software licensing"
+            placeholder="e.g. Intro call regarding licensing"
             className="bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
           />
           {errors.subject && (
@@ -238,8 +238,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
         {/* Date & Duration */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Date & Time *
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Date & time *
             </label>
             <Input
               type="datetime-local"
@@ -252,8 +252,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Duration (Minutes)
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Duration (minutes)
             </label>
             <Input
               type="number"
@@ -267,8 +267,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
         {/* Target Kind: Account vs Lead */}
         {!initialLeadId && !initialAccountId && (
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Associate With
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Link to
             </label>
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer text-vynexa-text-secondary">
@@ -279,7 +279,7 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
                   onChange={() => setValue('targetKind', 'ACCOUNT')}
                   className="text-vynexa-blue focus:ring-0"
                 />
-                Customer Account / Contact / Deal
+                Customer, contact, or deal
               </label>
               <label className="flex items-center gap-2 cursor-pointer text-vynexa-text-secondary">
                 <input
@@ -289,7 +289,7 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
                   onChange={() => setValue('targetKind', 'LEAD')}
                   className="text-vynexa-blue focus:ring-0"
                 />
-                Prospect Lead
+                Lead
               </label>
             </div>
           </div>
@@ -298,8 +298,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
         {/* Lead Selector */}
         {selectedTargetKind === 'LEAD' ? (
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-              Select Lead
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Lead
             </label>
             <Select
               {...register('leadId')}
@@ -318,15 +318,15 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
           <div className="space-y-3">
             {/* Account Selector */}
             <div>
-              <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                Customer Account
+              <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                Customer
               </label>
               <Select
                 {...register('accountId')}
                 disabled={Boolean(initialAccountId)}
                 className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
               >
-                <option value="">Select customer account...</option>
+                <option value="">Select customer...</option>
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -338,8 +338,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
             {/* Sub-selectors: Contact & Opportunity */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                  Contact Person
+                <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                  Contact person
                 </label>
                 <Select
                   {...register('contactId')}
@@ -356,8 +356,8 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-                  Related Opportunity
+                <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+                  Deal
                 </label>
                 <Select
                   {...register('opportunityId')}
@@ -378,13 +378,13 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
 
         {/* Description / Notes */}
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary mb-1">
-            Notes / Details
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Notes
           </label>
           <Textarea
             {...register('description')}
             rows={3}
-            placeholder="Record outcome, discussed action items, key insights..."
+            placeholder="Add details, outcome, or notes..."
             className="bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary"
           />
         </div>
@@ -395,7 +395,7 @@ export const CreateActivityModal: React.FC<CreateActivityModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" size="sm" isLoading={loading}>
-            Log Activity
+            Log activity
           </Button>
         </div>
       </form>

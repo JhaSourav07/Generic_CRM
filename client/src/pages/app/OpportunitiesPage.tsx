@@ -219,7 +219,7 @@ export const OpportunitiesPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="Opportunities"
-        description="Enterprise sales deal pipeline, value tracking, and probability engine."
+        description="Track potential sales, deal stages, and expected revenue."
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Sales' },
@@ -233,7 +233,7 @@ export const OpportunitiesPage: React.FC = () => {
               leftIcon={<Kanban className="h-3.5 w-3.5" />}
               onClick={() => navigate('/app/pipeline')}
             >
-              Pipeline Board
+              Pipeline view
             </Button>
             <Button
               variant="primary"
@@ -241,7 +241,7 @@ export const OpportunitiesPage: React.FC = () => {
               leftIcon={<Plus className="h-3.5 w-3.5" />}
               onClick={() => setIsCreateOpen(true)}
             >
-              New Opportunity
+              Add opportunity
             </Button>
           </div>
         }
@@ -251,46 +251,46 @@ export const OpportunitiesPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-vynexa-surface border-vynexa-border p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Total Opportunities</span>
+            <span>All opportunities</span>
             <TrendingUp className="h-4 w-4 text-vynexa-text-muted" />
           </div>
           <div className="text-2xl font-bold font-mono text-vynexa-text-primary mt-2">
             {totalCount}
           </div>
-          <div className="text-[11px] text-vynexa-text-muted mt-1">Total recorded deals</div>
+          <div className="text-[11px] text-vynexa-text-muted mt-1">All active and closed deals</div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Open Pipeline Value</span>
+            <span>Open deal value</span>
             <DollarSign className="h-4 w-4 text-vynexa-blue" />
           </div>
           <div className="text-2xl font-bold font-mono text-vynexa-text-primary mt-2">
             {formatCurrency(metrics.openValue)}
           </div>
-          <div className="text-[11px] text-vynexa-text-muted mt-1">Active negotiation pipeline</div>
+          <div className="text-[11px] text-vynexa-text-muted mt-1">Deals currently in progress</div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Closed Won Revenue</span>
+            <span>Won deals</span>
             <Trophy className="h-4 w-4 text-vynexa-emerald" />
           </div>
           <div className="text-2xl font-bold font-mono text-vynexa-emerald mt-2">
             {formatCurrency(metrics.wonValue)}
           </div>
-          <div className="text-[11px] text-vynexa-text-muted mt-1">Recognized commercial wins</div>
+          <div className="text-[11px] text-vynexa-text-muted mt-1">Total value from won deals</div>
         </Card>
 
         <Card className="bg-vynexa-surface border-vynexa-border p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Close Win Rate</span>
+            <span>Win rate</span>
             <TrendingUp className="h-4 w-4 text-vynexa-text-muted" />
           </div>
           <div className="text-2xl font-bold font-mono text-vynexa-text-primary mt-2">
             {metrics.winRate}%
           </div>
-          <div className="text-[11px] text-vynexa-text-muted mt-1">Won vs. lost closed deals</div>
+          <div className="text-[11px] text-vynexa-text-muted mt-1">Percentage of closed deals won</div>
         </Card>
       </div>
 
@@ -305,7 +305,7 @@ export const OpportunitiesPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search deal name, customer, contact, or owner..."
+              placeholder="Search opportunities, customers, or owners..."
               className="pl-9 bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             />
           </div>
@@ -320,7 +320,7 @@ export const OpportunitiesPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             >
-              <option value="">All Pipelines</option>
+              <option value="">All pipelines</option>
               {pipelines.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -338,10 +338,10 @@ export const OpportunitiesPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             >
-              <option value="">All Statuses</option>
-              <option value="OPEN">Open Only</option>
-              <option value="WON">Won Only</option>
-              <option value="LOST">Lost Only</option>
+              <option value="">All statuses</option>
+              <option value="OPEN">Open only</option>
+              <option value="WON">Won only</option>
+              <option value="LOST">Lost only</option>
             </Select>
           </div>
 
@@ -354,7 +354,7 @@ export const OpportunitiesPage: React.FC = () => {
               }}
               className="w-full bg-vynexa-surface-secondary border-vynexa-border text-vynexa-text-primary text-xs"
             >
-              <option value="">All Owners</option>
+              <option value="">All owners</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name}
@@ -389,11 +389,11 @@ export const OpportunitiesPage: React.FC = () => {
             <div>
               <h3 className="text-sm font-semibold text-vynexa-text-primary">No opportunities found</h3>
               <p className="text-xs text-vynexa-text-muted mt-1 max-w-sm mx-auto">
-                No deal records match your query. Create your first sales opportunity to begin tracking.
+                No opportunities match your search. Add an opportunity to start tracking your deals.
               </p>
             </div>
             <Button variant="primary" size="sm" onClick={() => setIsCreateOpen(true)}>
-              <Plus className="h-3.5 w-3.5 mr-1" /> Create Opportunity
+              <Plus className="h-3.5 w-3.5 mr-1" /> Add opportunity
             </Button>
           </div>
         ) : (
@@ -406,7 +406,7 @@ export const OpportunitiesPage: React.FC = () => {
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase">Stage</TableHead>
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase text-right">Value</TableHead>
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase text-center">Probability</TableHead>
-                  <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase">Expected Close</TableHead>
+                  <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase">Expected close</TableHead>
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase">Owner</TableHead>
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase">Status</TableHead>
                   <TableHead className="text-[11px] font-semibold text-vynexa-text-secondary uppercase text-right">Actions</TableHead>
@@ -487,7 +487,7 @@ export const OpportunitiesPage: React.FC = () => {
                           variant="ghost"
                           size="sm"
                           className="h-7 w-7 p-0"
-                          title="View Details"
+                          title="View details"
                           onClick={() => navigate(`/app/opportunities/${opp.id}`)}
                         >
                           <Eye className="h-3.5 w-3.5 text-vynexa-text-secondary" />
@@ -499,7 +499,7 @@ export const OpportunitiesPage: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="h-7 w-7 p-0"
-                              title="Change Stage"
+                              title="Change stage"
                               onClick={() => setSelectedOppForStage(opp)}
                             >
                               <ArrowRightLeft className="h-3.5 w-3.5 text-vynexa-text-secondary" />
@@ -509,7 +509,7 @@ export const OpportunitiesPage: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="h-7 w-7 p-0 text-vynexa-emerald hover:text-vynexa-emerald"
-                              title="Mark Won"
+                              title="Mark as won"
                               onClick={() => setSelectedOppForWon(opp)}
                             >
                               <Trophy className="h-3.5 w-3.5" />
@@ -519,7 +519,7 @@ export const OpportunitiesPage: React.FC = () => {
                               variant="ghost"
                               size="sm"
                               className="h-7 w-7 p-0 text-vynexa-danger hover:text-vynexa-danger"
-                              title="Mark Lost"
+                              title="Mark as lost"
                               onClick={() => setSelectedOppForLost(opp)}
                             >
                               <XCircle className="h-3.5 w-3.5" />
@@ -531,7 +531,7 @@ export const OpportunitiesPage: React.FC = () => {
                           variant="ghost"
                           size="sm"
                           className="h-7 w-7 p-0"
-                          title="Edit"
+                          title="Edit opportunity"
                           onClick={() => setSelectedOppForEdit(opp)}
                         >
                           <Edit2 className="h-3.5 w-3.5 text-vynexa-text-secondary" />
@@ -541,7 +541,7 @@ export const OpportunitiesPage: React.FC = () => {
                           variant="ghost"
                           size="sm"
                           className="h-7 w-7 p-0 text-vynexa-danger hover:text-vynexa-danger"
-                          title="Delete"
+                          title="Delete opportunity"
                           onClick={() => setSelectedOppForDelete(opp)}
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -627,7 +627,7 @@ export const OpportunitiesPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedOppForDelete}
         onClose={() => setSelectedOppForDelete(null)}
-        title="Delete Opportunity"
+        title="Delete opportunity"
         maxWidth="sm"
       >
         <div className="space-y-4">
@@ -636,7 +636,7 @@ export const OpportunitiesPage: React.FC = () => {
             <span className="font-semibold text-vynexa-text-primary">
               {selectedOppForDelete?.name}
             </span>
-            ? This deal will be soft-deleted and removed from active pipeline views.
+            ? This deal will be removed from your active sales pipeline.
           </p>
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-vynexa-border">
             <Button
@@ -653,7 +653,7 @@ export const OpportunitiesPage: React.FC = () => {
               onClick={handleDelete}
               isLoading={deleting}
             >
-              Confirm Delete
+              Delete opportunity
             </Button>
           </div>
         </div>

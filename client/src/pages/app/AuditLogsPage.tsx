@@ -132,28 +132,28 @@ export const AuditLogsPage: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="Audit Logs"
-        description="Immutable, tamper-proof record of system events, security state changes, and commercial workflows."
+        title="Audit log"
+        description="A permanent record of actions, security events, and changes made in your CRM."
       />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Total Logged Events</span>
+            <span>Total events</span>
             <ShieldCheck className="h-4 w-4 text-emerald-400" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-vynexa-text-primary">
             {totalCount.toLocaleString()}
           </div>
           <p className="mt-1 text-[11px] text-vynexa-text-muted">
-            Tracked across all organization resources
+            Recorded across all CRM records
           </p>
         </div>
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Current Filter Matches</span>
+            <span>Filtered events</span>
             <Layers className="h-4 w-4 text-blue-400" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-blue-400">
@@ -166,15 +166,15 @@ export const AuditLogsPage: React.FC = () => {
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Audit Immutability</span>
+            <span>Log protection</span>
             <Activity className="h-4 w-4 text-vynexa-text-muted" />
           </div>
           <div className="mt-2 font-mono text-base font-semibold text-emerald-400 flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            Append-Only Enforcement
+            Permanent & tamper-proof
           </div>
           <p className="mt-1 text-[11px] text-vynexa-text-muted">
-            Read-only API • Client mutations prohibited
+            Records cannot be modified or deleted
           </p>
         </div>
       </div>
@@ -191,7 +191,7 @@ export const AuditLogsPage: React.FC = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Search action, entity..."
+              placeholder="Search by action or record..."
               className="pl-8 h-8 text-xs"
             />
           </div>
@@ -206,7 +206,7 @@ export const AuditLogsPage: React.FC = () => {
               }}
               className="h-8 text-xs"
             >
-              <option value="">All Entities</option>
+              <option value="">All records</option>
               {ENTITY_TYPES.map((et) => (
                 <option key={et} value={et}>
                   {et}
@@ -225,7 +225,7 @@ export const AuditLogsPage: React.FC = () => {
               }}
               className="h-8 text-xs"
             >
-              <option value="">All Team Members</option>
+              <option value="">All team members</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name || u.email}
@@ -244,7 +244,7 @@ export const AuditLogsPage: React.FC = () => {
                 setPage(1);
               }}
               className="h-8 text-xs"
-              placeholder="Start Date"
+              placeholder="From date"
             />
           </div>
 
@@ -258,7 +258,7 @@ export const AuditLogsPage: React.FC = () => {
                 setPage(1);
               }}
               className="h-8 text-xs"
-              placeholder="End Date"
+              placeholder="To date"
             />
           </div>
         </div>
@@ -273,7 +273,7 @@ export const AuditLogsPage: React.FC = () => {
               className="h-7 text-xs text-vynexa-text-muted hover:text-vynexa-text-primary px-2"
             >
               <RefreshCw className="h-3 w-3 mr-1" />
-              Reset All Filters
+              Reset filters
             </Button>
           </div>
         )}
@@ -285,12 +285,12 @@ export const AuditLogsPage: React.FC = () => {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-secondary font-medium select-none">
-                <th className="py-2.5 px-3.5">Timestamp</th>
-                <th className="py-2.5 px-3.5">Actor</th>
+                <th className="py-2.5 px-3.5">Date & time</th>
+                <th className="py-2.5 px-3.5">User</th>
                 <th className="py-2.5 px-3.5">Action</th>
-                <th className="py-2.5 px-3.5">Entity</th>
-                <th className="py-2.5 px-3.5">Entity ID</th>
-                <th className="py-2.5 px-3.5 text-right">Payload</th>
+                <th className="py-2.5 px-3.5">Record type</th>
+                <th className="py-2.5 px-3.5">Record ID</th>
+                <th className="py-2.5 px-3.5 text-right">Details</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-vynexa-border/60">
@@ -303,7 +303,7 @@ export const AuditLogsPage: React.FC = () => {
               ) : logs.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-vynexa-text-muted">
-                    No audit records matching criteria.
+                    No audit events found. Try adjusting your search or filters.
                   </td>
                 </tr>
               ) : (
@@ -333,7 +333,7 @@ export const AuditLogsPage: React.FC = () => {
                           </div>
                         </div>
                       ) : (
-                        <span className="text-vynexa-text-muted italic">System / Anonymous</span>
+                        <span className="text-vynexa-text-muted italic">System</span>
                       )}
                     </td>
                     <td className="py-2.5 px-3.5">
@@ -353,7 +353,7 @@ export const AuditLogsPage: React.FC = () => {
                         className="h-6 px-2 text-[11px] border-vynexa-border text-vynexa-text-secondary hover:text-vynexa-text-primary"
                       >
                         <Eye className="h-3 w-3 mr-1" />
-                        Inspect
+                        View details
                       </Button>
                     </td>
                   </tr>
@@ -397,8 +397,8 @@ export const AuditLogsPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedLog}
         onClose={() => setSelectedLog(null)}
-        title="Audit Event Details"
-        description="Inspect event payload and before/after transition diff."
+        title="Audit event details"
+        description="Review details and changes for this event."
         maxWidth="lg"
       >
         {selectedLog && (
@@ -409,25 +409,25 @@ export const AuditLogsPage: React.FC = () => {
                 <div className="mt-0.5 font-medium text-vynexa-text-primary">{selectedLog.action}</div>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Timestamp</span>
+                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Date & time</span>
                 <div className="mt-0.5 font-mono text-vynexa-text-primary">{new Date(selectedLog.createdAt).toISOString()}</div>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Entity Type</span>
+                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Record type</span>
                 <div className="mt-0.5 text-vynexa-text-primary">{selectedLog.entity}</div>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Entity ID</span>
+                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Record ID</span>
                 <div className="mt-0.5 font-mono text-vynexa-text-primary text-[11px] truncate">{selectedLog.entityId}</div>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Actor</span>
+                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">User</span>
                 <div className="mt-0.5 text-vynexa-text-primary">
                   {selectedLog.user ? `${selectedLog.user.name} (${selectedLog.user.email})` : 'System'}
                 </div>
               </div>
               <div>
-                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Log ID</span>
+                <span className="text-[10px] text-vynexa-text-muted uppercase tracking-wider font-mono">Event ID</span>
                 <div className="mt-0.5 font-mono text-[11px] text-vynexa-text-muted truncate">{selectedLog.id}</div>
               </div>
             </div>
@@ -437,7 +437,7 @@ export const AuditLogsPage: React.FC = () => {
               {selectedLog.oldValue && (
                 <div>
                   <h5 className="text-[11px] font-semibold text-vynexa-text-secondary mb-1">
-                    Previous State (oldValue)
+                    Previous values
                   </h5>
                   <pre className="p-3 rounded bg-vynexa-surface-secondary text-[11px] font-mono text-rose-300 border border-vynexa-border overflow-x-auto">
                     {JSON.stringify(selectedLog.oldValue, null, 2)}
@@ -448,7 +448,7 @@ export const AuditLogsPage: React.FC = () => {
               {selectedLog.newValue && (
                 <div>
                   <h5 className="text-[11px] font-semibold text-vynexa-text-secondary mb-1">
-                    Modified State (newValue)
+                    New values
                   </h5>
                   <pre className="p-3 rounded bg-vynexa-surface-secondary text-[11px] font-mono text-emerald-300 border border-vynexa-border overflow-x-auto">
                     {JSON.stringify(selectedLog.newValue, null, 2)}
@@ -459,7 +459,7 @@ export const AuditLogsPage: React.FC = () => {
               {selectedLog.metadata && (
                 <div>
                   <h5 className="text-[11px] font-semibold text-vynexa-text-secondary mb-1">
-                    Context Metadata
+                    Additional information
                   </h5>
                   <pre className="p-3 rounded bg-vynexa-surface-secondary text-[11px] font-mono text-vynexa-text-secondary border border-vynexa-border overflow-x-auto">
                     {JSON.stringify(selectedLog.metadata, null, 2)}

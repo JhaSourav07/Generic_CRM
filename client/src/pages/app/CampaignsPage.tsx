@@ -120,8 +120,8 @@ export const CampaignsPage: React.FC = () => {
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
-        title="Marketing Campaigns"
-        description="Track lead acquisition sources, multi-channel initiatives, pipeline attribution, and real ROI."
+        title="Campaigns"
+        description="Plan marketing campaigns, track lead sources, and monitor results."
         actions={
           <Button
             variant="primary"
@@ -129,7 +129,7 @@ export const CampaignsPage: React.FC = () => {
             className="flex items-center gap-1.5 shadow-sm"
           >
             <Plus className="h-4 w-4" />
-            <span>Create Campaign</span>
+            <span>Add campaign</span>
           </Button>
         }
       />
@@ -138,7 +138,7 @@ export const CampaignsPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Total Campaigns</span>
+            <span>All campaigns</span>
             <Megaphone className="h-4 w-4 text-vynexa-text-muted" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-vynexa-text-primary">
@@ -148,7 +148,7 @@ export const CampaignsPage: React.FC = () => {
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Active Campaigns</span>
+            <span>Active campaigns</span>
             <TrendingUp className="h-4 w-4 text-emerald-400" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-emerald-400">
@@ -158,7 +158,7 @@ export const CampaignsPage: React.FC = () => {
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Page Budget Aggregate</span>
+            <span>Total budget</span>
             <DollarSign className="h-4 w-4 text-vynexa-text-muted" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-vynexa-text-primary">
@@ -168,7 +168,7 @@ export const CampaignsPage: React.FC = () => {
 
         <div className="rounded-lg border border-vynexa-border bg-vynexa-surface p-4">
           <div className="flex items-center justify-between text-xs text-vynexa-text-secondary">
-            <span>Linked Campaign Leads</span>
+            <span>Leads generated</span>
             <Users className="h-4 w-4 text-blue-400" />
           </div>
           <div className="mt-2 font-mono text-2xl font-semibold text-blue-400">
@@ -178,9 +178,9 @@ export const CampaignsPage: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 justify-between bg-vynexa-surface p-3 rounded-lg border border-vynexa-border">
-        <div className="flex flex-1 items-center gap-2.5 w-full sm:w-auto">
-          <div className="relative flex-1 sm:max-w-xs">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 justify-between bg-vynexa-surface p-3 rounded-lg border border-vynexa-border">
+        <div className="flex flex-wrap flex-1 items-center gap-2.5 w-full sm:w-auto">
+          <div className="relative flex-1 min-w-[180px] sm:max-w-xs">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-vynexa-text-muted" />
             <Input
               value={search}
@@ -193,7 +193,7 @@ export const CampaignsPage: React.FC = () => {
             />
           </div>
 
-          <div className="w-36">
+          <div className="w-36 shrink-0">
             <Select
               value={status}
               onChange={(e) => {
@@ -202,7 +202,7 @@ export const CampaignsPage: React.FC = () => {
               }}
               className="h-9 text-xs"
             >
-              <option value="">All Statuses</option>
+              <option value="">All statuses</option>
               <option value="PLANNING">Planning</option>
               <option value="ACTIVE">Active</option>
               <option value="PAUSED">Paused</option>
@@ -211,7 +211,7 @@ export const CampaignsPage: React.FC = () => {
             </Select>
           </div>
 
-          <div className="w-40">
+          <div className="w-44 shrink-0">
             <Select
               value={type}
               onChange={(e) => {
@@ -220,13 +220,13 @@ export const CampaignsPage: React.FC = () => {
               }}
               className="h-9 text-xs"
             >
-              <option value="">All Types</option>
-              <option value="Email Marketing">Email Marketing</option>
+              <option value="">All types</option>
+              <option value="Email Marketing">Email marketing</option>
               <option value="Webinar">Webinar</option>
-              <option value="Paid Search / SEM">Paid Search / SEM</option>
-              <option value="Paid Social">Paid Social</option>
+              <option value="Paid Search / SEM">Paid search (SEM)</option>
+              <option value="Paid Social">Paid social</option>
               <option value="Event / Conference">Event / Conference</option>
-              <option value="Outbound Prospecting">Outbound Prospecting</option>
+              <option value="Outbound Prospecting">Outbound prospecting</option>
             </Select>
           </div>
         </div>
@@ -238,10 +238,10 @@ export const CampaignsPage: React.FC = () => {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-vynexa-border bg-vynexa-surface-secondary/50 text-vynexa-text-secondary font-medium select-none">
-                <th className="py-3 px-4">Campaign Name</th>
+                <th className="py-3 px-4">Campaign</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Type</th>
-                <th className="py-3 px-4">Duration</th>
+                <th className="py-3 px-4">Dates</th>
                 <th className="py-3 px-4 text-right">Budget</th>
                 <th className="py-3 px-4 text-center">Leads</th>
                 <th className="py-3 px-4 text-right">Actions</th>
@@ -257,7 +257,7 @@ export const CampaignsPage: React.FC = () => {
               ) : campaigns.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-vynexa-text-muted">
-                    No marketing campaigns found. Create your first campaign to begin tracking attribution.
+                    No campaigns found. Add your first campaign to start tracking lead sources.
                   </td>
                 </tr>
               ) : (
@@ -311,7 +311,7 @@ export const CampaignsPage: React.FC = () => {
                           size="sm"
                           onClick={() => navigate(`/app/campaigns/${c.id}`)}
                           className="h-7 w-7 p-0 text-vynexa-text-muted hover:text-vynexa-text-primary"
-                          title="View Campaign Details & Leads"
+                          title="View campaign"
                         >
                           <Eye className="h-3.5 w-3.5" />
                         </Button>
@@ -320,7 +320,7 @@ export const CampaignsPage: React.FC = () => {
                           size="sm"
                           onClick={() => setEditingCampaign(c)}
                           className="h-7 w-7 p-0 text-vynexa-text-muted hover:text-vynexa-text-primary"
-                          title="Edit Campaign"
+                          title="Edit campaign"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </Button>
@@ -329,7 +329,7 @@ export const CampaignsPage: React.FC = () => {
                           size="sm"
                           onClick={() => handleDelete(c)}
                           className="h-7 w-7 p-0 text-vynexa-text-muted hover:text-vynexa-status-danger"
-                          title="Delete Campaign"
+                          title="Delete campaign"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>

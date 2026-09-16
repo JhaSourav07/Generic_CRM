@@ -94,8 +94,8 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
 
       toast({
         type: 'success',
-        title: 'Lead Converted Successfully!',
-        message: `Lead converted to Account, Contact${createOpportunity ? ', and Opportunity' : ''}.`
+        title: 'Lead converted',
+        message: `Lead converted to customer, contact${createOpportunity ? ', and deal' : ''}.`
       });
 
       onSuccess(result);
@@ -103,8 +103,8 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Conversion Failed',
-        message: err.message || 'An error occurred during atomic conversion transaction.'
+        title: 'Conversion failed',
+        message: err.message || 'An error occurred while converting the lead.'
       });
     } finally {
       setLoading(false);
@@ -115,8 +115,8 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Convert Lead to Customer & Opportunity"
-      description="Atomic business transaction: converts Lead into Account, Contact, and optional Deal."
+      title="Convert lead"
+      description="Convert this lead into a customer and contact person, with an optional deal."
       maxWidth="xl"
     >
       <form onSubmit={handleConvert} className="space-y-6">
@@ -132,7 +132,7 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
         <div className="p-3 bg-vynexa-surface-secondary border border-vynexa-border rounded-md text-xs space-y-1">
           <div className="flex items-center justify-between">
             <span className="font-semibold text-vynexa-text-primary">
-              Target Lead: {lead.firstName} {lead.lastName}
+              Lead: {lead.firstName} {lead.lastName}
             </span>
             <Badge variant="emerald">Score: {lead.score}</Badge>
           </div>
@@ -141,21 +141,21 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
           </p>
         </div>
 
-        {/* 1. Account / Customer Section */}
+        {/* 1. Customer Section */}
         <div className="space-y-3 p-4 bg-vynexa-surface rounded-lg border border-vynexa-border">
           <div className="flex items-center gap-2 text-sm font-semibold text-vynexa-text-primary">
             <Building2 className="h-4 w-4 text-emerald-400" />
-            <span>1. Account (Customer Company)</span>
+            <span>1. Customer</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Account / Company Name *"
+              label="Company name *"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
               required
             />
             <Input
-              label="Industry / Sector"
+              label="Industry"
               placeholder="e.g. Technology, Finance"
               value={accountIndustry}
               onChange={(e) => setAccountIndustry(e.target.value)}
@@ -167,17 +167,17 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
         <div className="space-y-3 p-4 bg-vynexa-surface rounded-lg border border-vynexa-border">
           <div className="flex items-center gap-2 text-sm font-semibold text-vynexa-text-primary">
             <UserCheck className="h-4 w-4 text-blue-400" />
-            <span>2. Primary Contact Person</span>
+            <span>2. Contact person</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="First Name *"
+              label="First name *"
               value={contactFirstName}
               onChange={(e) => setContactFirstName(e.target.value)}
               required
             />
             <Input
-              label="Last Name *"
+              label="Last name *"
               value={contactLastName}
               onChange={(e) => setContactLastName(e.target.value)}
               required
@@ -196,22 +196,22 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
               onChange={(e) => setContactPhone(e.target.value)}
             />
             <Input
-              label="Job Title"
+              label="Job title"
               value={contactJobTitle}
               onChange={(e) => setContactJobTitle(e.target.value)}
             />
           </div>
         </div>
 
-        {/* 3. Optional Opportunity Deal Section */}
+        {/* 3. Optional Deal Section */}
         <div className="space-y-3 p-4 bg-vynexa-surface rounded-lg border border-vynexa-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-semibold text-vynexa-text-primary">
               <TrendingUp className="h-4 w-4 text-amber-400" />
-              <span>3. Commercial Opportunity Deal</span>
+              <span>3. Deal</span>
             </div>
             <Checkbox
-              label="Create Initial Opportunity"
+              label="Create a deal"
               checked={createOpportunity}
               onCheckedChange={(checked) => setCreateOpportunity(checked)}
             />
@@ -220,13 +220,13 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
           {createOpportunity && (
             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-vynexa-border/60">
               <Input
-                label="Opportunity Name *"
+                label="Deal name *"
                 value={opportunityName}
                 onChange={(e) => setOpportunityName(e.target.value)}
                 required={createOpportunity}
               />
               <Input
-                label="Deal Value ($ USD)"
+                label="Estimated value ($)"
                 type="number"
                 min={0}
                 value={opportunityValue}
@@ -247,7 +247,7 @@ export const ConvertLeadDialog: React.FC<ConvertLeadDialogProps> = ({ isOpen, le
             disabled={lead.status === 'CONVERTED'}
             leftIcon={<UserCheck className="h-4 w-4" />}
           >
-            Execute Conversion
+            Convert lead
           </Button>
         </div>
       </form>

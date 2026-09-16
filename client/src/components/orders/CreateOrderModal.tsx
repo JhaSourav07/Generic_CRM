@@ -152,8 +152,8 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
 
       toast({
         type: 'success',
-        title: 'Order Created',
-        message: 'Commercial order successfully recorded.'
+        title: 'Order created',
+        message: 'Order created successfully.'
       });
 
       onSuccess();
@@ -161,7 +161,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
     } catch (err: any) {
       toast({
         type: 'error',
-        title: 'Order Creation Failed',
+        title: 'Could not create order',
         message: err.message || 'Could not save order.'
       });
     } finally {
@@ -170,14 +170,14 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Create Manual Commercial Order" maxWidth="lg">
+    <Dialog isOpen={isOpen} onClose={onClose} title="Create order" maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-4 pt-2">
         <div>
-          <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-            Customer Account
+          <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+            Customer
           </label>
           <Select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
-            <option value="">Select Account (Optional)</option>
+            <option value="">Select customer (optional)</option>
             {accounts.map((acc) => (
               <option key={acc.id} value={acc.id}>
                 {acc.name}
@@ -189,8 +189,8 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
         {/* Items */}
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between border-b border-vynexa-border pb-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-vynexa-text-muted">
-              Order Items
+            <span className="text-xs font-semibold text-vynexa-text-primary">
+              Order items
             </span>
             <Button
               type="button"
@@ -200,7 +200,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
               className="h-7 text-xs flex items-center gap-1"
             >
               <Plus className="h-3 w-3" />
-              <span>Add Item</span>
+              <span>Add item</span>
             </Button>
           </div>
 
@@ -218,7 +218,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                       onChange={(e) => handleProductSelect(idx, e.target.value)}
                       className="h-8 text-xs"
                     >
-                      <option value="">Custom Item / Service</option>
+                      <option value="">Custom item</option>
                       {products.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.name} ({p.sku || 'No SKU'}) — ${p.price}
@@ -230,7 +230,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                   <div className="col-span-12 md:col-span-8">
                     <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Description *</label>
                     <Input
-                      placeholder="Item deliverables..."
+                      placeholder="Item description or deliverables..."
                       value={it.description}
                       onChange={(e) => handleItemChange(idx, 'description', e.target.value)}
                       className="h-8 text-xs"
@@ -240,7 +240,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
 
                 <div className="grid grid-cols-12 gap-2 items-center">
                   <div className="col-span-6 md:col-span-2">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Qty</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Quantity</label>
                     <Input
                       type="number"
                       min="1"
@@ -251,7 +251,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                   </div>
 
                   <div className="col-span-6 md:col-span-3">
-                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Unit Price ($)</label>
+                    <label className="block text-[10px] text-vynexa-text-muted mb-0.5">Unit price ($)</label>
                     <Input
                       type="number"
                       step="0.01"
@@ -287,7 +287,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                   </div>
 
                   <div className="col-span-10 md:col-span-2 text-right font-mono text-xs">
-                    <span className="block text-[10px] text-vynexa-text-muted">Line Total</span>
+                    <span className="block text-[10px] text-vynexa-text-muted">Total</span>
                     <span className="font-semibold text-vynexa-text-primary">
                       ${Math.max(0, it.quantity * it.unitPrice - (it.discount || 0) + (it.tax || 0)).toFixed(2)}
                     </span>
@@ -313,12 +313,12 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
         {/* Calculation Preview & Notes */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-vynexa-border">
           <div>
-            <label className="block text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider mb-1">
-              Order Notes
+            <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
+              Notes
             </label>
             <Textarea
               rows={3}
-              placeholder="Commercial terms, PO number, fulfillment notes..."
+              placeholder="PO number, fulfillment details, or notes..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
@@ -331,20 +331,20 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
                 <span>${preview.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Total Discount:</span>
+                <span>Discount:</span>
                 <span>-${preview.discount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-vynexa-text-secondary">
-                <span>Total Tax:</span>
+                <span>Tax:</span>
                 <span>+${preview.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm font-bold text-vynexa-text-primary pt-2 border-t border-vynexa-border">
-                <span>Order Total:</span>
+                <span>Total:</span>
                 <span className="text-primary">${preview.total.toFixed(2)}</span>
               </div>
             </div>
-            <span className="text-[10px] text-vynexa-text-muted mt-2 block italic">
-              * Authoritative calculations are enforced server-side.
+            <span className="text-[10px] text-vynexa-text-muted mt-2 block">
+              * Final totals will be confirmed upon saving.
             </span>
           </div>
         </div>
@@ -354,7 +354,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
             Cancel
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Creating Order...' : 'Create Order'}
+            {loading ? 'Creating order...' : 'Create order'}
           </Button>
         </div>
       </form>

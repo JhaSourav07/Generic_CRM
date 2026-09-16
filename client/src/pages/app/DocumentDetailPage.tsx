@@ -155,7 +155,7 @@ export const DocumentDetailPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title={document.name}
-        description={`Original File: ${document.originalName} • Storage Key: ${document.storageKey}`}
+        description={`Original file: ${document.originalName}`}
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Documents', href: '/app/documents' },
@@ -188,7 +188,7 @@ export const DocumentDetailPage: React.FC = () => {
               className="text-xs flex items-center gap-1.5"
             >
               <Download className="h-3.5 w-3.5" />
-              <span>Download File</span>
+              <span>Download</span>
             </Button>
             <Button
               variant="danger"
@@ -210,7 +210,7 @@ export const DocumentDetailPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-vynexa-text-primary flex items-center gap-2.5">
                 {getFileIcon(document.mimeType)}
-                <span>Document Metadata</span>
+                <span>Document details</span>
               </CardTitle>
               <Badge variant="blue">{document.mimeType}</Badge>
             </div>
@@ -219,21 +219,21 @@ export const DocumentDetailPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  File Name
+                  File name
                 </span>
                 <span className="font-semibold text-vynexa-text-primary">{document.name}</span>
               </div>
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Original Uploaded Filename
+                  Original filename
                 </span>
                 <span className="font-mono text-vynexa-text-secondary">{document.originalName}</span>
               </div>
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  File Size
+                  File size
                 </span>
                 <span className="font-mono text-vynexa-text-primary font-semibold">
                   {formatFileSize(document.size)} ({document.size.toLocaleString()} bytes)
@@ -242,52 +242,52 @@ export const DocumentDetailPage: React.FC = () => {
 
               <div>
                 <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                  Storage Key
+                  File ID
                 </span>
                 <span className="font-mono text-[11px] text-vynexa-text-muted truncate block">
-                  {document.storageKey}
+                  {document.id}
                 </span>
               </div>
             </div>
 
             <div className="border-t border-vynexa-border pt-4">
               <h4 className="text-xs font-semibold text-vynexa-text-primary mb-3">
-                Associated CRM Record
+                Linked to
               </h4>
               <div className="p-3 bg-vynexa-surface-secondary/50 rounded-lg border border-vynexa-border text-xs space-y-1">
                 {document.account && (
                   <div className="flex items-center gap-2 text-vynexa-text-primary">
                     <Building2 className="h-4 w-4 text-blue-400" />
-                    <span>Customer Account: <strong>{document.account.name}</strong></span>
+                    <span>Customer: <strong>{document.account.name}</strong></span>
                   </div>
                 )}
                 {document.opportunity && (
                   <div className="flex items-center gap-2 text-vynexa-text-primary">
                     <TrendingUp className="h-4 w-4 text-emerald-400" />
-                    <span>Opportunity Deal: <strong>{document.opportunity.name}</strong></span>
+                    <span>Opportunity: <strong>{document.opportunity.name}</strong></span>
                   </div>
                 )}
                 {document.quote && (
                   <div className="flex items-center gap-2 text-vynexa-text-primary">
                     <FileText className="h-4 w-4 text-amber-400" />
-                    <span>Quote Proposal: <strong>#{document.quote.quoteNumber}</strong></span>
+                    <span>Quote: <strong>#{document.quote.quoteNumber}</strong></span>
                   </div>
                 )}
                 {document.order && (
                   <div className="flex items-center gap-2 text-vynexa-text-primary">
                     <ShoppingBag className="h-4 w-4 text-purple-400" />
-                    <span>Commercial Order: <strong>#{document.order.orderNumber}</strong></span>
+                    <span>Order: <strong>#{document.order.orderNumber}</strong></span>
                   </div>
                 )}
                 {document.supportCase && (
                   <div className="flex items-center gap-2 text-vynexa-text-primary">
                     <LifeBuoy className="h-4 w-4 text-red-400" />
-                    <span>Support Ticket: <strong>{document.supportCase.subject}</strong></span>
+                    <span>Support request: <strong>{document.supportCase.subject}</strong></span>
                   </div>
                 )}
                 {!document.account && !document.opportunity && !document.quote && !document.order && !document.supportCase && (
                   <p className="text-vynexa-text-muted text-xs">
-                    This file is stored in the workspace general documents directory without explicit entity links.
+                    This file is not linked to any specific record.
                   </p>
                 )}
               </div>
@@ -299,13 +299,13 @@ export const DocumentDetailPage: React.FC = () => {
         <Card className="bg-vynexa-surface border-vynexa-border">
           <CardHeader className="border-b border-vynexa-border pb-4">
             <CardTitle className="text-xs font-semibold text-vynexa-text-secondary uppercase tracking-wider">
-              Upload Audit Details
+              Upload details
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 space-y-4 text-xs">
             <div>
               <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                Uploaded By
+                Uploaded by
               </span>
               <div className="flex items-center gap-2 font-medium text-vynexa-text-primary">
                 <User className="h-3.5 w-3.5 text-vynexa-text-muted" />
@@ -318,7 +318,7 @@ export const DocumentDetailPage: React.FC = () => {
 
             <div>
               <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                Upload Date & Time
+                Upload date
               </span>
               <div className="flex items-center gap-2 text-vynexa-text-secondary font-mono text-[11px]">
                 <Clock className="h-3.5 w-3.5 text-vynexa-text-muted" />
@@ -328,7 +328,7 @@ export const DocumentDetailPage: React.FC = () => {
 
             <div>
               <span className="text-[10px] font-mono text-vynexa-text-muted uppercase tracking-wider block mb-1">
-                Last Metadata Update
+                Last modified
               </span>
               <span className="text-vynexa-text-muted font-mono text-[11px] block">
                 {new Date(document.updatedAt).toLocaleString()}
@@ -342,13 +342,13 @@ export const DocumentDetailPage: React.FC = () => {
       <Dialog
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        title="Rename Document"
+        title="Rename document"
         maxWidth="sm"
       >
         <form onSubmit={handleUpdateName} className="space-y-4 pt-2">
           <div>
             <label className="block text-xs font-medium text-vynexa-text-secondary mb-1">
-              Document Display Name
+              Document name
             </label>
             <Input
               value={editName}
@@ -362,7 +362,7 @@ export const DocumentDetailPage: React.FC = () => {
               Cancel
             </Button>
             <Button variant="primary" size="sm" type="submit" disabled={saving || !editName.trim()}>
-              {saving ? 'Saving...' : 'Save Name'}
+              {saving ? 'Saving...' : 'Save changes'}
             </Button>
           </div>
         </form>
@@ -372,20 +372,20 @@ export const DocumentDetailPage: React.FC = () => {
       <Dialog
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="Delete Document"
+        title="Delete document"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
             Are you sure you want to delete <strong className="text-vynexa-text-primary">{document.name}</strong>?
-            This operation will permanently destroy the stored file.
+            This will permanently delete the file.
           </p>
           <div className="flex justify-end gap-3 pt-2">
             <Button variant="outline" size="sm" onClick={() => setIsDeleteOpen(false)} disabled={deleting}>
               Cancel
             </Button>
             <Button variant="danger" size="sm" onClick={handleDelete} disabled={deleting}>
-              {deleting ? 'Removing...' : 'Confirm Delete'}
+              {deleting ? 'Deleting...' : 'Delete document'}
             </Button>
           </div>
         </div>

@@ -121,8 +121,8 @@ export const DocumentsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Document Repository"
-        description="Secure enterprise storage for contracts, proposals, invoices, support files, and attachments."
+        title="Documents"
+        description="Store and manage contracts, proposals, receipts, and other files in one place."
         breadcrumbs={[
           { label: 'Application', href: '/app/dashboard' },
           { label: 'Documents' }
@@ -134,19 +134,19 @@ export const DocumentsPage: React.FC = () => {
             className="flex items-center gap-2"
           >
             <Plus className="h-4 w-4" />
-            <span>Upload Document</span>
+            <span>Upload document</span>
           </Button>
         }
       />
 
       {/* Filter Toolbar */}
       <Card className="p-4 bg-vynexa-surface border-vynexa-border">
-        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div className="flex flex-1 items-center gap-3 w-full">
-            <div className="relative flex-1">
+        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+          <div className="flex flex-wrap flex-1 items-center gap-3 w-full">
+            <div className="relative flex-1 min-w-[200px] max-w-md">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-vynexa-text-muted" />
               <Input
-                placeholder="Search by file name or original filename..."
+                placeholder="Search documents..."
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -163,18 +163,18 @@ export const DocumentsPage: React.FC = () => {
                 setPage(1);
               }}
               options={[
-                { label: 'All File Types', value: '' },
-                { label: 'PDF Documents', value: 'application/pdf' },
-                { label: 'Spreadsheets (Excel / CSV)', value: 'application/vnd' },
-                { label: 'Images (PNG / JPEG)', value: 'image/' },
-                { label: 'Text Files', value: 'text/' }
+                { label: 'All file types', value: '' },
+                { label: 'PDF files', value: 'application/pdf' },
+                { label: 'Spreadsheets (Excel, CSV)', value: 'application/vnd' },
+                { label: 'Images (PNG, JPEG)', value: 'image/' },
+                { label: 'Text files', value: 'text/' }
               ]}
-              className="w-48 h-9 text-xs"
+              className="w-48 shrink-0 h-9 text-xs"
             />
           </div>
 
-          <span className="text-xs font-mono text-vynexa-text-muted shrink-0">
-            Total Files: {totalCount}
+          <span className="text-xs font-mono text-vynexa-text-muted shrink-0 self-end md:self-auto">
+            Total files: {totalCount}
           </span>
         </div>
       </Card>
@@ -186,9 +186,9 @@ export const DocumentsPage: React.FC = () => {
             <thead className="bg-vynexa-surface-secondary/60 text-vynexa-text-secondary uppercase tracking-wider font-mono text-[10px] border-b border-vynexa-border">
               <tr>
                 <th className="py-3 px-4 font-semibold">Document</th>
-                <th className="py-3 px-4 font-semibold">Related Record</th>
+                <th className="py-3 px-4 font-semibold">Related to</th>
                 <th className="py-3 px-4 font-semibold">Size</th>
-                <th className="py-3 px-4 font-semibold">Uploaded By</th>
+                <th className="py-3 px-4 font-semibold">Uploaded by</th>
                 <th className="py-3 px-4 font-semibold">Date</th>
                 <th className="py-3 px-4 font-semibold text-right">Actions</th>
               </tr>
@@ -197,14 +197,14 @@ export const DocumentsPage: React.FC = () => {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-vynexa-text-muted font-mono">
-                    Loading enterprise documents...
+                    Loading documents...
                   </td>
                 </tr>
               ) : documents.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center space-y-2">
                     <FileCode className="h-8 w-8 text-vynexa-text-muted mx-auto opacity-40" />
-                    <p className="text-xs text-vynexa-text-secondary">No documents match the active filter criteria.</p>
+                    <p className="text-xs text-vynexa-text-secondary">No documents found.</p>
                   </td>
                 </tr>
               ) : (
@@ -231,12 +231,12 @@ export const DocumentsPage: React.FC = () => {
                     <td className="py-3 px-4 text-vynexa-text-secondary">
                       {doc.account && (
                         <span className="font-mono text-[11px] text-blue-400 block truncate">
-                          Account: {doc.account.name}
+                          Customer: {doc.account.name}
                         </span>
                       )}
                       {doc.opportunity && (
                         <span className="font-mono text-[11px] text-emerald-400 block truncate">
-                          Deal: {doc.opportunity.name}
+                          Opportunity: {doc.opportunity.name}
                         </span>
                       )}
                       {doc.quote && (
@@ -251,12 +251,12 @@ export const DocumentsPage: React.FC = () => {
                       )}
                       {doc.supportCase && (
                         <span className="font-mono text-[11px] text-red-400 block truncate">
-                          Ticket: {doc.supportCase.subject}
+                          Support: {doc.supportCase.subject}
                         </span>
                       )}
                       {!doc.account && !doc.opportunity && !doc.quote && !doc.order && !doc.supportCase && (
                         <span className="text-vynexa-text-muted font-mono text-[10px]">
-                          Workspace General
+                          General
                         </span>
                       )}
                     </td>
@@ -351,14 +351,14 @@ export const DocumentsPage: React.FC = () => {
       <Dialog
         isOpen={!!selectedForDelete}
         onClose={() => setSelectedForDelete(null)}
-        title="Delete Document"
+        title="Delete document"
         maxWidth="sm"
       >
         <div className="space-y-4 pt-2">
           <p className="text-xs text-vynexa-text-secondary leading-relaxed">
             Are you sure you want to delete{' '}
             <strong className="text-vynexa-text-primary">{selectedForDelete?.name}</strong>?
-            This operation removes the physical file from storage and marks metadata as archived.
+            This file will be permanently removed.
           </p>
           <div className="flex justify-end gap-3 pt-2">
             <Button
@@ -375,7 +375,7 @@ export const DocumentsPage: React.FC = () => {
               onClick={handleDelete}
               disabled={deleting}
             >
-              {deleting ? 'Removing...' : 'Confirm Delete'}
+              {deleting ? 'Deleting...' : 'Delete document'}
             </Button>
           </div>
         </div>
